@@ -16,7 +16,6 @@ const props = defineProps({
     }
 })
 
-
 console.log("User ID:", props.budgetId);
 
 const form = ref({

@@ -2,7 +2,7 @@
 import { icons } from '@/utils/categoryIcons';
 import { db } from '@/firebase/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, watch } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 const props = defineProps({
     categoryId: {
         type: String,
@@ -11,36 +11,41 @@ const props = defineProps({
 })
 const isLoading = ref(false);
 
-console.log("Category ID:", props.categoryId);
-const selectedIcon = ref({ name: "", svg: "" });
+const selectedIcon = ref({ name: "", svg: "" })
 
 const form = ref({
     type: "income",
     name: "",
-    icon: selectedIcon.value.svg || "",
+    icon: selectedIcon.value.svg,
     color: "Select Color",
 });
+console.log("Category Data:", form.value);
 
 
-watch(() => props.categoryId, async (id) => {
-    if (id) {
-        const docRef = doc(db, "categories", id);
+watchEffect(async () => {
+    if (props.categoryId) {
+        const docRef = doc(db, "categories", props.categoryId);
         const docSnap = await getDoc(docRef);
-        console.log("Document Snapshot:", docSnap);
+
         if (docSnap.exists()) {
             form.value = {
                 ...docSnap.data()
 
             }
+            selectedIcon.value.svg = form.value.icon;
+            selectedIcon.value.name = form.value.iconName || "";
+            form.value.icon = selectedIcon.value.svg || "";
 
         }
     }
-
-}, { immediate: true })
-console.log("Category Icons:", icons);
-
+})
+// Function to select an icon
+const selectIcon = (icon) => {
+    selectedIcon.value.name = icon.name;
+    selectedIcon.value.svg = icon.icon;
+    form.value.icon = icon.icon;
+};
 const updateCategory = async () => {
-
     isLoading.value = true;
     const docRef = doc(db, "categories", props.categoryId);
     try {
@@ -58,6 +63,15 @@ const updateCategory = async () => {
         closeModal();
     }
 }
+const resetForm = () => {
+    form.value = {
+        type: "income",
+        name: "",
+        icon: selectedIcon.value.svg || "",
+        color: "Select Color",
+    };
+    selectedIcon.value = { name: "", svg: "" };
+};
 
 const closeModal = () => {
     const modal = document.getElementById("update_category");
@@ -74,10 +88,9 @@ const closeModal = () => {
             <h3 class="text-lg font-bold">Update Category</h3>
             <p class="text-gray-500">Update category for your transactions.</p>
             <!---Preview-->
-            <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4"
-                v-if="form.name && form.color !== 'Select Color'">
+            <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4">
                 <div class="rounded-lg w-12 h-12 p-2" :class="form.color">
-                    <div v-if="selectedIcon.name && selectedIcon.svg" v-html="selectedIcon.svg" class="text-white">
+                    <div v-if="form.name && form.svg" v-html="selectedIcon.svg" class="text-white">
                     </div>
                 </div>
                 <div>
@@ -148,6 +161,13 @@ const closeModal = () => {
                                         <option value="bg-yellow-500">Yellow</option>
                                         <option value="bg-teal-500">Teal</option>
                                         <option value="bg-red-500">Red</option>
+                                        <option value="bg-orange-500">Orange</option>
+                                        <option value="bg-lime-500">Lime</option>
+                                        <option value="bg-pink-500">Pink</option>
+                                        <option value="bg-indigo-500">Indigo</option>
+                                        <option value="bg-rose-500">Rose</option>
+                                        <option value="bg-purple-500">Purple</option>
+
                                     </select>
                                 </div>
                             </div>

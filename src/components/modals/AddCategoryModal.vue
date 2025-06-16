@@ -146,6 +146,12 @@ const closeModal = () => {
                     <option value="bg-yellow-500">Yellow</option>
                     <option value="bg-teal-500">Teal</option>
                     <option value="bg-red-500">Red</option>
+                    <option value="bg-orange-500">Orange</option>
+                    <option value="bg-lime-500">Lime</option>
+                    <option value="bg-pink-500">Pink</option>
+                    <option value="bg-indigo-500">Indigo</option>
+                    <option value="bg-rose-500">Rose</option>
+                    <option value="bg-purple-500">Purple</option>
                   </select>
                 </div>
               </div>
