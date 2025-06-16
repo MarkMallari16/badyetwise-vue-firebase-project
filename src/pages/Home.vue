@@ -7,9 +7,10 @@ import AddTransactionModal from "@/components/modals/AddTransactionModal.vue";
 import AddButtonModal from "@/components/OpenAddModalButton.vue";
 import { useNavigation } from "@/composables/useNavigation";
 import { collection, getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, provide, ref, watchEffect } from "vue";
 import { db } from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
+import dayjs from "dayjs";
 
 const auth = getAuth();
 const userId = auth.currentUser ? auth.currentUser.uid : null;
@@ -85,16 +86,105 @@ const overview = computed(() => {
 
   const savingRate = totalIncomes > 0 ? ((currentBalance / totalIncomes) * 100).toFixed(2) : 0;
 
+  const groupedPerMonth = {};
+
+
+  transactions.value.forEach(transaction => {
+    const month = dayjs(transaction.date).format("MMMM");
+
+    if (!groupedPerMonth[month]) {
+      groupedPerMonth[month] = {
+        income: 0,
+        expense: 0
+      }
+    }
+
+    if (transaction.type === "income") {
+      groupedPerMonth[month].income += transaction.amount || 0;
+    } else if (transaction.type === "expense") {
+      groupedPerMonth[month].expense += transaction.amount || 0;
+    }
+
+  })
+  console.log("Overview:", overview.value);
+
   return {
     totalIncomes: totalIncomes,
     totalExpenses: totalExpenses,
     currentBalance: currentBalance,
     savingsRate: savingRate,
+    groupedPerMonth: groupedPerMonth
   }
 })
+
 // navigation composable
 const { goTo } = useNavigation();
 
+
+//chart data
+const chartData = ref({
+  labels: [],
+  datasets: []
+})
+
+const chartOptions = ref({
+  indexAxis: "x",
+  responsive: true,
+  horizontal: true,
+  plugins: {
+    legend: {
+      display: false,
+      position: "top",
+    },
+  },
+  scales: {
+    x: {
+      grid: {
+        display: false,
+        ticks: {
+          display: true
+        }
+      }
+    },
+    y: {
+      grid: {
+        display: false,
+        ticks: {
+          display: true
+        }
+      },
+
+    }
+  }
+})
+
+watchEffect(() => {
+  const grouped = overview.value;
+  const months = Object.keys(grouped.groupedPerMonth);
+  const incomes = months.map(month => grouped.groupedPerMonth[month].income);
+  const expenses = months.map(month => grouped.groupedPerMonth[month].expense);
+
+  chartData.value = {
+    labels: months,
+    datasets: [
+      {
+        label: "Income",
+        data: incomes,
+        backgroundColor: "oklch(70.7% 0.165 254.624)",
+        borderRadius: 10,
+      },
+      {
+        label: "Expense",
+        data: expenses,
+        backgroundColor: "oklch(70.4% 0.191 22.216)",
+        borderRadius: 10,
+      }
+    ]
+  }
+})
+
+provide("chartData", chartData);
+provide("chartOptions", chartOptions);
 </script>
 
 <template>
