@@ -1,7 +1,7 @@
 <script setup>
 import { icons } from '@/data/getCategoryIcons';
 import { db } from '@/firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, watch } from 'vue';
 const props = defineProps({
     categoryId: {
@@ -10,6 +10,7 @@ const props = defineProps({
     }
 })
 const isLoading = ref(false);
+
 console.log("Category ID:", props.categoryId);
 const selectedIcon = ref({ name: "", svg: "" });
 const form = ref({
@@ -33,6 +34,26 @@ watch(() => props.categoryId, async (id) => {
 
 }, { immediate: true })
 console.log("Category Icons:", icons);
+
+const updateCategory = async () => {
+
+    isLoading.value = true;
+    const docRef = doc(db, "categories", props.categoryId);
+    try {
+        const formData = {
+            ...form.value,
+            icon: selectedIcon.value.svg || "",
+            updatedAt: new Date().toISOString()
+        }
+        await updateDoc(docRef, formData);
+    } catch (error) {
+        console.error("Error updating category:", error);
+        isLoading.value = false;
+    } finally {
+        isLoading.value = false;
+        closeModal();
+    }
+}
 
 const closeModal = () => {
     const modal = document.getElementById("update_category");
@@ -61,7 +82,7 @@ const closeModal = () => {
                 </div>
             </div>
             <div>
-                <form @submit.prevent="submitForm" method="post">
+                <form @submit.prevent="updateCategory" method="post">
                     <div class="mt-4 mb-10">
                         <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                             @click="closeModal">
@@ -110,7 +131,6 @@ const closeModal = () => {
                                                 </a>
                                             </li>
                                         </ul>
-
                                     </div>
                                 </div>
                                 <!-- Color Selection -->
