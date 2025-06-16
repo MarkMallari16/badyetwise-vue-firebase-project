@@ -8,6 +8,7 @@ import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue"
 import AddTransactionModal from "@/components/modals/AddTransactionModal.vue";
 import OpenAddModalButton from "@/components/OpenAddModalButton.vue";
 import UpdateTransactionModal from "@/components/modals/UpdateTransactionModal.vue";
+import dayjs from "dayjs";
 
 const auth = getAuth();
 const userId = auth.currentUser ? auth.currentUser.uid : null;
@@ -223,7 +224,7 @@ const showUpdateModal = (id) => {
 
               <td>{{ transaction.type }}</td>
               <td>{{ transaction.amount }}</td>
-              <td>{{ transaction.date }}</td>
+              <td>{{ dayjs(transaction.date).format('MMMM D, YYYY') }}</td>
               <td>
                 <p class="badge badge-ghost rounded-full text-md font-medium">
                   {{ transaction.category }}

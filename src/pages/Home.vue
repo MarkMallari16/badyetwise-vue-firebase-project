@@ -89,6 +89,7 @@ const overview = computed(() => {
   const groupedPerMonth = {};
 
 
+  // Group transactions by month
   transactions.value.forEach(transaction => {
     const month = dayjs(transaction.date).format("MMMM");
 
@@ -126,7 +127,7 @@ const chartData = ref({
   labels: [],
   datasets: []
 })
-
+// chart options
 const chartOptions = ref({
   indexAxis: "x",
   responsive: true,
@@ -239,7 +240,7 @@ provide("chartOptions", chartOptions);
               <td class="font-medium" :class="[transaction.type == 'expense' ? 'text-red-600' : 'text-green-600']">
                 {{ transaction.type == 'expense' ? '-' : '+' }}{{ transaction.amount }}
               </td>
-              <td>{{ transaction.date }}</td>
+              <td>{{ dayjs(transaction.date).format('MMMM D, YYYY') }}</td>
               <td>
                 <p class="text-xs lg:text-sm badge badge-ghost rounded-full text-md font-medium">
                   {{ transaction.category }}
