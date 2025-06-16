@@ -74,6 +74,7 @@ const closeModal = () => {
 }
 
 const updateTransaction = async () => {
+
     try {
         loading.value = true;
 

@@ -1,8 +1,8 @@
 <script setup>
-import { icons } from '@/data/getCategoryIcons';
+import { icons } from '@/utils/categoryIcons';
 import { db } from '@/firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import { ref, watch } from 'vue';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, watch, watchEffect } from 'vue';
 const props = defineProps({
     categoryId: {
         type: String,
@@ -10,36 +10,80 @@ const props = defineProps({
     }
 })
 const isLoading = ref(false);
-console.log("Category ID:", props.categoryId);
-const selectedIcon = ref({ name: "", svg: "" });
+
+const selectedIcon = ref({ name: "", svg: "" })
+
 const form = ref({
     type: "income",
     name: "",
-    icon: selectedIcon.value.svg || "",
+    icon: "",
     color: "Select Color",
 });
 
-watch(() => props.categoryId, async (id) => {
-    if (id) {
-        const docRef = doc(db, "categories", id);
+console.log("Category Data:", form.value);
+
+watch(() => selectedIcon.value.svg, (newSvg) => {
+    form.value.icon = newSvg;
+})
+watchEffect(async () => {
+    if (props.categoryId) {
+        const docRef = doc(db, "categories", props.categoryId);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists) {
+        if (docSnap.exists()) {
             form.value = {
                 ...docSnap.data()
             }
+
+            selectedIcon.value.name = form.value.iconName || "";
+            selectedIcon.value.svg = form.value.icon;
+
+            form.value.icon = form.value.icon || "";
         }
     }
+})
 
-}, { immediate: true })
-console.log("Category Icons:", icons);
+// Function to select an icon
+const selectIcon = (icon) => {
+    selectedIcon.value.name = icon.name;
+    selectedIcon.value.svg = icon.icon;
+    form.value.icon = icon.icon;
+};
+
+const resetForm = () => {
+    form.value = {
+        type: "income",
+        name: "",
+        icon: "",
+        color: "Select Color",
+    };
+    selectedIcon.value = { name: "", svg: "" };
+};
+const updateCategory = async () => {
+    isLoading.value = true;
+    const docRef = doc(db, "categories", props.categoryId);
+    try {
+        const formData = {
+            ...form.value,
+            icon: selectedIcon.value.svg || "",
+            updatedAt: new Date().toISOString()
+        }
+        await updateDoc(docRef, formData);
+
+    } catch (error) {
+        console.error("Error updating category:", error);
+        isLoading.value = false;
+    } finally {
+        isLoading.value = false;
+        closeModal();
+    }
+}
 
 const closeModal = () => {
     const modal = document.getElementById("update_category");
     if (modal) {
         modal.close();
-        loading.value = false;
-        resetForm();
+        isLoading.value = false;
     }
 };
 </script>
@@ -49,10 +93,9 @@ const closeModal = () => {
             <h3 class="text-lg font-bold">Update Category</h3>
             <p class="text-gray-500">Update category for your transactions.</p>
             <!---Preview-->
-            <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4"
-                v-if="form.name && form.color !== 'Select Color'">
+            <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4">
                 <div class="rounded-lg w-12 h-12 p-2" :class="form.color">
-                    <div v-if="selectedIcon.name && selectedIcon.svg" v-html="selectedIcon.svg" class="text-white">
+                    <div v-if="selectedIcon" v-html="selectedIcon.svg" class="text-white">
                     </div>
                 </div>
                 <div>
@@ -61,7 +104,7 @@ const closeModal = () => {
                 </div>
             </div>
             <div>
-                <form @submit.prevent="submitForm" method="post">
+                <form @submit.prevent="updateCategory" method="post">
                     <div class="mt-4 mb-10">
                         <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                             @click="closeModal">
@@ -94,12 +137,10 @@ const closeModal = () => {
                                     <p class="font-medium mb-2">Icon</p>
                                     <div class="dropdown dropdown-bottom dropdown-center w-full">
                                         <div tabindex="0" role="button" class="btn m-1 w-full">
-                                            <div class="flex items-center gap-1"
-                                                v-if="selectedIcon.name && selectedIcon.svg">
+                                            <div class="flex items-center gap-1">
                                                 <span v-html="selectedIcon.svg" class="size-6"></span>
                                                 <p>{{ selectedIcon.name }}</p>
                                             </div>
-                                            <div v-else>Select Icon</div>
                                         </div>
                                         <ul tabindex="0"
                                             class="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-lg max-h-40 overflow-x-auto">
@@ -110,7 +151,6 @@ const closeModal = () => {
                                                 </a>
                                             </li>
                                         </ul>
-
                                     </div>
                                 </div>
                                 <!-- Color Selection -->
@@ -124,6 +164,13 @@ const closeModal = () => {
                                         <option value="bg-yellow-500">Yellow</option>
                                         <option value="bg-teal-500">Teal</option>
                                         <option value="bg-red-500">Red</option>
+                                        <option value="bg-orange-500">Orange</option>
+                                        <option value="bg-lime-500">Lime</option>
+                                        <option value="bg-pink-500">Pink</option>
+                                        <option value="bg-indigo-500">Indigo</option>
+                                        <option value="bg-rose-500">Rose</option>
+                                        <option value="bg-purple-500">Purple</option>
+
                                     </select>
                                 </div>
                             </div>
@@ -131,8 +178,8 @@ const closeModal = () => {
                     </div>
                     <div class="flex gap-2 modal-action">
                         <button type="button" @click="closeModal" class="btn">Close</button>
-                        <button :disabled="loading" class="btn btn-primary" type="submit">
-                            {{ loading ? "Updating..." : "Update Category" }}
+                        <button :disabled="isLoading" class="btn btn-primary" type="submit">
+                            {{ isLoading ? "Updating..." : "Update Category" }}
                         </button>
                     </div>
                 </form>
