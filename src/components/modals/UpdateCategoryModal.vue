@@ -16,12 +16,15 @@ const selectedIcon = ref({ name: "", svg: "" })
 const form = ref({
     type: "income",
     name: "",
-    icon: selectedIcon.value.svg,
+    icon: "",
     color: "Select Color",
 });
+
 console.log("Category Data:", form.value);
 
-
+watch(() => selectedIcon.value.svg, (newSvg) => {
+    form.value.icon = newSvg;
+})
 watchEffect(async () => {
     if (props.categoryId) {
         const docRef = doc(db, "categories", props.categoryId);
@@ -30,20 +33,31 @@ watchEffect(async () => {
         if (docSnap.exists()) {
             form.value = {
                 ...docSnap.data()
-
             }
-            selectedIcon.value.svg = form.value.icon;
-            selectedIcon.value.name = form.value.iconName || "";
-            form.value.icon = selectedIcon.value.svg || "";
 
+            selectedIcon.value.name = form.value.iconName || "";
+            selectedIcon.value.svg = form.value.icon;
+
+            form.value.icon = form.value.icon || "";
         }
     }
 })
+
 // Function to select an icon
 const selectIcon = (icon) => {
     selectedIcon.value.name = icon.name;
     selectedIcon.value.svg = icon.icon;
     form.value.icon = icon.icon;
+};
+
+const resetForm = () => {
+    form.value = {
+        type: "income",
+        name: "",
+        icon: "",
+        color: "Select Color",
+    };
+    selectedIcon.value = { name: "", svg: "" };
 };
 const updateCategory = async () => {
     isLoading.value = true;
@@ -55,6 +69,7 @@ const updateCategory = async () => {
             updatedAt: new Date().toISOString()
         }
         await updateDoc(docRef, formData);
+
     } catch (error) {
         console.error("Error updating category:", error);
         isLoading.value = false;
@@ -63,22 +78,12 @@ const updateCategory = async () => {
         closeModal();
     }
 }
-const resetForm = () => {
-    form.value = {
-        type: "income",
-        name: "",
-        icon: selectedIcon.value.svg || "",
-        color: "Select Color",
-    };
-    selectedIcon.value = { name: "", svg: "" };
-};
 
 const closeModal = () => {
     const modal = document.getElementById("update_category");
     if (modal) {
         modal.close();
         isLoading.value = false;
-        resetForm();
     }
 };
 </script>
@@ -90,7 +95,7 @@ const closeModal = () => {
             <!---Preview-->
             <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4">
                 <div class="rounded-lg w-12 h-12 p-2" :class="form.color">
-                    <div v-if="form.name && form.svg" v-html="selectedIcon.svg" class="text-white">
+                    <div v-if="selectedIcon" v-html="selectedIcon.svg" class="text-white">
                     </div>
                 </div>
                 <div>
@@ -132,12 +137,10 @@ const closeModal = () => {
                                     <p class="font-medium mb-2">Icon</p>
                                     <div class="dropdown dropdown-bottom dropdown-center w-full">
                                         <div tabindex="0" role="button" class="btn m-1 w-full">
-                                            <div class="flex items-center gap-1"
-                                                v-if="selectedIcon.name && selectedIcon.svg">
+                                            <div class="flex items-center gap-1">
                                                 <span v-html="selectedIcon.svg" class="size-6"></span>
                                                 <p>{{ selectedIcon.name }}</p>
                                             </div>
-                                            <div v-else>Select Icon</div>
                                         </div>
                                         <ul tabindex="0"
                                             class="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-lg max-h-40 overflow-x-auto">
