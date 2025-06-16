@@ -55,6 +55,33 @@ import DashboardNav from '@/components/DashboardNav.vue';
                     Expense Breakdown
                 </h2>
             </div>
+            <div class="mt-4">
+                <div>
+                    <div class="flex justify-between items-center">
+                        <p class="font-medium">Housing</p>
+                        <p class="text-gray-600">1200 (43%)</p>
+                    </div>
+                    <div class="flex items-center  gap-2 pt-2">
+                        <span class="w-3 h-3 inline-block  bg-blue-500 rounded-full">
+
+                        </span>
+                        <progress class="progress w-full" value="50" max="100" />
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex justify-between items-center">
+                        <p class="font-medium">Tuition</p>
+                        <p class="text-gray-600">1200 (43%)</p>
+                    </div>
+
+                    <div class="flex items-center  gap-2 pt-2">
+                        <span class="w-3 h-3 inline-block  bg-red-500 rounded-full">
+
+                        </span>
+                        <progress class="progress w-full" value="50" max="100" />
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>
