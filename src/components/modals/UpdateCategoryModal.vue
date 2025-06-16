@@ -1,6 +1,8 @@
 <script setup>
 import { icons } from '@/data/getCategoryIcons';
-import { ref } from 'vue';
+import { db } from '@/firebase/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { ref, watch } from 'vue';
 const props = defineProps({
     categoryId: {
         type: String,
@@ -8,6 +10,7 @@ const props = defineProps({
     }
 })
 const isLoading = ref(false);
+console.log("Category ID:", props.categoryId);
 const selectedIcon = ref({ name: "", svg: "" });
 const form = ref({
     type: "income",
@@ -16,16 +19,28 @@ const form = ref({
     color: "Select Color",
 });
 
+watch(() => props.categoryId, async (id) => {
+    if (id) {
+        const docRef = doc(db, "categories", id);
+        const docSnap = await getDoc(docRef);
 
+        if (docSnap.exists) {
+            form.value = {
+                ...docSnap.data()
+            }
+        }
+    }
+
+}, { immediate: true })
 console.log("Category Icons:", icons);
 
 const closeModal = () => {
-  const modal = document.getElementById("update_category");
-  if (modal) {
-    modal.close();
-    loading.value = false;
-    resetForm();
-  }
+    const modal = document.getElementById("update_category");
+    if (modal) {
+        modal.close();
+        loading.value = false;
+        resetForm();
+    }
 };
 </script>
 <template>
@@ -117,7 +132,7 @@ const closeModal = () => {
                     <div class="flex gap-2 modal-action">
                         <button type="button" @click="closeModal" class="btn">Close</button>
                         <button :disabled="loading" class="btn btn-primary" type="submit">
-                            {{ loading ? "Adding..." : "Add Category" }}
+                            {{ loading ? "Updating..." : "Update Category" }}
                         </button>
                     </div>
                 </form>
