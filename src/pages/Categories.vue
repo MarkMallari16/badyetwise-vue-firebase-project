@@ -7,6 +7,7 @@ import AddCategoryModal from "@/components/modals/AddCategoryModal.vue";
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
+import UpdateCategoryModal from "@/components/modals/UpdateCategoryModal.vue";
 
 const tab = ref("expense");
 
@@ -15,6 +16,7 @@ const transactions = ref([]);
 const budgets = ref([]);
 const auth = getAuth();
 const userId = auth.currentUser ? auth.currentUser.uid : null;
+const selectedUserId = ref(null);
 
 const categoriesQuery = query(
   collection(db, "categories"),
@@ -135,6 +137,7 @@ const deleteCategory = async (categoryId) => {
     console.error("Error deleting category:", error);
   }
 };
+
 console.log(categories.value);
 
 const showModal = () => {
@@ -145,11 +148,21 @@ const showModal = () => {
     console.log("Modal not shown");
   }
 };
+
+const showUpdateModal = (id) => {
+  const modal = document.getElementById("update_category");
+  selectedUserId.value = id;
+  if (modal && selectedUserId.value) {
+    modal.showModal();
+  }
+}
+
 </script>
 
 <template>
   <!--Modal-->
   <AddCategoryModal />
+  <UpdateCategoryModal :categoryId="selectedUserId" />
   <div
     class="min-h-screen text-nowrap mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-lg rounded-2xl">
     <div>
@@ -203,7 +216,7 @@ const showModal = () => {
                     class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 max-h-60 z-10 absolute -left-48 "
                     popover>
                     <li>
-                      <button>
+                      <button @click="showUpdateModal(category.id)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="size-6">
                           <path stroke-linecap="round" stroke-linejoin="round"
@@ -231,7 +244,7 @@ const showModal = () => {
                 <p>Budget: ₱{{ category.totalBudget }}</p>
               </div>
               <div>
-                <progress class="progress" :class="progressStatusClass" :value="category.totalSpent" :max="category.totalBudget"></progress>
+                <progress class="progress" :value="category.totalSpent" :max="category.totalBudget"></progress>
                 <div class="pt-1 flex justify-between text-sm text-gray-500">
                   <p>{{ category.percentageBudgetUsed }}% of budget used</p>
                   <p>₱{{ category.amountLeft }} remaining</p>
@@ -268,7 +281,7 @@ const showModal = () => {
                     class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 max-h-60 z-10 absolute -left-48"
                     popover popout>
                     <li>
-                      <button>
+                      <button @click="showUpdateModal(category.id)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="size-6">
                           <path stroke-linecap="round" stroke-linejoin="round"
