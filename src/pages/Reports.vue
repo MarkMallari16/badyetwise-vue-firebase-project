@@ -1,5 +1,80 @@
 <script setup>
 import DashboardNav from '@/components/DashboardNav.vue';
+import { db } from '@/firebase/firebase';
+import { getAuth } from 'firebase/auth';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+
+
+const auth = getAuth();
+const userId = auth.currentUser ? auth.currentUser.uid : null;
+
+const transactions = ref([]);
+const budgets = ref([]);
+
+
+let unsubscribeTransactions = null;
+let unsubscribeBudgets = null;
+
+const transactionsQuery = query(
+    collection(db, "transactions"),
+    where("userId", "==", userId)
+);
+const budgetsQuery = query(
+    collection(db, "budgets"),
+    where("userId", "==", userId)
+);
+
+onMounted(() => {
+    if (userId) {
+        unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
+            transactions.value = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }))
+        })
+
+        unsubscribeBudgets = onSnapshot(budgetsQuery, (snapshot) => {
+            budgets.value = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }))
+        })
+    }
+})
+
+onUnmounted(() => {
+    if (unsubscribeTransactions) {
+        unsubscribeTransactions();
+    }
+    if (unsubscribeBudgets) {
+        unsubscribeBudgets();
+    }
+})
+
+const reportsSummary = computed(() => {
+    const income = transactions.value.filter(transaction => transaction.type === "income");
+    const expense = transactions.value.filter(transaction => transaction.type === "expense");
+
+
+    const totalIncome = income.reduce((sum, transaction) => sum + transaction.amount, 0);
+    const totalExpense = expense.reduce((sum, transaction) => sum + transaction.amount, 0);
+    const savings = totalIncome - totalExpense;
+    const percentageUsed = totalExpense / totalIncome * 100 || 0;
+    const savingsPercentage = savings / totalIncome * 100 || 0;
+
+    return {
+        expense,
+        totalIncome,
+        totalExpense,
+        savings,
+        percentageUsed,
+        savingsPercentage
+    }
+})
+
+
+
 
 </script>
 <template>
@@ -22,21 +97,26 @@ import DashboardNav from '@/components/DashboardNav.vue';
             <div class="pt-10 pb-8 flex justify-between items-center">
                 <div>
                     <p class="font-medium">Income</p>
-                    <h2 class="text-3xl text-green-600 font-bold">3900</h2>
+                    <h2 class="text-3xl text-green-600 font-bold">{{ reportsSummary.totalIncome }}</h2>
                 </div>
                 <div>
                     <p class="font-medium">Expense</p>
-                    <h2 class="text-3xl text-red-600 font-bold">2500</h2>
+                    <h2 class="text-3xl text-red-600 font-bold">{{ reportsSummary.totalExpense }}</h2>
                 </div>
                 <div>
                     <p class="font-medium">Savings</p>
-                    <h2 class="text-3xl text-blue-600 font-bold">250</h2>
+                    <h2 class="text-3xl text-blue-600 font-bold">{{ reportsSummary.savings }}</h2>
                 </div>
             </div>
 
             <div>
-                <p>Income used: 20%</p>
-                <progress class="progress h-4 w-full text-blue-600 " value="50" max="100" />
+                <div class="flex justify-between pb-1">
+                    <p>Income used: {{ reportsSummary.percentageUsed }}%</p>
+                    <p>Savings: {{ reportsSummary.savingsPercentage }}%</p>
+
+                </div>
+                <progress class="progress h-4 w-full text-blue-600 " :value="reportsSummary.totalExpense"
+                    :max="reportsSummary.totalIncome" />
             </div>
         </div>
         <!--Expense Breakdown-->
@@ -53,31 +133,21 @@ import DashboardNav from '@/components/DashboardNav.vue';
                 </h2>
             </div>
             <div class="mt-4">
-                <div>
+
+                <div v-if="reportsSummary.expense.length > 0" v-for="(expenseItem, index) in reportsSummary.expense"
+                    :key="index">
                     <div class="flex justify-between items-center">
-                        <p class="font-medium">Housing</p>
-                        <p class="text-gray-600">1200 (43%)</p>
+                        <p class="font-medium">{{ expenseItem.category }}</p>
+                        <p class="text-gray-600">{{ expenseItem.amount }} (43%)</p>
                     </div>
                     <div class="flex items-center  gap-2 pt-2">
                         <span class="w-3 h-3 inline-block  bg-blue-500 rounded-full">
 
                         </span>
-                        <progress class="progress w-full" value="50" max="100" />
+                        <progress class="progress w-full" :value="expenseItem.amount" />
                     </div>
                 </div>
-                <div class="mt-4">
-                    <div class="flex justify-between items-center">
-                        <p class="font-medium">Tuition</p>
-                        <p class="text-gray-600">1200 (43%)</p>
-                    </div>
 
-                    <div class="flex items-center  gap-2 pt-2">
-                        <span class="w-3 h-3 inline-block  bg-red-500 rounded-full">
-
-                        </span>
-                        <progress class="progress w-full" value="50" max="100" />
-                    </div>
-                </div>
             </div>
 
         </div>
