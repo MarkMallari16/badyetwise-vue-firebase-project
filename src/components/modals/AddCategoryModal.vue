@@ -1,16 +1,17 @@
 <script setup>
 import { db } from "@/firebase/firebase";
 import { addDoc, collection } from "firebase/firestore";
-import { ref } from "vue";
-import { getAuth } from "firebase/auth";
+
 import { icons } from "@/utils/categoryIcons";
+import { currentUser } from "@/composables/useAuth";
+import { categoryExists } from "@/helpers/categoryExistsValidation";
+import { ref } from "vue";
 
 
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
 const loading = ref(false);
 
 const selectedIcon = ref({ name: "", svg: "" });
+//form data
 const form = ref({
   type: "income",
   name: "",
@@ -18,6 +19,13 @@ const form = ref({
   iconName: selectedIcon.value.name || "",
   color: "Select Color",
 });
+
+//form error messages
+const errors = ref({
+  name: "",
+  icon: "",
+  color: "",
+})
 
 // Reset form to initial state
 const resetForm = () => {
@@ -30,30 +38,69 @@ const resetForm = () => {
 
   selectedIcon.value = { name: "", svg: "" };
 };
+// validate form inputs
+const validateForm = () => {
+  let isvalid = true;
 
+  if (!form.value.name) {
+    errors.value.name = "Category name is required."
+    isvalid = false;
+  }
+
+  if (form.value.color === "Select Color") {
+    errors.value.color = "Please select a color."
+    isvalid = false;
+  }
+
+  if (form.value.icon === "" || form.value.icon === "Select Icon") {
+    errors.value.icon = "Please select an icon."
+    isvalid = false;
+  }
+
+  return isvalid
+}
 
 // Reset form when the modal is closed
 const submitForm = async () => {
+
+  if (!validateForm()) {
+    loading.value = false;
+    console.log(errors)
+    return;
+  }
+
   try {
     loading.value = true;
+    const normalizedName = form.value.name.trim().toLowerCase();
+    const exists = await categoryExists(normalizedName, form.value.type);
+
+    if (exists) {
+      errors.value.name = "Category already exists.";
+      loading.value = false;
+      return;
+    }
+
     const formData = {
       ...form.value,
-      userId: auth.currentUser.uid,
+      name: normalizedName,
+      userId: currentUser.value?.uid,
       createdAt: new Date(),
     };
+
     // Add the new category to the Firestore collection
     await addDoc(collection(db, "categories"), formData);
 
     console.log("Document successfully added!");
     loading.value = false;
     resetForm();
+    closeModal();
+
   } catch (error) {
     console.error("Error adding document: ", error);
   } finally {
-    closeModal();
+    loading.value = false;
   }
 };
-
 // Function to select an icon
 const selectIcon = (icon) => {
   selectedIcon.value.name = icon.name || "";
@@ -69,6 +116,13 @@ const closeModal = () => {
     modal.close();
     loading.value = false;
     resetForm();
+
+    errors.value = {
+      name: "",
+      icon: "",
+      iconName: "",
+      color: "",
+    };
   }
 };
 
@@ -113,8 +167,10 @@ const closeModal = () => {
 
             <div class="mt-4">
               <label for="category_name" class="font-medium">Category Name</label>
-              <input id="category_name" type="text" v-model="form.name" placeholder="Enter Category Name" required
+              <input id="category_name" type="text" v-model="form.name" placeholder="Enter Category Name"
                 class="input mt-2 input-bordered w-full" />
+              <p v-if="errors.name" class="text-red-500">{{ errors.name }}</p>
+
             </div>
             <div class="mt-4">
               <div class="w-full flex items-center gap-5">
@@ -128,6 +184,8 @@ const closeModal = () => {
                       </div>
                       <div v-else>Select Icon</div>
                     </div>
+                    <p v-if="errors.icon || form.icon" class="text-red-500">{{ errors.icon }}</p>
+
                     <ul tabindex="0"
                       class="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-lg max-h-40 overflow-x-auto">
                       <li v-for="icon in icons" :key="icon.name" @click="selectIcon(icon)">
@@ -145,7 +203,7 @@ const closeModal = () => {
                   <p class="font-medium mb-2">Color</p>
                   <select class="select select-bordered w-full" name="payment_method" v-model="form.color">
                     <option disabled>Select Color</option>
-                    <option selected value="bg-blue-500">Blue</option>
+                    <option value="bg-blue-500">Blue</option>
                     <option value="bg-green-500">Green</option>
                     <option value="bg-yellow-500">Yellow</option>
                     <option value="bg-teal-500">Teal</option>
@@ -157,6 +215,8 @@ const closeModal = () => {
                     <option value="bg-rose-500">Rose</option>
                     <option value="bg-purple-500">Purple</option>
                   </select>
+                  <p v-if="errors.color" class="text-red-500">{{ errors.color }}</p>
+
                 </div>
               </div>
             </div>
