@@ -18,7 +18,6 @@ const form = ref({
   amount: null,
   category: "",
   timePeriod: "monthly",
-  createdAt: null,
 });
 
 const errorMessages = ref({
@@ -26,6 +25,7 @@ const errorMessages = ref({
   category: null,
   timePeriod: null,
 })
+
 let unsubscribeCategories = null;
 
 const validateForm = () => {

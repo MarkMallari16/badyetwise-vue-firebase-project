@@ -5,7 +5,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { icons } from "@/utils/categoryIcons";
 import { currentUser } from "@/composables/useAuth";
 import { categoryExists } from "@/helpers/categoryExistsValidation";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 
 const loading = ref(false);
@@ -19,6 +19,14 @@ const form = ref({
   iconName: selectedIcon.value.name || "",
   color: "Select Color",
 });
+watch(() => [form.value.name, form.value.icon, form.value.color], ([name, icon, color]) => {
+  // Reset error messages when form inputs change
+  if (name) errors.value.name = "";
+  if (icon) errors.value.icon = "";
+  if (color !== "Select Color") errors.value.color = "";
+})
+
+
 
 //form error messages
 const errors = ref({
@@ -26,7 +34,7 @@ const errors = ref({
   icon: "",
   color: "",
 })
-const errorClass = "pt-1 text-red-500";
+const errorClass = "text-red-500";
 // Reset form to initial state
 const resetForm = () => {
   form.value = {
@@ -84,7 +92,7 @@ const submitForm = async () => {
       ...form.value,
       name: normalizedName,
       userId: currentUser.value?.uid,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
 
     // Add the new category to the Firestore collection
@@ -143,6 +151,7 @@ const closeModal = () => {
           <p class="text-gray-500 text-sm">{{ form.type }}</p>
         </div>
       </div>
+
       <div>
         <form @submit.prevent="submitForm" method="post">
           <div class="mt-4 mb-10">
@@ -168,7 +177,7 @@ const closeModal = () => {
             <div class="mt-4">
               <label for="category_name" class="font-medium">Category Name</label>
               <input id="category_name" type="text" v-model="form.name" placeholder="Enter Category Name"
-                class="input mt-2 input-bordered w-full" />
+                class="input mt-2  w-full" :class="errors.name ? 'input-error' : 'input-bordered'" />
               <p v-if="errors.name" :class="errorClass">{{ errors.name }}</p>
 
             </div>
@@ -177,7 +186,8 @@ const closeModal = () => {
                 <div class="w-full">
                   <p class="font-medium mb-2">Icon</p>
                   <div class="dropdown dropdown-bottom dropdown-center w-full">
-                    <div tabindex="0" role="button" class="btn m-1 w-full">
+                    <div tabindex="0" role="button" class="btn m-1 w-full"
+                      :class="errors.icon ? 'border-error' : 'border-none'">
                       <div class="flex items-center gap-1" v-if="selectedIcon.name && selectedIcon.svg">
                         <span v-html="selectedIcon.svg" class="size-6"></span>
                         <p>{{ selectedIcon.name }}</p>
@@ -201,7 +211,8 @@ const closeModal = () => {
                 <!-- Color Selection -->
                 <div class="w-full">
                   <p class="font-medium mb-2">Color</p>
-                  <select class="select select-bordered w-full" name="payment_method" v-model="form.color">
+                  <select class="select w-full" :class="errors.color ? 'select-error' : 'input-bordered'"
+                    name="payment_method" v-model="form.color">
                     <option disabled>Select Color</option>
                     <option value="bg-blue-500">Blue</option>
                     <option value="bg-green-500">Green</option>
