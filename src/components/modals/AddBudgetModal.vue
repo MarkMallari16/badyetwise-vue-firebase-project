@@ -21,13 +21,11 @@ const form = ref({
   createdAt: null,
 });
 
-
 const errorMessages = ref({
   amount: null,
   category: null,
   timePeriod: null,
 })
-
 let unsubscribeCategories = null;
 
 const validateForm = () => {
