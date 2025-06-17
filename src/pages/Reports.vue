@@ -1,32 +1,27 @@
 <script setup>
 import DashboardNav from '@/components/DashboardNav.vue';
 import { db } from '@/firebase/firebase';
-import { getAuth } from 'firebase/auth';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
-
-
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
+import { currentUser } from '@/composables/useAuth';
 
 const transactions = ref([]);
 const budgets = ref([]);
-
 
 let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 
 const transactionsQuery = query(
     collection(db, "transactions"),
-    where("userId", "==", userId)
+    where("userId", "==", currentUser.value?.uid)
 );
 const budgetsQuery = query(
     collection(db, "budgets"),
-    where("userId", "==", userId)
+    where("userId", "==", currentUser.value?.uid)
 );
 
 onMounted(() => {
-    if (userId) {
+    if (currentUser.value?.uid) {
         unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
             transactions.value = snapshot.docs.map(doc => ({
                 id: doc.id,
