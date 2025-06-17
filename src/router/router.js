@@ -10,8 +10,6 @@ import Budget from '@/pages/Budget.vue';
 import Settings from '@/pages/Profile/Settings.vue';
 import Support from '@/pages/Support.vue';
 import Reports from '@/pages/Reports.vue';
-
-
 const routes = [
     {
         path: '/',

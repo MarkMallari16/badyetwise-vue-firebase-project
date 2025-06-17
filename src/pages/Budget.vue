@@ -3,25 +3,23 @@ import OpenAddModalButton from "@/components/OpenAddModalButton.vue";
 import DashboardNav from "@/components/DashboardNav.vue";
 import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue";
 import AddBudgetModal from "@/components/modals/AddBudgetModal.vue";
-import { getAuth } from "firebase/auth";
 import { collection, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore";
 import { computed, onMounted, onUnmounted, ref, watchEffect } from "vue";
 import { db } from "@/firebase/firebase";
 import { getStatusIcon, getStatusClass } from "@/helpers/statusHelper";
 import UpdateBudgetModal from "@/components/modals/UpdateBudgetModal.vue";
+import { currentUser } from "@/composables/useAuth";
 
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
 const transactions = ref([]);
 const budgets = ref([]);
 const selectedBudgetId = ref(null);
 
 const transactionsqQuery = query(
   collection(db, "transactions"),
-  where("userId", "==", userId)
+  where("userId", "==", currentUser.value?.uid)
 );
 
-const budgetsQuery = query(collection(db, "budgets"), where("userId", "==", userId));
+const budgetsQuery = query(collection(db, "budgets"), where("userId", "==", currentUser.value?.uid));
 
 let unsubscribeTransactions;
 let unsubscribeBudgets;
