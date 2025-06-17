@@ -4,7 +4,7 @@ import DashboardNav from "@/components/DashboardNav.vue";
 import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue";
 import AddBudgetModal from "@/components/modals/AddBudgetModal.vue";
 import { collection, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore";
-import { computed, onMounted, onUnmounted, ref, watchEffect } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { db } from "@/firebase/firebase";
 import { getStatusIcon, getStatusClass } from "@/helpers/statusHelper";
 import UpdateBudgetModal from "@/components/modals/UpdateBudgetModal.vue";
@@ -52,6 +52,7 @@ onUnmounted(() => {
     unsubscribeBudgets();
   }
 })
+
 
 const budgetSummaries = computed(() => {
   return budgets.value.map((budget) => {

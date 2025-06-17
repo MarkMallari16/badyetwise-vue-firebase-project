@@ -14,6 +14,8 @@ const categories = ref([]);
 const transactions = ref([]);
 const budgets = ref([]);
 
+//selectedCategoryId is used to store the id of the category that is being updated
+const selectedCategoryId = ref(null);
 const categoriesQuery = query(
   collection(db, "categories"),
   where("userId", "==", currentUser.value?.uid),
@@ -147,8 +149,8 @@ const showModal = () => {
 
 const showUpdateModal = (id) => {
   const modal = document.getElementById("update_category");
-  selectedUserId.value = id;
-  if (modal && selectedUserId.value) {
+  selectedCategoryId.value = id;
+  if (modal && selectedCategoryId.value) {
     modal.showModal();
   }
 }
@@ -158,7 +160,7 @@ const showUpdateModal = (id) => {
 <template>
   <!--Modal-->
   <AddCategoryModal />
-  <UpdateCategoryModal :categoryId="selectedUserId" />
+  <UpdateCategoryModal :categoryId="selectedCategoryId" />
   <div
     class="min-h-screen text-nowrap mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-lg rounded-2xl">
     <div>
