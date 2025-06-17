@@ -26,7 +26,7 @@ const errors = ref({
   icon: "",
   color: "",
 })
-
+const errorClass = "pt-1 text-red-500";
 // Reset form to initial state
 const resetForm = () => {
   form.value = {
@@ -169,7 +169,7 @@ const closeModal = () => {
               <label for="category_name" class="font-medium">Category Name</label>
               <input id="category_name" type="text" v-model="form.name" placeholder="Enter Category Name"
                 class="input mt-2 input-bordered w-full" />
-              <p v-if="errors.name" class="text-red-500">{{ errors.name }}</p>
+              <p v-if="errors.name" :class="errorClass">{{ errors.name }}</p>
 
             </div>
             <div class="mt-4">
@@ -184,7 +184,7 @@ const closeModal = () => {
                       </div>
                       <div v-else>Select Icon</div>
                     </div>
-                    <p v-if="errors.icon || form.icon" class="text-red-500">{{ errors.icon }}</p>
+                    <p v-if="errors.icon || form.icon" :class="errorClass">{{ errors.icon }}</p>
 
                     <ul tabindex="0"
                       class="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-lg max-h-40 overflow-x-auto">
@@ -215,7 +215,7 @@ const closeModal = () => {
                     <option value="bg-rose-500">Rose</option>
                     <option value="bg-purple-500">Purple</option>
                   </select>
-                  <p v-if="errors.color" class="text-red-500">{{ errors.color }}</p>
+                  <p v-if="errors.color" :class="errorClass">{{ errors.color }}</p>
 
                 </div>
               </div>
