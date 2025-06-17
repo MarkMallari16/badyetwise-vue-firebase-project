@@ -2,13 +2,16 @@
 import { icons } from '@/utils/categoryIcons';
 import { db } from '@/firebase/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, watch, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
+
+// Define the props for the component
 const props = defineProps({
     categoryId: {
         type: String,
         required: true
     }
 })
+
 const isLoading = ref(false);
 
 const selectedIcon = ref({ name: "", svg: "" })
@@ -17,14 +20,13 @@ const form = ref({
     type: "income",
     name: "",
     icon: "",
+    iconName: "",
     color: "Select Color",
 });
 
 console.log("Category Data:", form.value);
 
-watch(() => selectedIcon.value.svg, (newSvg) => {
-    form.value.icon = newSvg;
-})
+//setting up initial form values
 watchEffect(async () => {
     if (props.categoryId) {
         const docRef = doc(db, "categories", props.categoryId);
@@ -34,31 +36,28 @@ watchEffect(async () => {
             form.value = {
                 ...docSnap.data()
             }
-
             selectedIcon.value.name = form.value.iconName || "";
-            selectedIcon.value.svg = form.value.icon;
+            selectedIcon.value.svg = form.value.icon || "";
 
             form.value.icon = form.value.icon || "";
+            form.value.iconName = form.value.iconName || ""
+
+            console.log("Selected Icon:", selectedIcon.value);
+
         }
     }
 })
 
 // Function to select an icon
 const selectIcon = (icon) => {
-    selectedIcon.value.name = icon.name;
     selectedIcon.value.svg = icon.icon;
+    selectedIcon.value.name = icon.name;
+
     form.value.icon = icon.icon;
+    form.value.iconName = icon.name;
 };
 
-const resetForm = () => {
-    form.value = {
-        type: "income",
-        name: "",
-        icon: "",
-        color: "Select Color",
-    };
-    selectedIcon.value = { name: "", svg: "" };
-};
+//Update category
 const updateCategory = async () => {
     isLoading.value = true;
     const docRef = doc(db, "categories", props.categoryId);
@@ -66,8 +65,11 @@ const updateCategory = async () => {
         const formData = {
             ...form.value,
             icon: selectedIcon.value.svg || "",
+            iconName: selectedIcon.value.name || "",
             updatedAt: new Date().toISOString()
         }
+
+        console.log("Form Data to Update:", formData);
         await updateDoc(docRef, formData);
 
     } catch (error) {
@@ -131,13 +133,14 @@ const closeModal = () => {
                             <input id="category_name" type="text" v-model="form.name" placeholder="Enter Category Name"
                                 required class="input mt-2 input-bordered w-full" />
                         </div>
+                        <!-- Icon and Color Selection -->
                         <div class="mt-4">
                             <div class="w-full flex items-center gap-5">
                                 <div class="w-full">
                                     <p class="font-medium mb-2">Icon</p>
                                     <div class="dropdown dropdown-bottom dropdown-center w-full">
                                         <div tabindex="0" role="button" class="btn m-1 w-full">
-                                            <div class="flex items-center gap-1">
+                                            <div class="flex items-center gap-1" v-if="selectedIcon">
                                                 <span v-html="selectedIcon.svg" class="size-6"></span>
                                                 <p>{{ selectedIcon.name }}</p>
                                             </div>

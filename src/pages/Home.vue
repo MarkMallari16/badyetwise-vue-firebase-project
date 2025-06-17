@@ -6,16 +6,13 @@ import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue"
 import AddTransactionModal from "@/components/modals/AddTransactionModal.vue";
 import AddButtonModal from "@/components/OpenAddModalButton.vue";
 import { useNavigation } from "@/composables/useNavigation";
-import { collection, getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection,  onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { computed, onMounted, onUnmounted, provide, ref, watchEffect } from "vue";
 import { db } from "@/firebase/firebase";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import dayjs from "dayjs";
 
 const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
-
-console.log("User ID:", userId);
 
 const transactions = ref([]);
 const budgets = ref([]);
@@ -23,43 +20,43 @@ const budgets = ref([]);
 let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 
-const transactionsQuery = query(
-  collection(db, "transactions"),
-  where("userId", "==", userId),
-  orderBy("createdAt", "desc")
-)
-const budgetQuery = query(
-  collection(db, "budgets"),
-  where("userId", "==", userId)
-)
+onAuthStateChanged(auth, (user) => {
+  if (user) {
 
-onMounted(() => {
-  unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
-    transactions.value = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
-  })
-  unsubscribeBudgets = onSnapshot(budgetQuery, (snapshot) => {
-    budgets.value = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
+    const transactionsQuery = query(
+      collection(db, "transactions"),
+      where("userId", "==", user.uid),
+      orderBy("createdAt", "desc")
+    )
+    const budgetQuery = query(
+      collection(db, "budgets"),
+      where("userId", "==", user.uid)
+    )
 
-    console.log("Budgets:", budgets.value);
-  })
+    unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
+      transactions.value = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    })
+    unsubscribeBudgets = onSnapshot(budgetQuery, (snapshot) => {
+      budgets.value = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
 
-})
+      console.log("Budgets:", budgets.value);
+    })
+  } else {
+    if (unsubscribeTransactions) {
+      unsubscribeTransactions();
+    }
+    if (unsubscribeBudgets) {
+      unsubscribeBudgets();
+    }
 
-onUnmounted(() => {
-  if (unsubscribeTransactions) {
-    unsubscribeTransactions();
   }
-  if (unsubscribeBudgets) {
-    unsubscribeBudgets();
-  }
 })
-
 
 const showModal = () => {
   const modal = document.getElementById("add_transaction");
