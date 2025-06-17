@@ -1,7 +1,7 @@
 <script setup>
 import { db } from "@/firebase/firebase";
 import { doc, addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { getAuth } from "firebase/auth";
 const loading = ref(false);
 
@@ -38,15 +38,25 @@ const categoriesQuery = query(
   where("userId", "==", userId)
 );
 
+let unsubscribeCategories = null;
+
 // Fetch categories from the "categories" collection
-onSnapshot(categoriesQuery, (snapshot) => {
-  categories.value = snapshot.docs.map((doc) => {
-    return {
-      id: doc.id,
-      ...doc.data(),
-    };
+onMounted(() => {
+  unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
+    categories.value = snapshot.docs.map((doc) => {
+      return {
+        id: doc.id,
+        ...doc.data(),
+      };
+    });
   });
-});
+})
+
+onUnmounted(() => {
+  if (unsubscribeCategories) {
+    unsubscribeCategories();
+  }
+})
 
 const submitForm = async () => {
   const auth = getAuth();

@@ -9,9 +9,8 @@ import AddTransactionModal from "@/components/modals/AddTransactionModal.vue";
 import OpenAddModalButton from "@/components/OpenAddModalButton.vue";
 import UpdateTransactionModal from "@/components/modals/UpdateTransactionModal.vue";
 import dayjs from "dayjs";
+import { currentUser } from "@/composables/useAuth";
 
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
 
 // Reactive references for categories and transactions
 const categories = ref([]);
@@ -30,13 +29,13 @@ const transactionFilterings = ref({
 //Fetch transactions from the "transactions" collection
 const transactionQuery = query(
   collection(db, "transactions"),
-  where("userId", "==", userId),
+  where("userId", "==", currentUser.value?.uid),
   orderBy("createdAt", "desc")
 );
 // Fetch transactions from the "categories" collection
 const categoriesQuery = query(
   collection(db, "categories"),
-  where("userId", "==", userId)
+  where("userId", "==", currentUser.value?.uid)
 );
 
 let unsubscribeTransactions = null;

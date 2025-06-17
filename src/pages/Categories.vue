@@ -6,32 +6,28 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import AddCategoryModal from "@/components/modals/AddCategoryModal.vue";
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getAuth } from "firebase/auth";
 import UpdateCategoryModal from "@/components/modals/UpdateCategoryModal.vue";
+import { currentUser } from "@/composables/useAuth";
 
 const tab = ref("expense");
-
 const categories = ref([]);
 const transactions = ref([]);
 const budgets = ref([]);
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
-const selectedUserId = ref(null);
 
 const categoriesQuery = query(
   collection(db, "categories"),
-  where("userId", "==", userId),
+  where("userId", "==", currentUser.value?.uid),
   orderBy("createdAt", "desc")
 )
 
 const transactionsQuery = query(
   collection(db, "transactions"),
-  where("userId", "==", userId)
+  where("userId", "==", currentUser.value?.uid)
 )
 
 const budgetsQuery = query(
   collection(db, "budgets"),
-  where("userId", "==", userId)
+  where("userId", "==", currentUser.value?.uid)
 )
 
 // Computed properties to filter categories by type
@@ -87,7 +83,7 @@ let unsubscribeBudgets = null;
 onMounted(() => {
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs
-      .filter((doc) => doc.data().userId === userId)
+      .filter((doc) => doc.data().userId === currentUser.value?.uid)
       .map((doc) => {
         return {
           id: doc.id,
@@ -97,7 +93,7 @@ onMounted(() => {
   });
   unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
     transactions.value = snapshot.docs
-      .filter((doc) => doc.data().userId === userId)
+      .filter((doc) => doc.data().userId === currentUser.value?.uid)
       .map((doc) => {
         return {
           id: doc.id,
@@ -107,7 +103,7 @@ onMounted(() => {
   });
   unsubscribeBudgets = onSnapshot(budgetsQuery, (snapshot) => {
     budgets.value = snapshot.docs
-      .filter((doc) => doc.data().userId === userId)
+      .filter((doc) => doc.data().userId === currentUser.value?.uid)
       .map((doc) => {
         return {
           id: doc.id,

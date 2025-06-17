@@ -15,6 +15,7 @@ const form = ref({
   type: "income",
   name: "",
   icon: selectedIcon.value.svg || "",
+  iconName: selectedIcon.value.name || "",
   color: "Select Color",
 });
 
@@ -29,6 +30,8 @@ const resetForm = () => {
 
   selectedIcon.value = { name: "", svg: "" };
 };
+
+
 // Reset form when the modal is closed
 const submitForm = async () => {
   try {
@@ -53,9 +56,10 @@ const submitForm = async () => {
 
 // Function to select an icon
 const selectIcon = (icon) => {
-  selectedIcon.value.name = icon.name;
-  selectedIcon.value.svg = icon.icon;
-  form.value.icon = icon.icon;
+  selectedIcon.value.name = icon.name || "";
+  selectedIcon.value.svg = icon.icon || "";
+  form.value.icon = icon.icon || "";
+  form.value.iconName = icon.name || "";
 };
 
 // Function to close the modal and reset the form
