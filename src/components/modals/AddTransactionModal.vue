@@ -70,7 +70,7 @@ const submitForm = async () => {
       categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
       categoryId:
         categories.value.find((c) => c.name === form.value.category)?.id || null,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     await addDoc(collection(db, "transactions"), formData);
     loading.value = false;
