@@ -106,8 +106,9 @@ const overview = computed(() => {
     }
   })
 
+  const expenseTransactions = transactions.value.filter(transaction => transaction.type === "expense");
 
-  transactions.value.forEach(transaction => {
+  expenseTransactions.forEach(transaction => {
     const category = transaction.category;
 
     if (!groupedPerCategory[category]) {
@@ -117,7 +118,6 @@ const overview = computed(() => {
     } else {
       groupedPerCategory[category].expense += transaction.type === "expense" ? (transaction.amount) : 0
     }
-
   })
 
   return {
@@ -194,9 +194,6 @@ watchEffect(() => {
   const months = Object.keys(grouped.groupedPerMonth);
   const incomes = months.map(month => grouped.groupedPerMonth[month].income);
   const expenses = months.map(month => grouped.groupedPerMonth[month].expense);
-
-
-
 
   barChartData.value = {
     labels: months,
