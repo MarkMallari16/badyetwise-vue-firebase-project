@@ -73,7 +73,7 @@ const overviews = computed(() => [
       </select>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
-      <div v-for="(overview, index) in overviews" :key="index"
+      <div v-if="overviews" v-for="(overview, index) in overviews" :key="index"
         class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
         <div class="flex justify-between items-center">
           <h2 class="mt-2 text-md font-medium">{{ overview.subtext }}</h2>
@@ -98,6 +98,8 @@ const overviews = computed(() => [
 
           <p>{{ overview.status }}<span class="font-normal"> this month</span></p>
         </div>
+      </div>
+      <div v-else v-for="item in 4" :key="item" class="skeleton w-full h-full">
       </div>
     </div>
   </div>

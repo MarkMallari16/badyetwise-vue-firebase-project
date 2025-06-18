@@ -102,7 +102,6 @@ const overview = computed(() => {
     } else if (transaction.type === "expense") {
       groupedPerMonth[month].expense += transaction.amount || 0;
     }
-
   })
 
   return {
