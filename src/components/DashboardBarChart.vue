@@ -1,5 +1,5 @@
 <script setup>
-import { inject, ref, watchEffect } from "vue";
+import { inject, } from "vue";
 import { Bar } from "vue-chartjs";
 import { Chart, BarElement, BarController, CategoryScale, LinearScale } from "chart.js";
 

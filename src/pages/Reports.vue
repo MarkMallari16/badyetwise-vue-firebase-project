@@ -133,7 +133,7 @@ const reportsSummary = computed(() => {
                         <p class="font-medium">{{ expenseItem.category }}</p>
                         <p class="text-gray-600">{{ expenseItem.amount }} (43%)</p>
                     </div>
-                    <div class="flex items-center  gap-2 pt-2">
+                    <div class="flex items-center  gap-2 pt-4">
                         <span class="w-3 h-3 inline-block  bg-blue-500 rounded-full">
 
                         </span>

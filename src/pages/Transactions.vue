@@ -32,6 +32,8 @@ const transactionQuery = query(
   where("userId", "==", currentUser.value?.uid),
   orderBy("createdAt", "desc")
 );
+
+
 // Fetch transactions from the "categories" collection
 const categoriesQuery = query(
   collection(db, "categories"),
