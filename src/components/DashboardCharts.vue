@@ -1,7 +1,7 @@
 <script setup>
 import { useNavigation } from "@/composables/useNavigation";
 import DashboardBarChart from "./DashboardBarChart.vue";
-import DashboardLineChart from "./DashboardLineChart.vue";
+import DashboardPieChart from "@/DashboardPieChart.vue";
 
 const { goTo } = useNavigation();
 
@@ -17,8 +17,11 @@ const { goTo } = useNavigation();
       <DashboardBarChart />
     </div>
     <div class="mt-4 bg-white p-5 lg:p-10 rounded-md ring-1 ring-inset ring-base-300">
-      <h2 class="text-xl font-bold">Budget Spending History</h2>
-      <DashboardLineChart />
+      <div class="flex justify-between items-center pb-10">
+        <h2 class="text-xl font-bold">Expense Breakdown by Category</h2>
+        <button class="btn rounded-xl" @click="goTo('/reports')">View All</button>
+      </div>
+      <DashboardPieChart />
     </div>
   </div>
 </template>
