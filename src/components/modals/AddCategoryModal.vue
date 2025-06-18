@@ -4,10 +4,10 @@ import { addDoc, collection } from "firebase/firestore";
 
 import { icons } from "@/utils/categoryIcons";
 import { currentUser } from "@/composables/useAuth";
-import { categoryExists } from "@/helpers/categoryExistsValidation";
+import { categoryExists } from "@/helpers/errorsValidation";
 import { ref, watch } from "vue";
 
-
+//
 const loading = ref(false);
 
 const selectedIcon = ref({ name: "", svg: "" });
@@ -19,6 +19,8 @@ const form = ref({
   iconName: selectedIcon.value.name || "",
   color: "Select Color",
 });
+
+// Watch for changes in form inputs to reset error messages
 watch(() => [form.value.name, form.value.icon, form.value.color], ([name, icon, color]) => {
   // Reset error messages when form inputs change
   if (name) errors.value.name = "";
@@ -26,15 +28,15 @@ watch(() => [form.value.name, form.value.icon, form.value.color], ([name, icon, 
   if (color !== "Select Color") errors.value.color = "";
 })
 
-
-
 //form error messages
 const errors = ref({
   name: "",
   icon: "",
   color: "",
 })
+// CSS class for error messages
 const errorClass = "text-red-500";
+
 // Reset form to initial state
 const resetForm = () => {
   form.value = {

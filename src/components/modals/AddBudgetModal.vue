@@ -2,7 +2,7 @@
 import { db } from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
 import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 
 const auth = getAuth();
 const userId = auth.currentUser ? auth.currentUser.uid : null;
@@ -24,6 +24,13 @@ const errorMessages = ref({
   amount: null,
   category: null,
   timePeriod: null,
+})
+
+// Watch for changes in form inputs to reset error messages
+watch(() => [form.value.amount, form.value.category, form.value.timePeriod], ([amount, category, timePeriod]) => {
+  if (amount) errorMessages.value.amount = null;
+  if (category) errorMessages.value.category = null;
+  if (timePeriod) errorMessages.value.timePeriod = null;
 })
 
 let unsubscribeCategories = null;
