@@ -17,5 +17,4 @@ const pieChartOptions = inject("pieChartOptions");
 
 <template>
     <Pie :data="pieChartData" :options="pieChartOptions" />
-
 </template>

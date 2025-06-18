@@ -5,8 +5,8 @@ import { Chart, BarElement, BarController, CategoryScale, LinearScale } from "ch
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale);
 
-const chartData = inject('chartData');
-const chartOptions = inject('chartOptions')
+const chartData = inject('barChartData');
+const chartOptions = inject('barChartOptions');
 </script>
 
 <template>

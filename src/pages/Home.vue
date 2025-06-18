@@ -137,12 +137,12 @@ const { goTo } = useNavigation();
 
 
 //chart data
-const chartData = ref({
+const barChartData = ref({
   labels: [],
   datasets: []
 })
 // chart options
-const chartOptions = ref({
+const barChartOptions = ref({
   indexAxis: "x",
   responsive: true,
   horizontal: true,
@@ -195,11 +195,10 @@ watchEffect(() => {
   const incomes = months.map(month => grouped.groupedPerMonth[month].income);
   const expenses = months.map(month => grouped.groupedPerMonth[month].expense);
 
-  const categories = Object.keys(grouped.groupedPerCategory);
-  const categoryExpenses = categories.map(category => grouped.groupedPerCategory[category].expense)
 
 
-  chartData.value = {
+
+  barChartData.value = {
     labels: months,
     datasets: [
       {
@@ -216,6 +215,11 @@ watchEffect(() => {
       }
     ]
   }
+
+  const categories = Object.keys(grouped.groupedPerCategory);
+
+  const categoryExpenses = categories.map(category => grouped.groupedPerCategory[category].expense);
+
   pieChartData.value = {
     labels: [...categories],
     datasets: [
@@ -229,8 +233,8 @@ watchEffect(() => {
   }
 })
 
-provide("chartData", chartData);
-provide("chartOptions", chartOptions);
+provide("barChartData", barChartData);
+provide("barChartOptions", barChartOptions);
 provide("pieChartData", pieChartData);
 provide("pieChartOptions", pieChartOptions);
 </script>
