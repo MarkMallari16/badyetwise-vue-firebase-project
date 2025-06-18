@@ -87,7 +87,6 @@ const overview = computed(() => {
   const totalExpensePercentage = totalExpenses > 0 ? ((totalExpenses / 100) * 100).toFixed(2) : 0;
 
   const groupedPerMonth = {};
-  const groupedPerCategory = {};
 
   // Group transactions by month
   transactions.value.forEach(transaction => {
@@ -106,17 +105,18 @@ const overview = computed(() => {
     }
   })
 
-  const expenseTransactions = transactions.value.filter(transaction => transaction.type === "expense");
+  const expenseTransactions = transactions.value.filter(t => t.type === "expense").slice(0, 5);
+  const groupedPerCategory = {};
 
   expenseTransactions.forEach(transaction => {
     const category = transaction.category;
 
     if (!groupedPerCategory[category]) {
       groupedPerCategory[category] = {
-        expense: 0
+        expense: transaction.amount || 0
       }
     } else {
-      groupedPerCategory[category].expense += transaction.type === "expense" ? (transaction.amount) : 0
+      groupedPerCategory[category].expense += transaction.amount || 0
     }
   })
 
@@ -214,8 +214,8 @@ watchEffect(() => {
   }
 
   const categories = Object.keys(grouped.groupedPerCategory);
-
   const categoryExpenses = categories.map(category => grouped.groupedPerCategory[category].expense);
+
 
   pieChartData.value = {
     labels: [...categories],
@@ -223,7 +223,7 @@ watchEffect(() => {
       {
         label: 'Expenses',
         data: [...categoryExpenses],
-        backgroundColor: ['#f87171', '#60a5fa', '#34d399', '#facc15'],
+        backgroundColor: ['oklch(76.5% 0.177 163.223)', 'oklch(70.7% 0.165 254.624)', 'oklch(67.3% 0.182 276.935)', 'oklch(71.2% 0.194 13.428)', 'oklch(74% 0.238 322.16)'],
         hoverOffset: 10,
       },
     ],
@@ -256,7 +256,7 @@ provide("pieChartOptions", pieChartOptions);
       :total-expense-percentage="overview.totalExpensePercentage" />
     <!--Chart-->
     <DashboardCharts />
-    <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md">
+    <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
       <div class="flex justify-between items-center pb-6">
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>
