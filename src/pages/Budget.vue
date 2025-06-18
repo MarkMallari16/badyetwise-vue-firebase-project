@@ -65,6 +65,7 @@ const budgetSummaries = computed(() => {
     const progressStatusClass = totalSpent > budget.amount ? 'text-red-600' : '';
 
     let statusMessasge = "No budget set";
+
     if (totalSpent > budget.amount) {
       statusMessasge = "Over Budget";
     } else if (totalSpent === budget.amount) {
@@ -72,8 +73,6 @@ const budgetSummaries = computed(() => {
     } else {
       statusMessasge = "On Track";
     }
-
-
 
     return {
       ...budget,
@@ -85,6 +84,11 @@ const budgetSummaries = computed(() => {
     };
   });
 });
+const isLoading = computed(() => {
+  return !budgets.value.length || !transactions.value.length;
+});
+
+
 
 // Calculate total budget across all budgets
 const totalOverviewBudget = computed(() => {
@@ -129,6 +133,8 @@ const showUpdateModal = (id) => {
 }
 
 console.log(selectedBudgetId.value)
+
+
 </script>
 <template>
 
@@ -148,7 +154,11 @@ console.log(selectedBudgetId.value)
     <div>
       <!-- Budget Overview -->
       <h1 class="text-3xl font-bold">Your Budget</h1>
-      <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
+      <div v-if="isLoading" class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
+        <div class="skeleton h-36 w-full" v-for="item in 3" :key="item"></div>
+
+      </div>
+      <div v-else class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
         <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
           <h2 class="mt-2 text-md font-medium">Total Budget</h2>
           <h1 class="mt-1 text-3xl font-bold">₱{{ totalOverviewBudget }}</h1>
@@ -171,8 +181,10 @@ console.log(selectedBudgetId.value)
       <div class="mt-6 ring-1 ring-inset ring-base-300 bg-white pt-6 px-6 pb-10 rounded-lg">
         <h1 class="text-2xl font-bold">Budget Categories</h1>
         <p class="text-gray-500">Track your spending by category</p>
-
-        <div v-for="summary in budgetSummaries" :key="summary.id" class="pt-6">
+        <!--Skeleton Loading-->
+        <div v-if="isLoading" v-for="item in 4" :key="item" class="skeleton mt-6 h-24 w-full">
+        </div>
+        <div v-else v-for="summary in budgetSummaries" :key="summary.id" class="pt-6">
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-2">
               <component :is="getStatusIcon(summary.status)" />

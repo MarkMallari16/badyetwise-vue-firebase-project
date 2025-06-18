@@ -20,7 +20,6 @@ let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 
 onMounted(() => {
-
   const transactionsQuery = query(
     collection(db, "transactions"),
     where("userId", "==", currentUser.value?.uid),
@@ -67,12 +66,15 @@ const fiveRecentTransactions = computed(() => {
   return transactions.value.slice(0, 5);
 })
 
+const transactionLength = computed(() => {
+  return fiveRecentTransactions.value.length;
+})
+
 const overview = computed(() => {
 
   const totalIncomes = transactions.value
     .filter(transaction => transaction.type === "income")
     .reduce((sum, transaction) => sum + transaction.amount || 0, 0)
-  console.log("Total Incomes:", totalIncomes);
   const totalExpenses = transactions.value
     .filter(transaction => transaction.type === "expense")
     .reduce((sum, transaction) => sum + transaction.amount || 0, 0)
@@ -81,13 +83,16 @@ const overview = computed(() => {
 
   const savingRate = totalIncomes > 0 ? ((currentBalance / totalIncomes) * 100).toFixed(2) : 0;
 
+  //sub overview
+  const totalIncomePercentage = totalIncomes > 0 ? ((totalIncomes / 100) * 100).toFixed(2) : 0;
+  const totalExpensePercentage = totalExpenses > 0 ? ((totalExpenses / 100) * 100).toFixed(2) : 0;
+
   const groupedPerMonth = {};
 
 
   // Group transactions by month
   transactions.value.forEach(transaction => {
     const month = dayjs(transaction.date).format("MMMM");
-
     if (!groupedPerMonth[month]) {
       groupedPerMonth[month] = {
         income: 0,
@@ -100,15 +105,15 @@ const overview = computed(() => {
     } else if (transaction.type === "expense") {
       groupedPerMonth[month].expense += transaction.amount || 0;
     }
-
   })
-  console.log("Overview:", overview.value);
 
   return {
     totalIncomes: totalIncomes,
     totalExpenses: totalExpenses,
     currentBalance: currentBalance,
     savingsRate: savingRate,
+    totalIncomePercentage: totalIncomePercentage,
+    totalExpensePercentage: totalExpensePercentage,
     groupedPerMonth: groupedPerMonth
   }
 })
@@ -198,14 +203,17 @@ provide("chartOptions", chartOptions);
 
     <!--Overview---->
     <DashboardOverview :current-balance="overview.currentBalance" :total-incomes="overview.totalIncomes"
-      :total-expenses="overview.totalExpenses" :savings-rate="overview.savingsRate" />
+      :total-expenses="overview.totalExpenses" :savings-rate="overview.savingsRate"
+      :total-income-percentage="overview.totalIncomePercentage"
+      :total-expense-percentage="overview.totalExpensePercentage" />
     <!--Chart-->
     <DashboardCharts />
     <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md">
       <div class="flex justify-between items-center pb-6">
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>
-          <p class="text-gray-500">Your latest 5 recent transactions</p>
+          <p class="text-gray-500">Your latest {{ transactionLength }} recent transactions</p>
+
         </div>
         <div>
           <button class="btn rounded-xl" @click="goTo('/transactions')">View All</button>

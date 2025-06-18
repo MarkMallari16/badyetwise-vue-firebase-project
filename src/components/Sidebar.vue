@@ -14,31 +14,44 @@ const isSidebarOpen = inject("isSidebarOpen");
 
 const goToDashboardLink = () => {
   goTo("/home");
+  isSidebarOpen.value = false;
 
 };
 const goToTransactionsLink = () => {
   goTo("/transactions");
+  isSidebarOpen.value = false;
+
 
 };
 const goToCategoriesLink = () => {
   goTo("/categories");
+  isSidebarOpen.value = false;
+
 
 };
 const goToBudgetLink = () => {
   goTo("/budget");
+  isSidebarOpen.value = false;
+
 
 };
 
 const goToReportsLink = () => {
   goTo("/reports");
+  isSidebarOpen.value = false;
+
 
 };
 const goToSettingsLink = () => {
   goTo("/settings");
+  isSidebarOpen.value = false;
+
 
 };
 const goToSupportLink = () => {
   goTo("/support");
+  isSidebarOpen.value = false;
+
 
 };
 

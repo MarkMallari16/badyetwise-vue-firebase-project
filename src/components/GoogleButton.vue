@@ -19,8 +19,6 @@ const handleSignInWithGoogle = () => {
         },
         { merge: true }
       );
-
-      console.log("User added/updated in Firestore.");
     })
     .catch((error) => {
       console.error("Error signing in with Google:", error);
