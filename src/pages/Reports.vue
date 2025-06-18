@@ -55,8 +55,8 @@ const reportsSummary = computed(() => {
     const totalIncome = income.reduce((sum, transaction) => sum + transaction.amount, 0);
     const totalExpense = expense.reduce((sum, transaction) => sum + transaction.amount, 0);
     const savings = totalIncome - totalExpense;
-    const percentageUsed = totalExpense / totalIncome * 100 || 0;
-    const savingsPercentage = savings / totalIncome * 100 || 0;
+    const percentageUsed = (totalExpense / totalIncome * 100).toFixed(2) || 0;
+    const savingsPercentage = (savings / totalIncome * 100).toFixed(2) || 0;
 
     return {
         expense,

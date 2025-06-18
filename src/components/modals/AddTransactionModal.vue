@@ -1,7 +1,7 @@
 <script setup>
 import { db } from "@/firebase/firebase";
 import { doc, addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { getAuth } from "firebase/auth";
 import { currentUser } from "@/composables/useAuth";
 import { isBudgetAllocated } from "@/helpers/errorsValidation";
@@ -60,6 +60,13 @@ const validateForm = () => {
 
   return isValid;
 }
+
+watch(() => [form.value.amount, form.value.date, form.value.description, form.value.category], ([amount, date, description, category]) => {
+  if (amount) errors.value.amount = "";
+  if (date) errors.value.date = "";
+  if (description) errors.value.description = "";
+  if (category) errors.value.categoryIcon = ""
+})
 
 // Reset form to initial state
 const resetForm = () => {
@@ -124,7 +131,7 @@ const submitForm = async () => {
 
     const hasBudget = await isBudgetAllocated(formData.categoryId);
 
-    if (!hasBudget) {
+    if (!hasBudget && formData.type === "expense") {
       errors.value.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
       loading.value = false;
       return;
