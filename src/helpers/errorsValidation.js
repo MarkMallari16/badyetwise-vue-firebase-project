@@ -12,3 +12,14 @@ export const categoryExists = async (name, type) => {
 
     return !snapshot.empty;
 }
+
+export const isBudgetAllocated = async (categoryId) => {
+    const q = query(collection(db, "budgets"),
+        where("userId", "==", currentUser.value?.uid),
+        where("categoryId", "==", categoryId)
+    )
+    const snapshot = await getDocs(q);
+
+    console.log("isBudgetAllocated", snapshot);
+    return !snapshot.empty;
+}

@@ -3,6 +3,9 @@ import { db } from "@/firebase/firebase";
 import { doc, addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
 import { onMounted, onUnmounted, ref } from "vue";
 import { getAuth } from "firebase/auth";
+import { currentUser } from "@/composables/useAuth";
+import { isBudgetAllocated } from "@/helpers/errorsValidation";
+
 const loading = ref(false);
 
 const form = ref({
@@ -16,6 +19,49 @@ const form = ref({
   notes: "",
 });
 
+const errors = ref({
+  amount: "",
+  date: "",
+  description: "",
+  categoryIcon: "",
+})
+
+const errorTextClass = "pt-1 text-red-500";
+
+
+const validateForm = () => {
+  let isValid = true;
+
+  if (!form.value.amount) {
+    errors.value.amount = "Amount is .";
+    isValid = false;
+  }
+
+  if (!form.value.amount > 0) {
+    errors.value.amount = "Amount cannot be negative.";
+    isValid = false;
+  }
+
+  if (!form.value.date) {
+    errors.value.date = "Date is required.";
+    isValid = false;
+  }
+
+  if (!form.value.description) {
+    errors.value.description = "Description is required.";
+    isValid = false;
+  }
+
+  if (!form.value.category) {
+    errors.value.categoryIcon = "Category is required."
+    isValid = false;
+  }
+
+
+  return isValid;
+}
+
+// Reset form to initial state
 const resetForm = () => {
   form.value = {
     type: "income",
@@ -30,12 +76,10 @@ const resetForm = () => {
 };
 const categories = ref([]);
 
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
 
 const categoriesQuery = query(
   collection(db, "categories"),
-  where("userId", "==", userId)
+  where("userId", "==", currentUser.value?.uid)
 );
 
 let unsubscribeCategories = null;
@@ -59,26 +103,39 @@ onUnmounted(() => {
 })
 
 const submitForm = async () => {
-  const auth = getAuth();
+  if (!validateForm()) {
+    return;
+  }
+
 
   try {
+
     loading.value = true;
+
     //const userRef = doc(db, "users", auth.currentUser.uid);
     const formData = {
       ...form.value,
-      userId: auth.currentUser.uid,
+      userId: currentUser.value?.uid,
       categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
       categoryId:
         categories.value.find((c) => c.name === form.value.category)?.id || null,
       createdAt: new Date().toISOString(),
     };
+
+    const hasBudget = await isBudgetAllocated(formData.categoryId);
+
+    if (!hasBudget) {
+      errors.value.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
+      loading.value = false;
+      return;
+    }
+
     await addDoc(collection(db, "transactions"), formData);
     loading.value = false;
     resetForm();
+    closeModal();
   } catch (error) {
     console.error("Error adding document: ", error);
-  } finally {
-    closeModal();
   }
 };
 
@@ -118,25 +175,30 @@ const closeModal = () => {
             <div class="flex items-center gap-5 mt-4 w-full">
               <div class="w-full">
                 <label for="amount" class="font-medium mt-2">Amount</label>
-                <input id="amount" type="number" name="amount" placeholder="Enter Amount" v-model="form.amount" required
-                  class="mt-2 input input-bordered w-full" min="0" />
+                <input id="amount" type="number" name="amount" placeholder="Enter Amount" v-model="form.amount"
+                  class="mt-2 input  w-full" min="0" :class="[errors.amount ? 'input-error' : 'input-bordered']" />
+                <p v-if="errors.amount" :class="errorTextClass">{{ errors.amount }}</p>
               </div>
 
               <div class="w-full">
                 <label for="date" class="font-medium">Date</label>
-                <input type="date" name="date" v-model="form.date" required class="mt-2 input input-bordered w-full" />
+                <input type="date" name="date" v-model="form.date" class="mt-2 input  w-full"
+                  :class="[errors.date ? 'input-error' : 'input-bordered']" />
+                <p v-if="errors.date" :class="errorTextClass">{{ errors.date }}</p>
               </div>
             </div>
             <div class="mt-4">
               <label for="description" class="font-medium">Description</label>
-              <input type="text" name="description" v-model="form.description" placeholder="Enter Description" required
-                class="input mt-2 input-bordered w-full" />
+              <input type="text" name="description" v-model="form.description" placeholder="Enter Description"
+                class="input mt-2  w-full" :class="[errors.description ? 'input-error' : 'input-bordered']" />
+              <p v-if="errors.description" :class="errorTextClass">{{ errors.description }}</p>
             </div>
             <div class="mt-4">
               <div class="w-full flex items-center gap-5">
                 <div class="w-full">
                   <p class="font-medium mb-2">Category</p>
-                  <select class="select select-bordered w-full" name="category" v-model="form.category">
+                  <select class="select w-full" :class="[errors.categoryIcon ? 'select-error' : 'select-bordered']"
+                    name="category" v-model="form.category">
                     <option value="" selected disabled>Select Category</option>
                     <option v-for="category in categories.filter((c) => c.type === form.type)" :key="category.id"
                       :value="category.name">
@@ -155,7 +217,10 @@ const closeModal = () => {
                     <option>Other</option>
                   </select>
                 </div>
+
               </div>
+              <p v-if="errors.categoryIcon" :class="errorTextClass">{{ errors.categoryIcon }}</p>
+
               <div class="mt-4">
                 <label for="notes" class="font-medium">Notes <span
                     class="text-gray-500 font-normal">(optional)</span></label>
