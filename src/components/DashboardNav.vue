@@ -9,8 +9,8 @@ const toggleSidebar = inject("handleToggleSidebar");
 </script>
 <template>
   <!--Top-->
-  <div class="flex  justify-between items-center gap-10 py-4 mb-2 rounded-md">
-    <div class="flex justify-end items-center gap-2">
+  <div class="flex flex-row-reverse lg:flex-row justify-between items-center gap-10 py-4 mb-2 rounded-md">
+    <div class="flex flex-row-reverse lg:flex-row justify-end items-center gap-2">
       <!--Sidebar-->
       <SidebarCloseButton @click="toggleSidebar" />
       <div class="text-gray-500 divider divider-vertical">|</div>
