@@ -71,7 +71,6 @@ const transactionLength = computed(() => {
 })
 
 const overview = computed(() => {
-
   const totalIncomes = transactions.value
     .filter(transaction => transaction.type === "income")
     .reduce((sum, transaction) => sum + transaction.amount || 0, 0)
@@ -88,7 +87,7 @@ const overview = computed(() => {
   const totalExpensePercentage = totalExpenses > 0 ? ((totalExpenses / 100) * 100).toFixed(2) : 0;
 
   const groupedPerMonth = {};
-
+  const groupedPerCategory = {};
 
   // Group transactions by month
   transactions.value.forEach(transaction => {
@@ -107,6 +106,20 @@ const overview = computed(() => {
     }
   })
 
+
+  transactions.value.forEach(transaction => {
+    const category = transaction.category;
+
+    if (!groupedPerCategory[category]) {
+      groupedPerCategory[category] = {
+        expense: 0
+      }
+    } else {
+      groupedPerCategory[category].expense += transaction.type === "expense" ? (transaction.amount) : 0
+    }
+
+  })
+
   return {
     totalIncomes: totalIncomes,
     totalExpenses: totalExpenses,
@@ -114,7 +127,8 @@ const overview = computed(() => {
     savingsRate: savingRate,
     totalIncomePercentage: totalIncomePercentage,
     totalExpensePercentage: totalExpensePercentage,
-    groupedPerMonth: groupedPerMonth
+    groupedPerMonth: groupedPerMonth,
+    groupedPerCategory: groupedPerCategory
   }
 })
 
@@ -159,11 +173,31 @@ const chartOptions = ref({
   }
 })
 
+const pieChartData = ref({
+  labels: [],
+  datasets: []
+})
+const pieChartOptions = ref({
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'bottom',
+    },
+    title: {
+      display: true,
+    },
+  },
+})
+
 watchEffect(() => {
   const grouped = overview.value;
   const months = Object.keys(grouped.groupedPerMonth);
   const incomes = months.map(month => grouped.groupedPerMonth[month].income);
   const expenses = months.map(month => grouped.groupedPerMonth[month].expense);
+
+  const categories = Object.keys(grouped.groupedPerCategory);
+  const categoryExpenses = categories.map(category => grouped.groupedPerCategory[category].expense)
+
 
   chartData.value = {
     labels: months,
@@ -182,10 +216,23 @@ watchEffect(() => {
       }
     ]
   }
+  pieChartData.value = {
+    labels: [...categories],
+    datasets: [
+      {
+        label: 'Expenses',
+        data: [...categoryExpenses],
+        backgroundColor: ['#f87171', '#60a5fa', '#34d399', '#facc15'],
+        hoverOffset: 10,
+      },
+    ],
+  }
 })
 
 provide("chartData", chartData);
 provide("chartOptions", chartOptions);
+provide("pieChartData", pieChartData);
+provide("pieChartOptions", pieChartOptions);
 </script>
 
 <template>
