@@ -20,7 +20,6 @@ let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 
 onMounted(() => {
-
   const transactionsQuery = query(
     collection(db, "transactions"),
     where("userId", "==", currentUser.value?.uid),
@@ -67,12 +66,15 @@ const fiveRecentTransactions = computed(() => {
   return transactions.value.slice(0, 5);
 })
 
+const transactionLength = computed(() => {
+  return fiveRecentTransactions.value.length;
+})
+
 const overview = computed(() => {
 
   const totalIncomes = transactions.value
     .filter(transaction => transaction.type === "income")
     .reduce((sum, transaction) => sum + transaction.amount || 0, 0)
-  console.log("Total Incomes:", totalIncomes);
   const totalExpenses = transactions.value
     .filter(transaction => transaction.type === "expense")
     .reduce((sum, transaction) => sum + transaction.amount || 0, 0)
@@ -102,7 +104,6 @@ const overview = computed(() => {
     }
 
   })
-  console.log("Overview:", overview.value);
 
   return {
     totalIncomes: totalIncomes,
@@ -205,7 +206,7 @@ provide("chartOptions", chartOptions);
       <div class="flex justify-between items-center pb-6">
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>
-          <p class="text-gray-500">Your latest 5 recent transactions</p>
+          <p class="text-gray-500">Your latest {{ transactionLength }} recent transactions</p>
         </div>
         <div>
           <button class="btn rounded-xl" @click="goTo('/transactions')">View All</button>
