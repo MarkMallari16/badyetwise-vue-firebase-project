@@ -19,6 +19,7 @@ const form = ref({
   iconName: selectedIcon.value.name || "",
   color: "Select Color",
 });
+
 // Watch for changes in form inputs to reset error messages
 watch(() => [form.value.name, form.value.icon, form.value.color], ([name, icon, color]) => {
   // Reset error messages when form inputs change
