@@ -354,7 +354,7 @@ const settingsSupportLinks = [
             <div role="button" class="w-full flex items-center justify-between" tabindex="0">
               <div class="flex items-center gap-4">
                 <div class="avatar avatar-placeholder">
-                  <div class="w-10 bg-primary text-white rounded bg-cover">
+                  <div class="w-10 bg-primary text-white rounded-xl bg-cover">
                     <img v-if="storedUser.photoURL" :src="storedUser.photoURL" />
                     <div v-else>
                       <p class="text-3xl font-bold text-center text-gray-100">

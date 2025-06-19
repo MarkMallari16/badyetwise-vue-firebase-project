@@ -28,23 +28,24 @@ console.log(profileData.value)
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
           </svg>
-          <h1 class="text-2xl font-medium">Profile</h1>
+          <h1 class="text-xl font-medium">Profile</h1>
         </div>
         <p class="text-gray-600">Manage your account information</p>
       </div>
       <!--Avatar-->
-      <div class="flex items-center gap-8">
-        <div>
+      <div class="mt-6">
+        <div class=" flex gap-6 items-center">
           <div class="avatar">
-            <div class="w-24 rounded-full mt-4 object-cover">
+            <div class="w-28 rounded-full mt-4 object-cover">
               <img :src="profileData.photoURL" alt="profile">
             </div>
 
           </div>
-        </div>
-        <div class="flex gap-2">
-          <button class="btn btn-primary rounded-lg">Upload</button>
-          <button class="btn btn-error rounded-lg">Remove Photo</button>
+          <div>
+            <h2 class="text-2xl font-bold">{{ profileData.displayName }}</h2>
+            <p class="mt-2 text-gray-600">{{ profileData.email }}</p>
+            <button class="mt-4 btn btn-primary rounded-lg">Change Picture</button>
+          </div>
         </div>
       </div>
       <!--Profile Information-->
