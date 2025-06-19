@@ -1,4 +1,6 @@
 <script setup>
+import { delay, motion } from "motion-v";
+
 const features = [
   {
     title: "Smart Analytics",
@@ -50,27 +52,16 @@ const features = [
       <h1 class="text-4xl lg:text-6xl text-center font-extrabold">
         Everything you need to manage your budgets.
       </h1>
-      <p class="text-lg lg:text-2xl text-gray-500 mt-4">
+      <p class="text-lg lg:text-2xl text-gray-500 mt-6">
         Powerful features designed to simplify your financial life and help you make
         smarter spending decisions.
       </p>
     </div>
-    <div
-      class="pt-16 grid grid-cols-1 lg:grid-cols-3 m-4 lg:m-0 gap-8 place-items-center"
-    >
-      <div
-        v-for="(feature, index) in features"
-        :key="index"
-        class="bg-white p-10 ring-1 ring-inset ring-base-300 rounded-lg"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="size-12 badge badge-neutral mb-2 rounded-lg"
-        >
+    <div class="pt-16 grid grid-cols-1 lg:grid-cols-3 m-4 lg:m-0 gap-8 place-items-center">
+      <div v-for="(feature, index) in features" :key="index"
+        class="bg-white p-10 ring-1 ring-inset ring-base-300 rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-12 badge badge-neutral mb-2 rounded-lg">
           <path stroke-linecap="round" stroke-linejoin="round" :d="feature.icon" />
         </svg>
 
