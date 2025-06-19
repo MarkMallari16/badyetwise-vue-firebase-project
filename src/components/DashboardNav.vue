@@ -9,11 +9,12 @@ const toggleSidebar = inject("handleToggleSidebar");
 </script>
 <template>
   <!--Top-->
-  <div class="flex flex-row-reverse lg:flex-row justify-between items-center gap-10 py-4 mb-2 rounded-md">
-    <div class="flex flex-row-reverse lg:flex-row justify-end items-center gap-2">
+  <div
+    class="flex flex-row-reverse lg:flex-row justify-between items-center gap-10 py-4 mb-2 rounded-md flex-wrap lg:flex-nowrap">
+    <div class="flex flex-row-reverse justify-between lg:justify-normal  lg:flex-row  items-center gap-2 w-full">
       <!--Sidebar-->
       <SidebarCloseButton @click="toggleSidebar" />
-      <div class="text-gray-500 divider divider-vertical">|</div>
+      <div class="text-gray-500 divider divider-vertical hidden lg:inline-flex">|</div>
       <h1 class="font-medium text-2xl text-gray-700">{{ route.meta.title }}</h1>
     </div>
     <!--Right Side-->
