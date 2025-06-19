@@ -1,7 +1,7 @@
 <script setup>
 import DashboardNav from '@/components/DashboardNav.vue';
 import { db } from '@/firebase/firebase';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { currentUser } from '@/composables/useAuth';
 
@@ -13,7 +13,8 @@ let unsubscribeBudgets = null;
 
 const transactionsQuery = query(
     collection(db, "transactions"),
-    where("userId", "==", currentUser.value?.uid)
+    where("userId", "==", currentUser.value?.uid),
+    orderBy("createdAt", "desc")
 );
 const budgetsQuery = query(
     collection(db, "budgets"),
@@ -56,7 +57,7 @@ const reportsSummary = computed(() => {
     const totalExpense = expense.reduce((sum, transaction) => sum + transaction.amount, 0);
     const savings = totalIncome - totalExpense;
     const percentageUsed = (totalExpense / totalIncome * 100).toFixed(2) || 0;
-    const savingsPercentage = (savings / totalIncome * 100).toFixed(2) || 0;
+    const savingsPercentage = savings && totalIncome ? (savings / totalIncome * 100).toFixed(2) : 0;
 
     return {
         expense,

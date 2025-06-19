@@ -25,7 +25,8 @@
         <a className="link link-hover">Privacy policy</a>
       </nav>
     </footer>
-    <div class="text-center text-sm text-base-300">&copy; {{ new Date().getFullYear()}} copyright BadyetWise</div>
+    <div class="text-center text-sm text-base-300">&copy; {{ new Date().getFullYear() }} Copyright BadyetWise. All right
+      reserved. </div>
 
   </div>
 </template>
