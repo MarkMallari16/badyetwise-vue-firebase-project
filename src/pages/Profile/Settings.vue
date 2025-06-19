@@ -8,9 +8,11 @@ const profileData = ref(
   {
     displayName: currentUser.value.displayName,
     email: currentUser.value.email,
-    photoUrl: currentUser.value.photoUrl
+    photoURL: currentUser.value.photoURL
   }
 )
+
+console.log(currentUser.value)
 
 console.log(profileData.value)
 </script>
@@ -18,7 +20,7 @@ console.log(profileData.value)
   <div
     class="min-h-screen mx-4 my-2 px-12 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-inner rounded-2xl">
     <DashboardNav />
-    <div class="p-6 ring-1 ring-inset ring-gray-300 rounded-md">
+    <div class="px-10 pt-6 pb-20 ring-1 ring-inset ring-gray-300 rounded-md">
       <div>
         <div class="flex items-center gap-1 ">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -31,12 +33,30 @@ console.log(profileData.value)
         <p class="text-gray-600">Manage your account information</p>
       </div>
       <!--Avatar-->
-      <div>
-        <div class="avatar">
-          <div class="w-32 rounded-full">
-            <img :src="profileData.avatar" alt="profile">
+      <div class="flex items-center gap-8">
+        <div>
+          <div class="avatar">
+            <div class="w-24 rounded-full mt-4 object-cover">
+              <img :src="profileData.photoURL" alt="profile">
+            </div>
+
           </div>
         </div>
+        <div class="flex gap-2">
+          <button class="btn btn-primary rounded-lg">Upload</button>
+          <button class="btn btn-error rounded-lg">Remove Photo</button>
+        </div>
+      </div>
+      <!--Profile Information-->
+      <div class="mt-6">
+        <label for="name" class="font-medium">Name</label>
+        <input type="text" id="name" v-model="profileData.displayName"
+          class="block input input-bordered w-full max-w-md mt-1" placeholder="Display Name">
+      </div>
+      <div class="mt-2">
+        <label for="email" class="font-medium">Email</label>
+        <input type="email" id="email" class="block input input-bordered w-full max-w-md mt-1"
+          v-model="profileData.email" placeholder="Email" disabled>
       </div>
     </div>
 

@@ -10,6 +10,7 @@ import { getStatusIcon, getStatusClass } from "@/helpers/statusHelper";
 import UpdateBudgetModal from "@/components/modals/UpdateBudgetModal.vue";
 import { currentUser } from "@/composables/useAuth";
 
+const isFetching = ref(true);
 const transactions = ref([]);
 const budgets = ref([]);
 const selectedBudgetId = ref(null);
@@ -42,6 +43,8 @@ onMounted(() => {
       };
     });
   });
+
+  isFetching.value = false;
 })
 
 onUnmounted(() => {
@@ -84,11 +87,7 @@ const budgetSummaries = computed(() => {
     };
   });
 });
-const isLoading = computed(() => {
-  return !budgets.value.length || !transactions.value.length;
-});
-
-
+const isLoading = computed(() => isFetching.value);
 
 // Calculate total budget across all budgets
 const totalOverviewBudget = computed(() => {
@@ -131,8 +130,6 @@ const showUpdateModal = (id) => {
     modal.showModal();
   }
 }
-
-console.log(selectedBudgetId.value)
 
 
 </script>

@@ -12,6 +12,7 @@ import { db } from "@/firebase/firebase";
 import { currentUser } from "@/composables/useAuth";
 import dayjs from "dayjs";
 
+const isFetching = ref(true);
 const transactions = ref([]);
 const budgets = ref([]);
 
@@ -40,9 +41,13 @@ onMounted(() => {
       id: doc.id,
       ...doc.data()
     }))
-
+    isFetching.value = false;
     console.log("Budgets:", budgets.value);
   })
+})
+
+const isLoading = computed(() => {
+  return isFetching.value;
 })
 
 onUnmounted(() => {
@@ -256,7 +261,7 @@ provide("pieChartOptions", pieChartOptions);
       :total-expenses="overview.totalExpenses" :savings-rate="overview.savingsRate"
       :total-income-percentage="overview.totalIncomePercentage"
       :total-expense-percentage="overview.totalExpensePercentage"
-      :percentage-savings-rate="overview.percentageSavingsRate" />
+      :percentage-savings-rate="overview.percentageSavingsRate" :is-loading="isLoading" />
     <!--Chart-->
     <DashboardCharts />
     <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
@@ -264,7 +269,6 @@ provide("pieChartOptions", pieChartOptions);
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>
           <p class="text-gray-500">Your latest {{ transactionLength }} recent transactions</p>
-
         </div>
         <div>
           <button class="btn rounded-xl" @click="goTo('/transactions')">View All</button>

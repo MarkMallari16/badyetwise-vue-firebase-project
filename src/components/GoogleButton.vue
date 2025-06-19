@@ -16,6 +16,7 @@ const handleSignInWithGoogle = () => {
           email: user.email,
           displayName: user.displayName,
           createdAt: new Date(),
+          photoURL: user.photoURL
         },
         { merge: true }
       );

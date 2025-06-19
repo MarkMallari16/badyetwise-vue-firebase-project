@@ -34,6 +34,10 @@ const props = defineProps({
   percentageSavingsRate: {
     type: Number,
     default: 0
+  },
+  isLoading: {
+    type: Boolean,
+    default: true,
   }
 })
 
@@ -78,9 +82,7 @@ const overviews = computed(() => [
   },
 ])
 
-const isLoading = computed(() => {
-  return !props.currentBalance && !props.totalIncomes && !props.totalExpenses
-})
+
 </script>
 <template>
   <div>
@@ -95,7 +97,7 @@ const isLoading = computed(() => {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
-      <div v-if="isLoading" v-for="item in 4" :key="item" class="skeleton w-full h-32">
+      <div v-if="props.isLoading" v-for="item in 4" :key="item" class="skeleton w-full h-32">
       </div>
       <div v-else v-for="(overview, index) in overviews" :key="index"
         class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
