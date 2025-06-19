@@ -34,6 +34,7 @@ const scrollIndicator = {
   originX: 0,
   backgroundColor: "#000000",
 };
+
 </script>
 <template>
   <section class="relative overflow-hidden">
