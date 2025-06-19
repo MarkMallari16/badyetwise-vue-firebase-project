@@ -1,5 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue';
+import IconUp from './icons/IconUp.vue';
+import IconDown from './icons/IconDown.vue';
+import IconSavings from './icons/IconSavings.vue';
+import IconMoney from './icons/IconMoney.vue';
 
 
 const props = defineProps({
@@ -27,13 +31,17 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  percentageSavingsRate: {
+    type: Number,
+    default: 0
+  }
 })
 
 const overviews = computed(() => [
   {
     subtext: "Current Balance",
     value: props.currentBalance.toLocaleString(),
-    icon: "₱",
+    icon: IconMoney,
 
     iconColor: "text-green-600",
     status: `${props.currentBalance >= 0 ? "+ Positive" : "- Negative"} balance`,
@@ -43,29 +51,30 @@ const overviews = computed(() => [
   {
     subtext: "Total Income",
     value: props.totalIncomes.toLocaleString(),
-    icon: "M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18",
+    icon: IconUp,
     iconColor: "text-green-600",
-    status: (props.totalIncomePercentage).toLocaleString() + "%",
+    status: "Total earned this month",
     valueColor: "text-green-600",
-    statusColor: "text-green-600",
+    statusColor: "text-gray-400",
   },
+
   {
     subtext: "Total Expenses",
     value: props.totalExpenses.toLocaleString(),
-    icon: "M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3",
+    icon: IconDown,
     iconColor: "text-red-600",
-    status: (props.totalExpensePercentage).toLocaleString() + "%",
+    status: "Total spent this month",
     valueColor: "text-red-600",
-    statusColor: "text-red-600",
+    statusColor: "text-gray-400",
   },
   {
     subtext: "Savings Rate",
     value: (props.savingsRate).toLocaleString() + "%",
-    icon: "M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18",
-    iconColor: "text-green-600",
-    valueColor: "text-primary",
-    status: "+2.5%",
-    statusColor: "text-green-600",
+    icon: IconSavings,
+    iconColor: "",
+    valueColor: "text-blue-600",
+    status: (props.percentageSavingsRate).toLocaleString() + "% of your income",
+    statusColor: "text-gray-400",
   },
 ])
 
@@ -84,6 +93,7 @@ const isLoading = computed(() => {
         <option>Last year</option>
       </select> -->
     </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
       <div v-if="isLoading" v-for="item in 4" :key="item" class="skeleton w-full h-32">
       </div>
@@ -91,14 +101,12 @@ const isLoading = computed(() => {
         class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
         <div class="flex justify-between items-center">
           <h2 class="mt-2 text-md font-medium">{{ overview.subtext }}</h2>
-          <h2 v-if="!overview.icon.startsWith('M')" class="text-gray-600 text-2xl">
+          <h2 v-if="!overview.icon && !overview.icon.startsWith('M')" class="text-gray-600 text-2xl">
             {{ overview.icon }}
           </h2>
           <!--This will show if have an svg icon-->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="size-5" :class="overview.iconColor" v-else>
-            <path stroke-linecap="round" stroke-linejoin="round" :d="overview.icon" />
-          </svg>
+
+          <component :is="overview.icon" />
         </div>
         <h1 class="text-4xl font-bold" :class="overview.valueColor">
           {{ overview.value }}

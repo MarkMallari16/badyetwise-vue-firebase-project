@@ -9,7 +9,6 @@ import { useNavigation } from "@/composables/useNavigation";
 import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { computed, onMounted, onUnmounted, provide, ref, watchEffect } from "vue";
 import { db } from "@/firebase/firebase";
-
 import { currentUser } from "@/composables/useAuth";
 import dayjs from "dayjs";
 
@@ -81,7 +80,7 @@ const overview = computed(() => {
   const currentBalance = totalIncomes - totalExpenses;
 
   const savingRate = totalIncomes > 0 ? ((currentBalance / totalIncomes) * 100).toFixed(2) : 0;
-
+  const percentageSavingsRate = totalIncomes > 0 ? ((totalIncomes / 100) * 100).toFixed(2) : 0;
   //sub overview
   const totalIncomePercentage = totalIncomes > 0 ? ((totalIncomes / 100) * 100).toFixed(2) : 0;
   const totalExpensePercentage = totalExpenses > 0 ? ((totalExpenses / 100) * 100).toFixed(2) : 0;
@@ -105,7 +104,9 @@ const overview = computed(() => {
     }
   })
 
+  //slice the groupedPerMonth to get only the last 5 months
   const expenseTransactions = transactions.value.filter(t => t.type === "expense").slice(0, 5);
+  // Group expenses by category
   const groupedPerCategory = {};
 
   expenseTransactions.forEach(transaction => {
@@ -125,10 +126,11 @@ const overview = computed(() => {
     totalExpenses: totalExpenses,
     currentBalance: currentBalance,
     savingsRate: savingRate,
+    percentageSavingsRate: percentageSavingsRate,
     totalIncomePercentage: totalIncomePercentage,
     totalExpensePercentage: totalExpensePercentage,
     groupedPerMonth: groupedPerMonth,
-    groupedPerCategory: groupedPerCategory
+    groupedPerCategory: groupedPerCategory,
   }
 })
 
@@ -253,7 +255,8 @@ provide("pieChartOptions", pieChartOptions);
     <DashboardOverview :current-balance="overview.currentBalance" :total-incomes="overview.totalIncomes"
       :total-expenses="overview.totalExpenses" :savings-rate="overview.savingsRate"
       :total-income-percentage="overview.totalIncomePercentage"
-      :total-expense-percentage="overview.totalExpensePercentage" />
+      :total-expense-percentage="overview.totalExpensePercentage"
+      :percentage-savings-rate="overview.percentageSavingsRate" />
     <!--Chart-->
     <DashboardCharts />
     <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
