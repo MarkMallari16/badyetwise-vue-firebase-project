@@ -13,23 +13,26 @@ const tab = ref("expense");
 const categories = ref([]);
 const transactions = ref([]);
 const budgets = ref([]);
+const userId = currentUser.value?.uid;
 
 //selectedCategoryId is used to store the id of the category that is being updated
 const selectedCategoryId = ref(null);
+
+// Queries to fetch categories, transactions, and budgets for the current user
 const categoriesQuery = query(
-  collection(db, "categories"),
-  where("userId", "==", currentUser.value?.uid),
+  collection(db, "users", userId, "categories"),
+  where("userId", "==", userId),
   orderBy("createdAt", "desc")
 )
 
 const transactionsQuery = query(
-  collection(db, "transactions"),
-  where("userId", "==", currentUser.value?.uid)
+  collection(db, "users", userId, "transactions"),
+  where("userId", "==", userId)
 )
 
 const budgetsQuery = query(
-  collection(db, "budgets"),
-  where("userId", "==", currentUser.value?.uid)
+  collection(db, "users", userId, "budgets"),
+  where("userId", "==", userId)
 )
 
 // Computed properties to filter categories by type

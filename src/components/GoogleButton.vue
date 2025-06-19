@@ -1,25 +1,31 @@
 <script setup>
 import { useAuthGoogle } from "@/composables/useAuthGoogle";
+import { auth, db } from "@/firebase/firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
+import { useRouter } from "vue-router";
 
-const { signInWithGoogle } = useAuthGoogle();
-const auth = useAuthGoogle();
+const provider = new GoogleAuthProvider();
+const router = useRouter();
 
 const handleSignInWithGoogle = () => {
-  signInWithGoogle()
+  signInWithPopup(auth, provider)
     .then(async (result) => {
       const user = result.user;
-      console.log(user);
+
+      // Create user document in Firestore
       await setDoc(
-        doc(auth.db, "users", user.uid),
+        doc(db, "users", user.uid),
         {
           email: user.email,
           displayName: user.displayName,
-          createdAt: new Date(),
-          photoURL: user.photoURL
+          photoURL: user.photoURL,
+          lastLogin: new Date()
         },
         { merge: true }
       );
+
+      router.push("/home")
     })
     .catch((error) => {
       console.error("Error signing in with Google:", error);

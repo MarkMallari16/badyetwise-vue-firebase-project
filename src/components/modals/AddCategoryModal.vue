@@ -1,16 +1,19 @@
 <script setup>
-import { db } from "@/firebase/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { auth, db } from "@/firebase/firebase";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 
 import { icons } from "@/utils/categoryIcons";
 import { currentUser } from "@/composables/useAuth";
 import { categoryExists } from "@/helpers/errorsValidation";
 import { ref, watch } from "vue";
-
+import { useAuth } from "@/composables/useAuth";
 //
-const loading = ref(false);
 
+useAuth();
+const loading = ref(false);
 const selectedIcon = ref({ name: "", svg: "" });
+
+
 //form data
 const form = ref({
   type: "income",
@@ -48,6 +51,7 @@ const resetForm = () => {
 
   selectedIcon.value = { name: "", svg: "" };
 };
+
 // validate form inputs
 const validateForm = () => {
   let isvalid = true;
@@ -77,6 +81,8 @@ const submitForm = async () => {
   }
 
   try {
+
+
     loading.value = true;
     const normalizedName = form.value.name.trim().toLowerCase();
     const exists = await categoryExists(normalizedName, form.value.type);
@@ -87,15 +93,18 @@ const submitForm = async () => {
       return;
     }
 
+    const userId = currentUser.value?.uid;
+
+    // Add the new category to the Firestore collection
+    const catRef = collection(db, "users", userId, "categories");
+
     const formData = {
       ...form.value,
       name: normalizedName,
-      userId: currentUser.value?.uid,
       createdAt: new Date().toISOString(),
     };
 
-    // Add the new category to the Firestore collection
-    await addDoc(collection(db, "categories"), formData);
+    await addDoc(catRef, formData);
 
     console.log("Document successfully added!");
     loading.value = false;

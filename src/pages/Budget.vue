@@ -11,16 +11,18 @@ import UpdateBudgetModal from "@/components/modals/UpdateBudgetModal.vue";
 import { currentUser } from "@/composables/useAuth";
 
 const isFetching = ref(true);
+const userId = currentUser.value?.uid;
+
 const transactions = ref([]);
 const budgets = ref([]);
 const selectedBudgetId = ref(null);
 
 const transactionsqQuery = query(
   collection(db, "transactions"),
-  where("userId", "==", currentUser.value?.uid)
+  where("userId", "==", userId)
 );
 
-const budgetsQuery = query(collection(db, "budgets"), where("userId", "==", currentUser.value?.uid));
+const budgetsQuery = query(collection(db, "budgets"), where("userId", "==", userId));
 
 let unsubscribeTransactions;
 let unsubscribeBudgets;

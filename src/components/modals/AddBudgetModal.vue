@@ -5,13 +5,13 @@ import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore
 import { onMounted, onUnmounted, ref, watch } from "vue";
 
 const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
+const userId = auth.currentUser ? auth.currentUser?.uid : null;
+
 const categories = ref([]);
 const loading = ref(false);
 
 const categoriesQuery = query(
-  collection(db, "categories"),
-  where("userId", "==", userId)
+  collection(db, "users", userId, "categories")
 );
 
 const form = ref({
@@ -25,6 +25,8 @@ const errorMessages = ref({
   category: null,
   timePeriod: null,
 })
+
+console.log
 
 // Watch for changes in form inputs to reset error messages
 watch(() => [form.value.amount, form.value.category, form.value.timePeriod], ([amount, category, timePeriod]) => {
@@ -59,7 +61,6 @@ onMounted(() => {
       return {
         id: doc.id,
         ...doc.data(),
-        userId: userId
       }
     })
   })
@@ -80,6 +81,9 @@ const submitForm = async () => {
   loading.value = true;
 
   try {
+
+    const budgetRef = collection(db, "users", userId, "budgets")
+
     const formData = {
       ...form.value,
       userId: userId,
@@ -88,7 +92,7 @@ const submitForm = async () => {
       createdAt: new Date().toISOString(),
     };
 
-    await addDoc(collection(db, "budgets"), formData);
+    await addDoc(budgetRef, formData);
 
     loading.value = false;
     console.log("Budget added successfully:", formData);
