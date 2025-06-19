@@ -38,7 +38,6 @@ const goToSettingsLink = () => {
 };
 const goToSupportLink = () => {
   goTo("/support");
-  isSidebarOpen.value = false;
 };
 
 // Reactive object to store user information
