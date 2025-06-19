@@ -15,7 +15,7 @@ const selectedIcon = ref({ name: "", svg: "" });
 const form = ref({
   type: "income",
   name: "",
-  icon: selectedIcon.value.svg || "",
+  icon: selectedIcon.value.svg || "Select Icon",
   iconName: selectedIcon.value.name || "",
   color: "Select Color",
 });
@@ -42,7 +42,7 @@ const resetForm = () => {
   form.value = {
     type: "income",
     name: "",
-    iconName: "Select Icon",
+    iconName: "",
     color: "Select Color",
   };
 
@@ -61,8 +61,7 @@ const validateForm = () => {
     errors.value.color = "Please select a color."
     isvalid = false;
   }
-
-  if (form.value.icon === "" || form.value.icon === "Select Icon") {
+  if (selectedIcon.value.name == "" || selectedIcon.value.svg == "Select Icon") {
     errors.value.icon = "Please select an icon."
     isvalid = false;
   }
@@ -72,10 +71,8 @@ const validateForm = () => {
 
 // Reset form when the modal is closed
 const submitForm = async () => {
-
   if (!validateForm()) {
     loading.value = false;
-    console.log(errors)
     return;
   }
 
