@@ -7,7 +7,7 @@ import DashboardNav from "@/components/DashboardNav.vue";
     <DashboardNav />
     <div class="text-center">
       <h1 class="text-3xl font-bold">Support</h1>
-      <p>Comming soon</p>
+      <p>Coming soon</p>
     </div>
   </div>
 </template>

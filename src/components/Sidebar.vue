@@ -307,7 +307,7 @@ const settingsSupportLinks = [
             </svg>
             <div>
               <h2 class="text-lg lg:text-xl font-black uppercase w-full">
-                BadgyetWise
+                BadyetWise
               </h2>
               <p class="text-gray-600 font-normal w-full">Your Personal Tracker</p>
             </div>
