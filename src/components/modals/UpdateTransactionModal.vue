@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { db } from "@/firebase/firebase";
 import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { currentUser } from '@/composables/useAuth';
@@ -37,27 +37,27 @@ onUnmounted(() => {
     }
 })
 
-watch(() => props.transactionId, async (id) => {
-    if (id) {
-        const docRef = doc(db, "users", userId, "transactions", id);
+watchEffect(async () => {
+    // Fetch the transaction data if transactionId is provided
+    if (props.transactionId) {
+        const docRef = doc(db, "users", userId, "transactions", props.transactionId);
         const docSnap = await getDoc(docRef);
-
+        // Check if the document exists
         if (docSnap.exists) {
             form.value = {
                 ...docSnap.data()
             }
+
         }
     }
-
-}, { immediate: true })
+})
 
 const form = ref({
     type: "income",
     amount: null,
     date: "",
     description: "",
-    categoryIcon: "",
-    category: "",
+    category: "Select Category",
     paymentMethod: "Cash",
     notes: "",
 });
@@ -79,8 +79,8 @@ const updateTransaction = async () => {
         const formData = {
             ...form.value,
             userId: userId,
-            categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
             categoryId: categories.value.find((c) => c.name === form.value.category)?.id || null,
+            categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
             updatedAt: new Date().toISOString(),
         }
         await updateDoc(transactionRef, formData);
