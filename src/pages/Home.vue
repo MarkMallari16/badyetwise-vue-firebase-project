@@ -22,11 +22,11 @@ let unsubscribeBudgets = null;
 
 onMounted(() => {
   const transactionsQuery = query(
-    collection(db, "userId", userId, "transactions"),
+    collection(db, "users", userId, "transactions"),
     orderBy("createdAt", "desc")
   )
   const budgetQuery = query(
-    collection(db, "userId", userId, "budgets"),
+    collection(db, "users", userId, "budgets"),
   )
 
   unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {

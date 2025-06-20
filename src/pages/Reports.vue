@@ -11,14 +11,13 @@ const budgets = ref([]);
 let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 
+const userId = currentUser.value?.uid;
 const transactionsQuery = query(
-    collection(db, "transactions"),
-    where("userId", "==", currentUser.value?.uid),
+    collection(db, "users", userId, "transactions"),
     orderBy("createdAt", "desc")
 );
 const budgetsQuery = query(
-    collection(db, "budgets"),
-    where("userId", "==", currentUser.value?.uid)
+    collection(db, "users", userId, "budget"),
 );
 
 onMounted(() => {

@@ -172,7 +172,7 @@ const closeModal = () => {
               </div>
             </div>
             <div class="flex items-center gap-5 mt-4 w-full">
-              <div class="w-full">
+              <div class="w-full">~
                 <label for="amount" class="font-medium mt-2">Amount</label>
                 <input id="amount" type="number" name="amount" placeholder="Enter Amount" v-model="form.amount"
                   class="mt-2 input  w-full" min="0" :class="[errors.amount ? 'input-error' : 'input-bordered']" />
