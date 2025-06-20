@@ -10,17 +10,6 @@ export function useAuth() {
         if (user) {
             currentUser.value = user;
 
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
-
-            if (!userSnap.exists()) {
-                await setDoc(userRef, {
-                    email: user.email,
-                    createdAt: new Date().toISOString()
-                })
-            }
-             console.log("User document created in Firestore");
-
         } else {
             currentUser.value = null;
         }

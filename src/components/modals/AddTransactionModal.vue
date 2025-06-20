@@ -6,8 +6,9 @@ import { getAuth } from "firebase/auth";
 import { currentUser } from "@/composables/useAuth";
 import { isBudgetAllocated } from "@/helpers/errorsValidation";
 
+const userId = currentUser.value?.uid
 const loading = ref(false);
-
+const categories = ref([]);
 const form = ref({
   type: "income",
   amount: null,
@@ -52,10 +53,10 @@ const validateForm = () => {
     isValid = false;
   }
 
-  if (!form.value.category) {
-    errors.value.categoryIcon = "Category is required."
-    isValid = false;
-  }
+  // if (!form.value.category) {
+  //   errors.value.categoryIcon = "Category is required."
+  //   isValid = false;
+  // }
 
 
   return isValid;
@@ -81,27 +82,25 @@ const resetForm = () => {
     notes: "",
   };
 };
-const categories = ref([]);
 
 
 const categoriesQuery = query(
-  collection(db, "categories"),
-  where("userId", "==", currentUser.value?.uid)
+  collection(db, "users", currentUser.value?.uid, "categories")
 );
 
 let unsubscribeCategories = null;
 
 // Fetch categories from the "categories" collection
 onMounted(() => {
-  unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
-    categories.value = snapshot.docs.map((doc) => {
-      return {
+  if (currentUser.value?.uid) {
+    unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
+      categories.value = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      };
+      }));
     });
-  });
-})
+  }
+});
 
 onUnmounted(() => {
   if (unsubscribeCategories) {
@@ -123,21 +122,21 @@ const submitForm = async () => {
     const formData = {
       ...form.value,
       userId: currentUser.value?.uid,
-      categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
-      categoryId:
-        categories.value.find((c) => c.name === form.value.category)?.id || null,
+      // categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
+      // categoryId:
+      //   categories.value.find((c) => c.name === form.value.category)?.id || null,
       createdAt: new Date().toISOString(),
     };
 
-    const hasBudget = await isBudgetAllocated(formData.categoryId);
+    //   const hasBudget = await isBudgetAllocated(formData.categoryId);
 
-    if (!hasBudget && formData.type === "expense") {
-      errors.value.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
-      loading.value = false;
-      return;
-    }
+    // if (!hasBudget && formData.type === "expense") {
+    //   errors.value.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
+    //   loading.value = false;
+    //   return;
+    // }
 
-    await addDoc(collection(db, "transactions"), formData);
+    await addDoc(collection(db, "users", userId, "transactions"), formData);
     loading.value = false;
     resetForm();
     closeModal();

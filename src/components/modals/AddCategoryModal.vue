@@ -6,22 +6,21 @@ import { icons } from "@/utils/categoryIcons";
 import { currentUser } from "@/composables/useAuth";
 import { categoryExists } from "@/helpers/errorsValidation";
 import { ref, watch } from "vue";
-import { useAuth } from "@/composables/useAuth";
+
 //
 
-useAuth();
 const loading = ref(false);
-const selectedIcon = ref({ name: "", svg: "" });
+const selectedIcon = ref({ name: "", icon: "" });
 
 
 //form data
 const form = ref({
   type: "income",
   name: "",
-  icon: selectedIcon.value.svg || "Select Icon",
-  iconName: selectedIcon.value.name || "",
+  icon: selectedIcon.value.name || "Select Icon",
   color: "Select Color",
 });
+
 
 // Watch for changes in form inputs to reset error messages
 watch(() => [form.value.name, form.value.icon, form.value.color], ([name, icon, color]) => {
@@ -45,11 +44,11 @@ const resetForm = () => {
   form.value = {
     type: "income",
     name: "",
-    iconName: "",
+    icon: "",
     color: "Select Color",
   };
 
-  selectedIcon.value = { name: "", svg: "" };
+  selectedIcon.value = { name: "", icon: "" };
 };
 
 // validate form inputs
@@ -65,7 +64,7 @@ const validateForm = () => {
     errors.value.color = "Please select a color."
     isvalid = false;
   }
-  if (selectedIcon.value.name == "" || selectedIcon.value.svg == "Select Icon") {
+  if (selectedIcon.value.name == "" || selectedIcon.value.icon == "Select Icon") {
     errors.value.icon = "Please select an icon."
     isvalid = false;
   }
@@ -75,13 +74,18 @@ const validateForm = () => {
 
 // Reset form when the modal is closed
 const submitForm = async () => {
+  const userId = currentUser.value?.uid;
+  if (!userId) {
+    console.error("User is not authenticated");
+    return;
+  }
+
   if (!validateForm()) {
     loading.value = false;
     return;
   }
 
   try {
-
 
     loading.value = true;
     const normalizedName = form.value.name.trim().toLowerCase();
@@ -93,18 +97,17 @@ const submitForm = async () => {
       return;
     }
 
-    const userId = currentUser.value?.uid;
 
-    // Add the new category to the Firestore collection
-    const catRef = collection(db, "users", userId, "categories");
 
     const formData = {
       ...form.value,
-      name: normalizedName,
+      name: normalizedName || "",
+      icon: selectedIcon.value.name || "",
       createdAt: new Date().toISOString(),
     };
 
-    await addDoc(catRef, formData);
+    // Set the icon and name for the selected icon
+    await addDoc(collection(db, "users", userId, "categories"), formData);
 
     console.log("Document successfully added!");
     loading.value = false;
@@ -112,6 +115,8 @@ const submitForm = async () => {
     closeModal();
 
   } catch (error) {
+
+    console.log(form.value)
     console.error("Error adding document: ", error);
   } finally {
     loading.value = false;
@@ -120,9 +125,9 @@ const submitForm = async () => {
 // Function to select an icon
 const selectIcon = (icon) => {
   selectedIcon.value.name = icon.name || "";
-  selectedIcon.value.svg = icon.icon || "";
-  form.value.icon = icon.icon || "";
-  form.value.iconName = icon.name || "";
+  selectedIcon.value.icon = icon.icon || "";
+
+  form.value.icon = icon.id || "";
 };
 
 // Function to close the modal and reset the form
@@ -136,7 +141,6 @@ const closeModal = () => {
     errors.value = {
       name: "",
       icon: "",
-      iconName: "",
       color: "",
     };
   }
@@ -152,7 +156,9 @@ const closeModal = () => {
       <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4"
         v-if="form.name && form.color !== 'Select Color'">
         <div class="rounded-lg w-12 h-12 p-2" :class="form.color">
-          <div v-if="selectedIcon.name && selectedIcon.svg" v-html="selectedIcon.svg" class="text-white"></div>
+          <div v-if="selectedIcon.name && selectedIcon.icon" class="text-white">
+            <component :is="selectedIcon.icon" class="size-8" />
+          </div>
         </div>
         <div>
           <h3 class="font-medium">{{ form.name }}</h3>
@@ -196,24 +202,23 @@ const closeModal = () => {
                   <div class="dropdown dropdown-bottom dropdown-center w-full">
                     <div tabindex="0" role="button" class="btn m-1 w-full"
                       :class="errors.icon ? 'border-error' : 'border-none'">
-                      <div class="flex items-center gap-1" v-if="selectedIcon.name && selectedIcon.svg">
-                        <span v-html="selectedIcon.svg" class="size-6"></span>
+                      <div class="flex items-center gap-1" v-if="selectedIcon.name && selectedIcon.icon">
+                        <component :is="selectedIcon.icon" class="size-5" />
                         <p>{{ selectedIcon.name }}</p>
                       </div>
                       <div v-else>Select Icon</div>
                     </div>
                     <p v-if="errors.icon || form.icon" :class="errorClass">{{ errors.icon }}</p>
-
                     <ul tabindex="0"
                       class="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-lg max-h-40 overflow-x-auto">
-                      <li v-for="icon in icons" :key="icon.name" @click="selectIcon(icon)">
+                      <li v-for="icon in icons" :key="icon.name" @click="selectIcon(icon)" class="rounded-md"
+                        :class="[selectedIcon.name == icon.name ? 'bg-primary text-white' : 'bg - none']">
                         <a>
-                          <span v-html="icon.icon" class="size-6"></span>
+                          <component :is="icon.icon" class="size-5" />
                           {{ icon.name }}
                         </a>
                       </li>
                     </ul>
-
                   </div>
                 </div>
                 <!-- Color Selection -->
