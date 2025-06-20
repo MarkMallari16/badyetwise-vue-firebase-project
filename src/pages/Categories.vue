@@ -25,13 +25,10 @@ const categoriesQuery = query(
   orderBy("createdAt", "desc")
 )
 
-const transactionsQuery = query(collection(db, "users", userId, "transactions"),
-  where("userId", "==", userId)
+const transactionsQuery = collection(db, "users", userId, "transactions"
 );
 
-const budgetsQuery = query(collection(db, "users", currentUser.value?.uid, "budgets"),
-  where("userId", "==", userId),
-);
+const budgetsQuery = collection(db, "users", userId, "budgets");
 
 // Computed properties to filter categories by type
 const categoriesExpenses = computed(() => {
@@ -50,7 +47,7 @@ const categoryExpenseSummaries = computed(() => {
     const totalBudget = budgets.value.find(budget => budget.categoryId === category.id)?.amount || 0;
     const percentageBudgetUsed = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(2) : 0;
     const amountLeft = totalBudget - totalSpent;
-
+    
     return {
       ...category,
       numberOfTransactions,
@@ -61,6 +58,8 @@ const categoryExpenseSummaries = computed(() => {
     }
   })
 })
+
+console.log("Category Expense Summaries:", categoryExpenseSummaries.value);
 const categoryIncomeSummaries = computed(() => {
   return categoriesIncomes.value.map(category => {
     const relatedTransactions = transactions.value.filter(transaction => transaction.categoryId === category.id);
