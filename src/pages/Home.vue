@@ -12,6 +12,7 @@ import { db } from "@/firebase/firebase";
 import { currentUser } from "@/composables/useAuth";
 import dayjs from "dayjs";
 
+const userId = currentUser.value?.uid;
 const isFetching = ref(true);
 const transactions = ref([]);
 const budgets = ref([]);
@@ -21,13 +22,11 @@ let unsubscribeBudgets = null;
 
 onMounted(() => {
   const transactionsQuery = query(
-    collection(db, "transactions"),
-    where("userId", "==", currentUser.value?.uid),
+    collection(db, "userId", userId, "transactions"),
     orderBy("createdAt", "desc")
   )
   const budgetQuery = query(
-    collection(db, "budgets"),
-    where("userId", "==", currentUser?.value?.uid)
+    collection(db, "userId", userId, "budgets"),
   )
 
   unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
@@ -66,14 +65,17 @@ const showModal = () => {
   }
 };
 
+// Computed property to get the five most recent transactions
 const fiveRecentTransactions = computed(() => {
   return transactions.value.slice(0, 5);
 })
 
+// Computed property to get the length of the five recent transactions
 const transactionLength = computed(() => {
   return fiveRecentTransactions.value.length;
 })
 
+// Overview Computed Property
 const overview = computed(() => {
   const totalIncomes = transactions.value
     .filter(transaction => transaction.type === "income")
@@ -262,6 +264,7 @@ provide("pieChartOptions", pieChartOptions);
       :total-income-percentage="overview.totalIncomePercentage"
       :total-expense-percentage="overview.totalExpensePercentage"
       :percentage-savings-rate="overview.percentageSavingsRate" :is-loading="isLoading" />
+
     <!--Chart-->
     <DashboardCharts />
     <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">

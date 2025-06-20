@@ -17,12 +17,8 @@ const transactions = ref([]);
 const budgets = ref([]);
 const selectedBudgetId = ref(null);
 
-const transactionsqQuery = query(
-  collection(db, "transactions"),
-  where("userId", "==", userId)
-);
-
-const budgetsQuery = query(collection(db, "userId", userId, "budgets"), where("userId", "==", userId),);
+const transactionsqQuery = collection(db, "users", userId, "transactions");
+const budgetsQuery = collection(db, "users", userId, "budgets");
 
 let unsubscribeTransactions;
 let unsubscribeBudgets;

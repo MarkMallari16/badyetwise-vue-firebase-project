@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { db } from "@/firebase/firebase";
 import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { currentUser } from '@/composables/useAuth';
 
 const props = defineProps({
     transactionId: {
@@ -10,19 +10,15 @@ const props = defineProps({
         required: true
     }
 })
-
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
+const userId = currentUser.value?.uid;
 const categories = ref([]);
 
 let loading = ref(false);
 
 let unsubscribeCategories = null;
 
-const categoriesQuery = query(
-    collection(db, "categories"),
-    where("userId", "==", userId)
-);
+const categoriesQuery = collection(db, "users", userId, "categories");
+
 
 onMounted(() => {
     unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
@@ -43,7 +39,7 @@ onUnmounted(() => {
 
 watch(() => props.transactionId, async (id) => {
     if (id) {
-        const docRef = doc(db, "transactions", id);
+        const docRef = doc(db, "users", userId, "transactions", id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists) {
@@ -78,7 +74,7 @@ const updateTransaction = async () => {
     try {
         loading.value = true;
 
-        const transactionRef = doc(db, "transactions", props.transactionId);
+        const transactionRef = doc(db, "users", userId, "transactions", props.transactionId);
 
         const formData = {
             ...form.value,
@@ -87,8 +83,6 @@ const updateTransaction = async () => {
             categoryId: categories.value.find((c) => c.name === form.value.category)?.id || null,
             updatedAt: new Date().toISOString(),
         }
-
-
         await updateDoc(transactionRef, formData);
     } catch (error) {
         console.error("Error updating transaction: ", error);
@@ -115,12 +109,12 @@ const updateTransaction = async () => {
                             <div class="flex items-center gap-2">
                                 <input id="income" type="radio" name="type" value="income" v-model="form.type"
                                     class="radio radio-primary radio-sm" checked />
-                                <label for="income" class="font-sans">Income</label>
+                                <label for="income" class="font-sans cursor-pointer">Income</label>
                             </div>
                             <div class="flex items-center gap-2">
                                 <input id="expense" type="radio" name="type" value="expense" v-model="form.type"
                                     class="radio radio-primary radio-sm" />
-                                <label for="expense" class="font-sans">Expense</label>
+                                <label for="expense" class="font-sans  cursor-pointer">Expense</label>
                             </div>
                         </div>
                         <div class="flex items-center gap-5 mt-4 w-full">

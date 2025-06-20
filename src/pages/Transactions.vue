@@ -1,8 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import DashboardNav from "@/components/DashboardNav.vue";
-import { collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue";
 import AddTransactionModal from "@/components/modals/AddTransactionModal.vue";
@@ -10,7 +9,7 @@ import OpenAddModalButton from "@/components/OpenAddModalButton.vue";
 import UpdateTransactionModal from "@/components/modals/UpdateTransactionModal.vue";
 import dayjs from "dayjs";
 import { currentUser } from "@/composables/useAuth";
-
+import { icons } from "@/utils/categoryIcons";
 
 // Reactive references for categories and transactions
 const categories = ref([]);
@@ -86,6 +85,7 @@ const filteredTransactions = computed(() => {
     })
     .filter((transaction) => {
       const query = search.toLowerCase();
+
       return (
         transaction.description.toLowerCase().includes(query) ||
         transaction.category.toLowerCase().includes(query) ||
@@ -134,6 +134,10 @@ const showUpdateModal = (id) => {
     modal.showModal();
   }
 }
+const getIconCategory = (categoryIcon) => {
+  const icon = icons.find(icon => icon.name === categoryIcon);
+  return icon ? icon.icon : null;
+};
 
 </script>
 
@@ -217,8 +221,8 @@ const showUpdateModal = (id) => {
             <tr v-for="transaction in transactions ? filteredTransactions : transactions" :key="transaction.id"
               v-if="transactions" class="hover:bg-gray-100 transition-colors duration-200">
               <td class="flex justify-start items-center gap-3 p-5">
-                <div v-html="transaction.categoryIcon"
-                  class="size-[44px] lg:size-10 rounded-full badge rind-1 bg-gray-100"></div>
+                <component :is="getIconCategory(transaction.categoryIcon)"
+                  class="size-[44px] lg:size-10 rounded-full badge rind-1 bg-gray-100" />
                 <span class="text-sm">{{ transaction.description }}</span>
               </td>
 

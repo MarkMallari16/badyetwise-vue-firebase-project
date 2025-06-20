@@ -1,10 +1,11 @@
 <script setup>
 import { useNavigation } from "@/composables/useNavigation";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { inject, onMounted, reactive } from "vue";
+import { inject, onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-
+import { currentUser } from "@/composables/useAuth";
 // Import Firebase Authentication
+
 const auth = getAuth();
 const route = useRoute();
 const { goTo } = useNavigation();
@@ -41,7 +42,7 @@ const goToSupportLink = () => {
 };
 
 // Reactive object to store user information
-const storedUser = reactive({
+const storedUser = ref({
   name: "",
   email: "",
   photoURL: "",
@@ -49,17 +50,14 @@ const storedUser = reactive({
 
 
 //onMounted lifecycle hook to check authentication state
-onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      storedUser.name = user?.displayName;
-      storedUser.email = user?.email;
-      storedUser.photoURL = user?.photoURL;
-    } else {
-      goTo("/login");
-    }
-  });
-});
+if (currentUser.value) {
+  storedUser.value.name = currentUser.value?.displayName;
+  storedUser.value.email = currentUser.value?.email;
+  storedUser.value.photoURL = currentUser.value?.photoURL;
+
+} else {
+  goTo("/login");
+}
 
 //signout
 const handleSignOut = () => {

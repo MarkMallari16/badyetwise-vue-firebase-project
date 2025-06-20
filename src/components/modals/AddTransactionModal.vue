@@ -1,12 +1,11 @@
 <script setup>
 import { db } from "@/firebase/firebase";
-import { doc, addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
 import { onMounted, onUnmounted, ref, watch } from "vue";
-import { getAuth } from "firebase/auth";
 import { currentUser } from "@/composables/useAuth";
 import { isBudgetAllocated } from "@/helpers/errorsValidation";
 
-const userId = currentUser.value?.uid
+const userId = currentUser.value?.uid;
 const loading = ref(false);
 const categories = ref([]);
 const form = ref({
@@ -53,10 +52,10 @@ const validateForm = () => {
     isValid = false;
   }
 
-  // if (!form.value.category) {
-  //   errors.value.categoryIcon = "Category is required."
-  //   isValid = false;
-  // }
+  if (!form.value.category) {
+    errors.value.categoryIcon = "Category is required."
+    isValid = false;
+  }
 
 
   return isValid;
@@ -84,23 +83,18 @@ const resetForm = () => {
 };
 
 
-const categoriesQuery = query(
-  collection(db, "users", currentUser.value?.uid, "categories"),
-
-);
+const categoriesQuery = collection(db, "users", userId, "categories");
 
 let unsubscribeCategories = null;
 
 // Fetch categories from the "categories" collection
 onMounted(() => {
-  if (currentUser.value?.uid) {
-    unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
-      categories.value = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-    });
-  }
+  unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
+    categories.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
 });
 
 onUnmounted(() => {
@@ -114,30 +108,28 @@ const submitForm = async () => {
     return;
   }
 
-
   try {
-
     loading.value = true;
 
-    //const userRef = doc(db, "users", auth.currentUser.uid);
     const formData = {
       ...form.value,
       userId: currentUser.value?.uid,
-      // categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
-      // categoryId:
-      //   categories.value.find((c) => c.name === form.value.category)?.id || null,
+      categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
+      categoryId:
+        categories.value.find((c) => c.name === form.value.category)?.id || null,
       createdAt: new Date().toISOString(),
     };
 
-    //   const hasBudget = await isBudgetAllocated(formData.categoryId);
+    const hasBudget = await isBudgetAllocated(formData.categoryId);
 
-    // if (!hasBudget && formData.type === "expense") {
-    //   errors.value.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
-    //   loading.value = false;
-    //   return;
-    // }
+    if (!hasBudget && formData.type === "expense") {
+      errors.value.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
+      loading.value = false;
+      return;
+    }
 
     await addDoc(collection(db, "users", userId, "transactions"), formData);
+
     loading.value = false;
     resetForm();
     closeModal();
@@ -171,12 +163,12 @@ const closeModal = () => {
               <div class="flex items-center gap-2">
                 <input id="income" type="radio" name="type" value="income" v-model="form.type"
                   class="radio radio-primary radio-sm" checked />
-                <label for="income" class="font-sans">Income</label>
+                <label for="income" class="font-sans cursor-pointer">Income</label>
               </div>
               <div class="flex items-center gap-2">
                 <input id="expense" type="radio" name="type" value="expense" v-model="form.type"
                   class="radio radio-primary radio-sm" />
-                <label for="expense" class="font-sans">Expense</label>
+                <label for="expense" class="font-sans cursor-pointer">Expense</label>
               </div>
             </div>
             <div class="flex items-center gap-5 mt-4 w-full">

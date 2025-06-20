@@ -12,17 +12,15 @@ const profileData = ref(
   }
 )
 
-console.log(currentUser.value)
 
-console.log(profileData.value)
 </script>
 <template>
   <div
-    class="min-h-screen mx-4 my-2 px-12 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-inner rounded-2xl">
+    class="min-h-screen mx-4 my-2 px-6 lg:px-12 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-inner rounded-2xl">
     <DashboardNav />
     <div class="px-10 pt-6 pb-20 ring-1 ring-inset ring-gray-300 rounded-md">
       <div>
-        <div class="flex items-center gap-1 ">
+        <div class="flex flex-wrap items-center gap-1 ">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-5">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -34,7 +32,7 @@ console.log(profileData.value)
       </div>
       <!--Avatar-->
       <div class="mt-6">
-        <div class=" flex gap-6 items-center">
+        <div class=" flex gap-6 items-center flex-wrap">
           <div class="avatar">
             <div class="w-28 rounded-full mt-4 object-cover">
               <img :src="profileData.photoURL" alt="profile">

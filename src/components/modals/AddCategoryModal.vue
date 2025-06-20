@@ -99,16 +99,18 @@ const submitForm = async () => {
       ...form.value,
       icon: selectedIcon.value.name || "",
       createdAt: new Date().toISOString(),
-      userId: userId,
     };
 
     // Set the icon and name for the selected icon
     await addDoc(collection(db, "users", userId, "categories"), formData);
+
     loading.value = false;
     resetForm();
     closeModal();
 
   } catch (error) {
+
+    console.error("Error adding document: ", error);
     loading.value = false;
   } finally {
     loading.value = false;
