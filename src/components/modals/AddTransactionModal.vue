@@ -85,7 +85,8 @@ const resetForm = () => {
 
 
 const categoriesQuery = query(
-  collection(db, "users", currentUser.value?.uid, "categories")
+  collection(db, "users", currentUser.value?.uid, "categories"),
+
 );
 
 let unsubscribeCategories = null;

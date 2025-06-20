@@ -28,15 +28,14 @@ const transactionFilterings = ref({
 
 //Fetch transactions from the "transactions" collection
 const transactionQuery = query(
-  collection(db, "transactions"),
+  collection(db, "users", currentUser.value?.uid, "transactions"),
   where("userId", "==", currentUser.value?.uid),
   orderBy("createdAt", "desc")
 );
 
-
 // Fetch transactions from the "categories" collection
 const categoriesQuery = query(
-  collection(db, "categories"),
+  collection(db, "users", currentUser.value?.uid, "categories"),
   where("userId", "==", currentUser.value?.uid)
 );
 
@@ -113,7 +112,7 @@ watch(() => transactionFilterings.value.type, () => {
 // Function to delete a transaction by its ID
 const deleteTransaction = async (transactionId) => {
   try {
-    await deleteDoc(doc(db, "transactions", transactionId));
+    await deleteDoc(doc(db, "users", currentUser.value?.uid, "transactions", transactionId));
     console.log("Transaction deleted successfully");
   } catch (error) {
     console.error("Error deleting transaction: ", error);

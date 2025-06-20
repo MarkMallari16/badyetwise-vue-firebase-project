@@ -8,7 +8,7 @@ import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "f
 import { db } from "@/firebase/firebase";
 import UpdateCategoryModal from "@/components/modals/UpdateCategoryModal.vue";
 import { currentUser } from "@/composables/useAuth";
-
+import { icons } from "@/utils/categoryIcons";
 const tab = ref("expense");
 const categories = ref([]);
 const transactions = ref([]);
@@ -95,6 +95,8 @@ onMounted(() => {
           ...doc.data(),
         };
       });
+    console.log(categories.value)
+
   });
   unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
     transactions.value = snapshot.docs
@@ -116,6 +118,7 @@ onMounted(() => {
         };
       });
   });
+
 })
 
 onUnmounted(() => {
@@ -130,10 +133,16 @@ onUnmounted(() => {
   }
 })
 
+//get icon category to display in the card
+const getIconCategory = (category) => {
+  const icon = icons.find(icon => icon.name === category.icon);
+  return icon ? icon.icon : null;
+};
+
 //handle delete category
 const deleteCategory = async (categoryId) => {
   try {
-    await deleteDoc(doc(db, "categories", categoryId));
+    await deleteDoc(doc(db, "users", userId, "categories", categoryId));
   } catch (error) {
     console.error("Error deleting category:", error);
   }
@@ -157,6 +166,8 @@ const showUpdateModal = (id) => {
     modal.showModal();
   }
 }
+
+
 
 </script>
 
@@ -197,7 +208,8 @@ const showUpdateModal = (id) => {
               class="relative p-8 ring-1 ring-inset ring-gray-300 rounded-lg shadow-sm">
               <div class="relative flex justify-between  items-center ">
                 <div class="flex items-center gap-3 ">
-                  <span v-html="category.icon" class="size-11 p-2 text-white rounded-lg" :class="category.color"></span>
+                  <component :is="getIconCategory(category)" class="size-11 p-2 text-white rounded-lg"
+                    :class="category.color" />
                   <div>
                     <h3 class="font-medium text-lg">{{ category.name }}</h3>
                     <p class="text-gray-600">{{ category.numberOfTransactions }} transactions</p>
@@ -262,7 +274,8 @@ const showUpdateModal = (id) => {
               class="relative p-8 ring-1 ring-inset ring-gray-300 rounded-lg shadow-sm">
               <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                  <span v-html="category.icon" class="size-11 p-2 text-white rounded-lg" :class="category.color"></span>
+                  <component :is="getIconCategory(category)" class="size-11 p-2 text-white rounded-lg"
+                    :class="category.color" />
                   <div>
                     <h3 class="font-medium text-lg">{{ category.name }}</h3>
                     <p class="text-gray-600">{{ category.numberOfTransactions }} transactions</p>

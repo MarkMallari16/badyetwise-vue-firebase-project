@@ -22,7 +22,7 @@ const transactionsqQuery = query(
   where("userId", "==", userId)
 );
 
-const budgetsQuery = query(collection(db, "budgets"), where("userId", "==", userId));
+const budgetsQuery = query(collection(db, "userId", userId, "budgets"), where("userId", "==", userId),);
 
 let unsubscribeTransactions;
 let unsubscribeBudgets;

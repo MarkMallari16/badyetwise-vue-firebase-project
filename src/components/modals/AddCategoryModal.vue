@@ -11,8 +11,7 @@ import { ref, watch } from "vue";
 
 const loading = ref(false);
 const selectedIcon = ref({ name: "", icon: "" });
-
-
+console.log("Current User: ", currentUser.value.uid);
 //form data
 const form = ref({
   type: "income",
@@ -47,9 +46,9 @@ const resetForm = () => {
     icon: "",
     color: "Select Color",
   };
-
   selectedIcon.value = { name: "", icon: "" };
 };
+
 
 // validate form inputs
 const validateForm = () => {
@@ -75,16 +74,15 @@ const validateForm = () => {
 // Reset form when the modal is closed
 const submitForm = async () => {
   const userId = currentUser.value?.uid;
+
   if (!userId) {
-    console.error("User is not authenticated");
+    console.error("Not authenticated");
     return;
   }
-
   if (!validateForm()) {
     loading.value = false;
     return;
   }
-
   try {
 
     loading.value = true;
@@ -97,27 +95,21 @@ const submitForm = async () => {
       return;
     }
 
-
-
     const formData = {
       ...form.value,
-      name: normalizedName || "",
       icon: selectedIcon.value.name || "",
       createdAt: new Date().toISOString(),
+      userId: userId,
     };
 
     // Set the icon and name for the selected icon
     await addDoc(collection(db, "users", userId, "categories"), formData);
-
-    console.log("Document successfully added!");
     loading.value = false;
     resetForm();
     closeModal();
 
   } catch (error) {
-
-    console.log(form.value)
-    console.error("Error adding document: ", error);
+    loading.value = false;
   } finally {
     loading.value = false;
   }
@@ -178,13 +170,13 @@ const closeModal = () => {
               <div class="flex items-center gap-2">
                 <input id="income" type="radio" name="type" value="income" v-model="form.type"
                   class="radio radio-primary radio-sm" checked />
-                <label for="income" class="font-sans">Income</label>
+                <label for="income" class="font-sans cursor-pointer">Income</label>
               </div>
               <!-- Expense Radio Button -->
               <div class="flex items-center gap-2">
                 <input id="expense" type="radio" name="type" value="expense" v-model="form.type"
                   class="radio radio-primary radio-sm" />
-                <label for="expense" class="font-sans">Expense</label>
+                <label for="expense" class="font-sans cursor-pointer">Expense</label>
               </div>
             </div>
 

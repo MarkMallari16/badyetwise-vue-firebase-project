@@ -10,9 +10,9 @@ const userId = auth.currentUser ? auth.currentUser?.uid : null;
 const categories = ref([]);
 const loading = ref(false);
 
-const categoriesQuery = query(
-  collection(db, "users", userId, "categories")
-);
+// const categoriesQuery = query(
+//   collection(db, "users", userId, "categories")
+// );
 
 const form = ref({
   amount: null,
@@ -46,25 +46,25 @@ const validateForm = () => {
 
   }
 
-  if (!form.value.category) {
-    errorMessages.value.category = "Please select a category.";
-    isValid = false;
-  }
+  // if (!form.value.category) {
+  //   errorMessages.value.category = "Please select a category.";
+  //   isValid = false;
+  // }
 
 
   return isValid;
 }
 
-onMounted(() => {
-  unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
-    categories.value = snapshot.docs.map((doc) => {
-      return {
-        id: doc.id,
-        ...doc.data(),
-      }
-    })
-  })
-})
+// onMounted(() => {
+//   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
+//     categories.value = snapshot.docs.map((doc) => {
+//       return {
+//         id: doc.id,
+//         ...doc.data(),
+//       }
+//     })
+//   })
+// })
 
 onUnmounted(() => {
   if (unsubscribeCategories) {
@@ -149,7 +149,7 @@ const closeModal = () => {
           </button>
         </div>
         <div class="mb-4 w-full">
-          <div class="w-full">
+          <!-- <div class="w-full">
             <label for="category" class="font-medium">Category</label>
             <select name="category" id="category" v-model="form.category" class="select select-bordered w-full mt-2"
               :class="[errorMessages.category ? 'select-error' : '']">
@@ -160,7 +160,7 @@ const closeModal = () => {
               </option>
             </select>
             <p class="text-sm mt-1 text-red-600" v-if="errorMessages.category">{{ errorMessages.category }}</p>
-          </div>
+          </div> -->
         </div>
         <div class="flex items-center gap-3 w-full">
           <div class="w-full">
