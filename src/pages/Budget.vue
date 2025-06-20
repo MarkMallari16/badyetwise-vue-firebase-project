@@ -108,7 +108,7 @@ const percentageOverviewUsed = computed(() => {
 })
 const deleteBudget = async (budgetId) => {
   try {
-    const budgetRef = doc(db, "budgets", budgetId);
+    const budgetRef = doc(db, "users", userId, "budgets", budgetId);
     await deleteDoc(budgetRef);
   } catch (error) {
     console.error("Error deleting budget:", error);

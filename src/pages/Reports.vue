@@ -17,7 +17,7 @@ const transactionsQuery = query(
     orderBy("createdAt", "desc")
 );
 const budgetsQuery = query(
-    collection(db, "users", userId, "budget"),
+    collection(db, "users", userId, "budgets"),
 );
 
 onMounted(() => {

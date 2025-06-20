@@ -3,6 +3,11 @@ import { icons } from '@/utils/categoryIcons';
 import { db } from '@/firebase/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, watchEffect } from 'vue';
+import { currentUser } from '@/composables/useAuth';
+import { getIconCategory } from '@/utils/getIconCategory';
+
+//user id 
+const userId = currentUser.value?.uid;
 
 // Define the props for the component
 const props = defineProps({
@@ -14,13 +19,12 @@ const props = defineProps({
 
 const isLoading = ref(false);
 
-const selectedIcon = ref({ name: "", svg: "" })
+const selectedIcon = ref({ name: "", icon: "" })
 
 const form = ref({
     type: "income",
     name: "",
     icon: "",
-    iconName: "",
     color: "Select Color",
 });
 
@@ -29,43 +33,45 @@ console.log("Category Data:", form.value);
 //setting up initial form values
 watchEffect(async () => {
     if (props.categoryId) {
-        const docRef = doc(db, "categories", props.categoryId);
+        const docRef = doc(db, "users", userId, "categories", props.categoryId);
         const docSnap = await getDoc(docRef);
 
+        // Check if the document exists
         if (docSnap.exists()) {
             form.value = {
                 ...docSnap.data()
             }
-            selectedIcon.value.name = form.value.iconName || "";
-            selectedIcon.value.svg = form.value.icon || "";
+            selectedIcon.value.name = form.value.icon || "";
+            selectedIcon.value.icon = form.value.icon || "";
 
-            form.value.icon = form.value.icon || "";
-            form.value.iconName = form.value.iconName || ""
-
+            console.log("Form Data:", form.value);
             console.log("Selected Icon:", selectedIcon.value);
-
+            form.value.name = form.value.name || "";
+            form.value.icon = form.value.icon || "";
         }
     }
 })
 
-// Function to select an icon
+// Function to select an icon 
 const selectIcon = (icon) => {
-    selectedIcon.value.svg = icon.icon;
+    //icon
+    selectedIcon.value.icon = icon.icon;
+    //name of the icon
     selectedIcon.value.name = icon.name;
 
+    console.log("Selected Icon:", selectedIcon.value);
+
     form.value.icon = icon.icon;
-    form.value.iconName = icon.name;
 };
 
 //Update category
 const updateCategory = async () => {
     isLoading.value = true;
-    const docRef = doc(db, "categories", props.categoryId);
+    const docRef = doc(db, "users", userId, "categories", props.categoryId);
     try {
         const formData = {
             ...form.value,
-            icon: selectedIcon.value.svg || "",
-            iconName: selectedIcon.value.name || "",
+            icon: selectedIcon.value.icon || "",
             updatedAt: new Date().toISOString()
         }
 
@@ -97,7 +103,8 @@ const closeModal = () => {
             <!---Preview-->
             <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4">
                 <div class="rounded-lg w-12 h-12 p-2" :class="form.color">
-                    <div v-if="selectedIcon" v-html="selectedIcon.svg" class="text-white">
+                    <div v-if="selectedIcon.name && selectedIcon.icon" class="text-white">
+                        <component :is="getIconCategory(selectedIcon.name)" class="size-8" />
                     </div>
                 </div>
                 <div>
@@ -141,7 +148,7 @@ const closeModal = () => {
                                     <div class="dropdown dropdown-bottom dropdown-center w-full">
                                         <div tabindex="0" role="button" class="btn m-1 w-full">
                                             <div class="flex items-center gap-1" v-if="selectedIcon">
-                                                <span v-html="selectedIcon.svg" class="size-6"></span>
+                                                <component :is="getIconCategory(selectedIcon.name)" class="size-5" />
                                                 <p>{{ selectedIcon.name }}</p>
                                             </div>
                                         </div>
@@ -149,7 +156,7 @@ const closeModal = () => {
                                             class="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-lg max-h-40 overflow-x-auto">
                                             <li v-for="icon in icons" :key="icon.name" @click="selectIcon(icon)">
                                                 <a>
-                                                    <span v-html="icon.icon" class="size-6"></span>
+                                                    <component :is="getIconCategory(icon.name)" class="size-6" />
                                                     {{ icon.name }}
                                                 </a>
                                             </li>
