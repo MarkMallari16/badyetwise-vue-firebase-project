@@ -31,8 +31,10 @@ const form = ref({
 console.log("Category Data:", form.value);
 
 //setting up initial form values
-watchEffect(async () => {
-    if (props.categoryId) {
+watch(() => props.categoryId, async (categoryId) => {
+    if (categoryId) return;
+
+    try {
         const docRef = doc(db, "users", userId, "categories", props.categoryId);
         const docSnap = await getDoc(docRef);
 
@@ -49,6 +51,8 @@ watchEffect(async () => {
             form.value.name = form.value.name || "";
             form.value.icon = form.value.icon || "";
         }
+    } catch (error) {
+        console.error("Error fetching category data: ", error);
     }
 })
 

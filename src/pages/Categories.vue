@@ -47,7 +47,7 @@ const categoryExpenseSummaries = computed(() => {
     const totalBudget = budgets.value.find(budget => budget.categoryId === category.id)?.amount || 0;
     const percentageBudgetUsed = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(2) : 0;
     const amountLeft = totalBudget - totalSpent;
-    
+
     return {
       ...category,
       numberOfTransactions,

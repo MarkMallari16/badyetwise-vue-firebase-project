@@ -37,10 +37,11 @@ onUnmounted(() => {
     }
 })
 
-watchEffect(async () => {
-    // Fetch the transaction data if transactionId is provided
-    if (props.transactionId) {
-        const docRef = doc(db, "users", userId, "transactions", props.transactionId);
+watch(() => props.transactionId, async (transactionsId) => {
+    if (!transactionsId) return;
+
+    try {
+        const docRef = doc(db, "users", userId, "transactions", transactionsId);
         const docSnap = await getDoc(docRef);
         // Check if the document exists
         if (docSnap.exists) {
@@ -49,8 +50,10 @@ watchEffect(async () => {
             }
 
         }
+    } catch (error) {
+        console.error("Error fetching transaction data: ", error);
     }
-})
+}, { immediate: true })
 
 const form = ref({
     type: "income",
