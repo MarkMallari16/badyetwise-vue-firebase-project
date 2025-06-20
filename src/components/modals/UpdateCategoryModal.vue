@@ -71,7 +71,7 @@ const updateCategory = async () => {
     try {
         const formData = {
             ...form.value,
-            icon: selectedIcon.value.icon || "",
+            icon: selectedIcon.value.name || "",
             updatedAt: new Date().toISOString()
         }
 
@@ -154,7 +154,9 @@ const closeModal = () => {
                                         </div>
                                         <ul tabindex="0"
                                             class="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-lg max-h-40 overflow-x-auto">
-                                            <li v-for="icon in icons" :key="icon.name" @click="selectIcon(icon)">
+                                            <li v-for="icon in icons" :key="icon.name" @click="selectIcon(icon)"
+                                                class="rounded-md"
+                                                :class="[selectedIcon.name == icon.name ? 'bg-primary text-white' : 'bg - none']">
                                                 <a>
                                                     <component :is="getIconCategory(icon.name)" class="size-6" />
                                                     {{ icon.name }}
