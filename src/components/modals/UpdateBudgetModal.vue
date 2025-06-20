@@ -1,11 +1,11 @@
 <script setup>
+import { currentUser } from '@/composables/useAuth';
 import { db } from '@/firebase/firebase';
 import { getAuth } from 'firebase/auth';
 import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 
-const auth = getAuth();
-const userId = auth.currentUser ? auth.currentUser.uid : null;
+const userId = currentUser.value?.uid;
 const categories = ref([]);
 const loading = ref(false)
 
@@ -23,26 +23,26 @@ const form = ref({
     amount: null,
     timePeriod: 'monthly',
 });
-const queryCategories = query(
-    collection(db, "categories"),
-    where("userId", "==", userId)
-);
+const queryCategories = collection(db, "users", userId, "categories");
 
 let unsubscribeCategories = null;
 
-watchEffect(async () => {
-    if (props.budgetId) {
-        const docRef = doc(db, "budgets", props.budgetId);
-
-        console.log(docRef)
+watch(() => props.budgetId, async (budgetId) => {
+    if (!budgetId) return;
+    try {
+        //create reference to the budget document
+        const docRef = doc(db, "users", userId, "budgets", props.budgetId);
+        //fetch the document data
         const docSnap = await getDoc(docRef);
-        console.log("Document Snapshot:", docSnap);
+
         if (docSnap.exists()) {
             form.value = {
                 ...docSnap.data()
             }
         }
-    };
+    } catch (error) {
+        console.error("Error fetching budget data: ", error);
+    }
 })
 
 onMounted(() => {
@@ -70,7 +70,7 @@ const updateBudget = async () => {
     try {
         loading.value = true;
 
-        const budgetRef = doc(db, "budgets", props.budgetId);
+        const budgetRef = doc(db, "users", userId, "budgets", props.budgetId);
         const formData = {
             ...form.value,
             userId: userId,
