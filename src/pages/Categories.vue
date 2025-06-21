@@ -306,8 +306,7 @@ const showUpdateModal = (id) => {
           </div> -->
           <div class="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
             <!--Skeleton loading-->
-            <div v-if="isLoading" v-for="item in 3" :key="item"
-              class="skeleton  h-52 w-full rounded-md">
+            <div v-if="isLoading" v-for="item in 3" :key="item" class="skeleton  h-52 w-full rounded-md">
             </div>
             <!--Income Card-->
             <div v-else v-for="category in categoryIncomeSummaries" :key="category.id"

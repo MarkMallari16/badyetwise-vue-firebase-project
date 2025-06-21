@@ -163,7 +163,7 @@ const getIconCategory = (categoryIcon) => {
       <div class="flex items-center flex-wrap md:flex-wrap lg:justify-between lg:flex-nowrap lg:gap-5 mt-2 lg:mt-3">
         <!--Search Field-->
         <div class="w-full relative">
-          <input type="text" class="input input-bordered pl-12 w-full" placeholder="Search..."
+          <input type="text" class="input input-bordered rounded-md pl-12 w-full" placeholder="Search..."
             v-model="transactionFilterings.search" />
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
             class="size-5 absolute left-4 top-4 text-gray-500">
@@ -176,7 +176,7 @@ const getIconCategory = (categoryIcon) => {
         <div class="flex items-center lg:justify-end gap-3 mt-2 lg:mt-0 ">
           <!--Types-->
           <div>
-            <select class="select select-bordered " v-model="transactionFilterings.type">
+            <select class="select select-bordered rounded-md" v-model="transactionFilterings.type">
               <option value="">All Type</option>
               <option value="income">Income</option>
               <option value="expense">Expense</option>
@@ -184,7 +184,7 @@ const getIconCategory = (categoryIcon) => {
           </div>
           <div>
             <!--Categories-->
-            <select class="select select-bordered " v-model="transactionFilterings.category">
+            <select class="select select-bordered rounded-md" v-model="transactionFilterings.category">
               <option value="">All Categories</option>
               <option v-for="category in filteredCategories" :value="category.name" :key="category.id">
                 {{ category.name }}
