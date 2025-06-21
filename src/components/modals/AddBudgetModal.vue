@@ -75,9 +75,10 @@ onMounted(() => {
       id: doc.id,
       ...doc.data()
     }))
-  })
-}, (error) => {
-  console.error("Error fetching budgets:", error);
+  }, (error) => {
+    console.error("Error fetching budgets:", error);
+  });
+
 })
 const categoryNotExistsInBudgets = computed(() => {
   const categoryExpenses = categories.value
