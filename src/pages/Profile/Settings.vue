@@ -27,7 +27,14 @@ const handleFileUpload = (event) => {
     reader.readAsDataURL(file);
   }
 }
-
+watch(() => currentUser.value, (user) => {
+  if (user) {
+    profileFormData.displayName = user.displayName || "";
+    profileFormData.email = user.email || "";
+    profileFormData.photoURL = user.photoURL || "";
+    formUpdate.value.displayName = user.displayName || "";
+  }
+}, { immediate: true });
 const updateProfile = async () => {
   if (!userId.value) {
     return;
@@ -71,7 +78,7 @@ const updateProfile = async () => {
           <div class=" flex gap-6 items-center flex-wrap">
             <div class="avatar">
               <div class="w-28 rounded-full mt-4 object-cover">
-                <img :src="profileFormData.photoURL" alt="profile">
+                <img :src="formUpdate.photoURL ? formUpdate.photoURL : profileFormData.photoURL" alt="profile">
               </div>
 
             </div>
