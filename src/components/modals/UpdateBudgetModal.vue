@@ -17,8 +17,8 @@ const props = defineProps({
 })
 
 const form = ref({
-    category: '',
     amount: null,
+    category: null,
     timePeriod: 'monthly',
 });
 
@@ -26,7 +26,7 @@ let unsubscribeCategories = null;
 
 watch(() => props.budgetId, async (budgetId) => {
     if (!budgetId) return;
-    
+
     try {
         //create reference to the budget document
         const docRef = doc(db, "users", userId, "budgets", props.budgetId);
@@ -96,7 +96,7 @@ const updateBudget = async () => {
             <div>
                 <div class="flex items-center gap-1">
                     <component :is="IconGoal" class="size-8" />
-                    <h3 class="text-lg font-bold">Update Current Budget</h3>
+                    <h3 class="text-lg font-bold">Update {{form.category}} Budget</h3>
                 </div>
                 <p class="text-gray-500">
                     Update your budget to track your spending in a specific category.
@@ -110,20 +110,8 @@ const updateBudget = async () => {
                         ✕
                     </button>
                 </div>
-                <div class="mb-4 w-full">
-                    <div class="w-full">
-                        <label for="category" class="font-medium">Category</label>
-                        <select name="category" id="category" v-model="form.category"
-                            class="select select-bordered w-full mt-2" required>
-                            <option value="">Select Category</option>
-                            <option v-for="category in categories.filter((c) => c.type === 'expense')"
-                                :key="category.id" :value="category.name">
-                                {{ category.name }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
                 <div class="flex items-center gap-3 w-full">
+
                     <div class="w-full">
                         <label for="amount" class="font-medium">Amount</label>
                         <input type="number" name="amount" v-model="form.amount" id="amount"

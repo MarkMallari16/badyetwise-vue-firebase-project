@@ -55,7 +55,8 @@ let unsubscribeCategories = null;
 let unsubscribeBudgets = null;
 
 onMounted(() => {
-
+  if (!userId) return;
+  // Fetch categories and budgets from Firestore
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs.map((doc) => {
       return {
@@ -74,8 +75,9 @@ onMounted(() => {
       id: doc.id,
       ...doc.data()
     }))
-    console.log("budgets fetched:", budgets.value);
   })
+}, (error) => {
+  console.error("Error fetching budgets:", error);
 })
 const categoryNotExistsInBudgets = computed(() => {
   const categoryExpenses = categories.value
@@ -84,7 +86,7 @@ const categoryNotExistsInBudgets = computed(() => {
 
   const budgetCategories = budgets.value.map(b => b.category);
 
-  const notExistsCategories =  categoryExpenses.filter(category => !budgetCategories.includes(category));
+  const notExistsCategories = categoryExpenses.filter(category => !budgetCategories.includes(category));
   return notExistsCategories;
 })
 
