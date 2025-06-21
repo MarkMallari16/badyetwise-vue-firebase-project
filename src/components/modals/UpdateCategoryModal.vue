@@ -2,7 +2,7 @@
 import { icons } from '@/utils/categoryIcons';
 import { db } from '@/firebase/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, watchEffect } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 import { currentUser } from '@/composables/useAuth';
 import { getIconCategory } from '@/utils/getIconCategory';
 
