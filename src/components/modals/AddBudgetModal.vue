@@ -48,11 +48,12 @@ const validateForm = () => {
     isValid = false;
   }
 
-
   return isValid;
 }
 
 onMounted(() => {
+  if (!userId) return;
+
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs.map((doc) => {
       return {
@@ -124,7 +125,7 @@ const closeModal = () => {
     <div class="modal-box w-11/12 max-w-2xl">
       <div>
         <div class="flex items-center gap-1">
-          <component :is="IconGoal" class="size-8"/>
+          <component :is="IconGoal" class="size-8" />
           <h3 class="text-lg font-bold">Create New Budget</h3>
         </div>
         <p class="text-gray-500">

@@ -1,9 +1,8 @@
 <script setup>
 import { currentUser } from '@/composables/useAuth';
 import { db } from '@/firebase/firebase';
-import { getAuth } from 'firebase/auth';
-import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
-import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { collection, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import IconGoal from '../icons/IconGoal.vue';
 
 const userId = currentUser.value?.uid;
@@ -27,6 +26,7 @@ let unsubscribeCategories = null;
 
 watch(() => props.budgetId, async (budgetId) => {
     if (!budgetId) return;
+    
     try {
         //create reference to the budget document
         const docRef = doc(db, "users", userId, "budgets", props.budgetId);
@@ -95,7 +95,7 @@ const updateBudget = async () => {
         <div class="modal-box w-11/12 max-w-2xl">
             <div>
                 <div class="flex items-center gap-1">
-                    <component :is="IconGoal" class="size-8"/>
+                    <component :is="IconGoal" class="size-8" />
                     <h3 class="text-lg font-bold">Update Current Budget</h3>
                 </div>
                 <p class="text-gray-500">

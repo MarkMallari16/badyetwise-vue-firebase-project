@@ -11,6 +11,8 @@ import { computed, onMounted, onUnmounted, provide, ref, watchEffect } from "vue
 import { db } from "@/firebase/firebase";
 import { currentUser } from "@/composables/useAuth";
 import dayjs from "dayjs";
+import { icons } from "@/utils/categoryIcons";
+import { getIconCategory } from "@/utils/getIconCategory";
 
 const userId = currentUser.value?.uid;
 const isFetching = ref(true);
@@ -292,7 +294,7 @@ provide("pieChartOptions", pieChartOptions);
             <tr v-for="transaction in fiveRecentTransactions" v-if="transactions" :key="transaction.id">
               <td class="flex items-center gap-3">
 
-                <span v-html="transaction.categoryIcon" class="size-10 rounded-full badge rind-1"></span>
+                <component :is="getIconCategory(transaction.categoryIcon)" class="size-10 rounded-full badge "/>
 
                 <p>
                   {{ transaction.description }}

@@ -26,7 +26,7 @@ onMounted(async () => {
     //categories query
     const categoriesQuery = collection(db, "users", userId, "categories");
     //transactions query
-    const transactionsQuery = collection(db, "users",userId,"transactions")
+    const transactionsQuery = collection(db, "users", userId, "transactions")
 
 
     unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
@@ -166,12 +166,12 @@ const reportsSummary = computed(() => {
             </div>
             <div class="mt-4">
                 <div v-if="reportsSummary.budgetAndExpense.length > 0"
-                    v-for="(expenseItem, index) in reportsSummary.budgetAndExpense" :key="index">
+                    v-for="(expenseItem, index) in reportsSummary.budgetAndExpense" :key="index" class="mb-2">
                     <div class="flex justify-between items-center">
                         <p class="font-medium">{{ expenseItem.category }}</p>
                         <p class="text-gray-600">{{ expenseItem.budget }} {{ expenseItem.percentage }}%</p>
                     </div>
-                    <div class="flex items-center  gap-2 pt-4">
+                    <div class="flex items-center gap-2 mt-1">
                         <span class="w-3 h-3 inline-block rounded-full" :class="expenseItem.color">
                         </span>
                         <progress class="progress w-full" :value="expenseItem.amount" :max="expenseItem.budget" />

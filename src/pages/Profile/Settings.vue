@@ -102,10 +102,9 @@ const updateProfile = async () => {
         </div>
 
         <div>
-          <button type="submit" class="btn btn-primary mt-4">Update </button>
+          <button type="submit" class="btn btn-primary mt-4 rounded-md">Update </button>
         </div>
       </form>
-
     </div>
 
   </div>
