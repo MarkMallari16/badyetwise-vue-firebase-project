@@ -3,6 +3,7 @@ import { db } from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 import { onMounted, onUnmounted, ref, watch } from "vue";
+import IconGoal from "../icons/IconGoal.vue";
 
 const auth = getAuth();
 const userId = auth.currentUser?.uid;
@@ -11,7 +12,7 @@ const categories = ref([]);
 const loading = ref(false);
 
 const categoriesQuery = collection(db, "users", userId, "categories");
-console.log(categoriesQuery)
+
 const form = ref({
   amount: null,
   category: "",
@@ -23,8 +24,6 @@ const errorMessages = ref({
   category: null,
   timePeriod: null,
 })
-
-console.log
 
 // Watch for changes in form inputs to reset error messages
 watch(() => [form.value.amount, form.value.category, form.value.timePeriod], ([amount, category, timePeriod]) => {
@@ -125,11 +124,7 @@ const closeModal = () => {
     <div class="modal-box w-11/12 max-w-2xl">
       <div>
         <div class="flex items-center gap-1">
-          <svg class="size-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14Z">
-            </path>
-          </svg>
+          <component :is="IconGoal" class="size-8"/>
           <h3 class="text-lg font-bold">Create New Budget</h3>
         </div>
         <p class="text-gray-500">
@@ -159,7 +154,7 @@ const closeModal = () => {
         </div>
         <div class="flex items-center gap-3 w-full">
           <div class="w-full">
-            <label for="amount" class="font-medium">Amount</label>
+            <label for="amount" class="font-medium">Budget Limit</label>
             <input type="number" name="amount" v-model="form.amount" id="amount"
               class="input input-bordered w-full mt-2" :class="[errorMessages.amount ? 'input-error' : '']"
               placeholder="0.00" />

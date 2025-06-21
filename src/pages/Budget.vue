@@ -17,13 +17,16 @@ const transactions = ref([]);
 const budgets = ref([]);
 const selectedBudgetId = ref(null);
 
-const transactionsqQuery = collection(db, "users", userId, "transactions");
-const budgetsQuery = collection(db, "users", userId, "budgets");
 
 let unsubscribeTransactions;
 let unsubscribeBudgets;
 
 onMounted(() => {
+  if (!userId) return;
+
+  const transactionsqQuery = collection(db, "users", userId, "transactions");
+  const budgetsQuery = collection(db, "users", userId, "budgets");
+  
   unsubscribeTransactions = onSnapshot(transactionsqQuery, (snapshot) => {
     transactions.value = snapshot.docs.map((doc) => {
       return {
@@ -31,6 +34,8 @@ onMounted(() => {
         ...doc.data(),
       };
     });
+  }, (error) => {
+    console.log("transactions listener error.", error);
   });
 
   unsubscribeBudgets = onSnapshot(budgetsQuery, (snapshot) => {
@@ -40,6 +45,8 @@ onMounted(() => {
         ...doc.data(),
       };
     });
+  }, (error) => {
+    console.error("budgets listener error.", error);
   });
 
   isFetching.value = false;

@@ -10,6 +10,8 @@ const auth = getAuth();
 const route = useRoute();
 const { goTo } = useNavigation();
 
+
+
 // Injected properties for sidebar state
 const isSidebarOpen = inject("isSidebarOpen");
 
@@ -21,8 +23,11 @@ const goToTransactionsLink = () => {
 
 };
 const goToCategoriesLink = () => {
-  goTo("/categories/expense");
-
+  if (route.path === "/categories/expense") {
+    goTo("/categories/income");
+  } else {
+    goTo("/categories/expense")
+  }
 };
 const goToBudgetLink = () => {
   goTo("/budget");
@@ -54,7 +59,6 @@ if (currentUser.value) {
   storedUser.value.name = currentUser.value?.displayName;
   storedUser.value.email = currentUser.value?.email;
   storedUser.value.photoURL = currentUser.value?.photoURL;
-
 } else {
   goTo("/login");
 }
@@ -72,8 +76,7 @@ const handleSignOut = () => {
 };
 
 //check if the current route is active
-const isActive = (path) => route.path === path;
-
+const isActive = (path) => route.path.startsWith(path);
 // Links for the overview section of the sidebar
 const overviewLinks = [
   {

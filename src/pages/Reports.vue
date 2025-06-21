@@ -1,7 +1,7 @@
 <script setup>
 import DashboardNav from '@/components/DashboardNav.vue';
 import { db } from '@/firebase/firebase';
-import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { currentUser } from '@/composables/useAuth';
 
@@ -11,22 +11,23 @@ const categories = ref([])
 
 
 
-const userId = computed(() => currentUser.value?.uid);
+const userId = currentUser.value?.uid;
 
-
-
-
-//// Unsubscribe functions to clean up listeners
+//Unsubscribe functions to clean up listeners
 let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 let unsubscribeCategories = null;
-onMounted(() => {
+
+onMounted(async () => {
     //if user id empty
-    if (!userId.value) return;
+    if (!userId) return;
     //budget query
     const budgetsQuery = collection(db, "users", userId, "budgets");
-    //transaction query
+    //categories query
     const categoriesQuery = collection(db, "users", userId, "categories");
+    //transactions query
+    const transactionsQuery = collection(db, "users",userId,"transactions")
+
 
     unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
         transactions.value = snapshot.docs.map(doc => ({
@@ -43,7 +44,7 @@ onMounted(() => {
             ...doc.data()
         }))
     }, (error) => {
-        console.log("budgets listener error.", error);
+        console.error("budgets listener error.", error);
     })
 
     unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
@@ -52,7 +53,7 @@ onMounted(() => {
             ...doc.data()
         }))
     }, (error) => {
-        console.log("categories listener error.", error);
+        console.error("categories listener error.", error);
     })
 })
 
