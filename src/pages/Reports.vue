@@ -19,7 +19,7 @@ const transactionsQuery = query(
 const budgetsQuery = collection(db, "users", userId, "budgets");
 const categoriesQuery = collection(db, "users", userId, "categories");
 
-
+//// Unsubscribe functions to clean up listeners
 let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 let unsubscribeCategories = null;
