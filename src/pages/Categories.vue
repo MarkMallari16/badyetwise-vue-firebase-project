@@ -276,7 +276,7 @@ const showUpdateModal = (id) => {
           <h2 class="text-2xl font-semibold mt-4">Income Categories</h2>
           <div v-if="categoriesIncomes.length == 0" class="mt-4">
             <div class="ring-1 ring-inset ring-gray-300 rounded-md p-6 w-full">
-              <p class="text-gray-500  mb-2">No expense categories found. Add a new category to get started.</p>
+              <p class="text-gray-500  mb-2">No income categories found. Add a new category to get started.</p>
               <OpenAddModalButton @click="showModal">Add Category</OpenAddModalButton>
             </div>
           </div>
