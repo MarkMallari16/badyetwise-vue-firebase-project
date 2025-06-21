@@ -91,7 +91,7 @@ const categoryNotExistsInBudgets = computed(() => {
   return notExistsCategories;
 })
 
-
+//unmount the listeners when the component is destroyed
 onUnmounted(() => {
   if (unsubscribeCategories) {
     unsubscribeCategories();

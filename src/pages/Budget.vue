@@ -183,7 +183,7 @@ const showUpdateModal = (id) => {
         <h1 class="text-2xl font-bold">Budget Categories</h1>
         <p class="text-gray-500">Track your spending by category</p>
         <!--Skeleton Loading-->
-        <div v-if="isLoading" v-for="item in 4" :key="item" class="skeleton mt-6 h-24 w-full">
+        <div v-if="isLoading" v-for="item in budgetSummaries.length" :key="item" class="skeleton mt-6 h-24 w-full">
         </div>
         <div v-else v-for="summary in budgetSummaries" :key="summary.id" class="pt-6">
           <div class="flex justify-between items-center">
