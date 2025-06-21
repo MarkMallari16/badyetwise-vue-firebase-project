@@ -84,12 +84,12 @@ const login = async (event) => {
           <div class="mt-2">
             <div>
               <label for="email">Email</label>
-              <input id="email" type="email" class="mt-2 block input input-bordered w-full"
+              <input id="email" type="email" class="mt-2 block input input-bordered rounded-md w-full"
                 placeholder="Enter your email" v-model="email" required />
             </div>
             <div class="mt-4">
               <label for="password">Password</label>
-              <input id="password" type="password" class="mt-2 block input input-bordered w-full"
+              <input id="password" type="password" class="mt-2 block input input-bordered rounded-md w-full"
                 placeholder="Enter your password" v-model="password" required />
             </div>
           </div>
@@ -97,7 +97,7 @@ const login = async (event) => {
             <p v-if="errorMessage" class="mt-2 text-red-500">{{ errorMessage }}</p>
           </div>
           <div class="mt-6">
-            <button :disabled="loading" type="submit" class="btn btn-primary text-center w-full mb-3">
+            <button :disabled="loading" type="submit" class="btn btn-primary rounded-md text-center w-full mb-3">
               {{ loading ? "Logging in" : "Log in" }}
             </button>
           </div>

@@ -34,7 +34,7 @@ const handleSignInWithGoogle = () => {
 </script>
 
 <template>
-  <button type="button" class="btn bg-white text-center w-full ring-1 ring-inset ring-gray-300"
+  <button type="button" class="btn bg-white text-center rounded-md w-full ring-1 ring-inset ring-gray-500"
     @click="handleSignInWithGoogle">
     <svg class="w-5 h-5 text-primary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
       fill="currentColor" viewBox="0 0 24 24">

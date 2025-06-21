@@ -94,17 +94,17 @@ const register = async (event) => {
           <div>
             <div>
               <label for="fullName">Full Name</label>
-              <input id="fullName" type="text" class="mt-2 block input input-bordered w-full"
+              <input id="fullName" type="text" class="mt-2 block input input-bordered rounded-md w-full"
                 placeholder="Enter your Full Name" v-model="fullName" required />
             </div>
             <div class="mt-4">
               <label for="email">Email</label>
-              <input id="email" type="email" class="mt-2 block input input-bordered w-full"
+              <input id="email" type="email" class="mt-2 block input input-bordered rounded-md w-full"
                 placeholder="Enter your email" v-model="email" required />
             </div>
             <div class="mt-4">
               <label for="password">Password</label>
-              <input id="password" type="password" class="mt-2 block input input-bordered w-full"
+              <input id="password" type="password" class="mt-2 block input input-bordered rounded-md w-full"
                 placeholder="Enter your password" v-model="password" required />
             </div>
           </div>
@@ -112,7 +112,7 @@ const register = async (event) => {
             <p v-if="errorMessage" class="mt-2 text-red-500">{{ errorMessage }}</p>
           </div>
           <div class="mt-6">
-            <button :disabled="loading" type="submit" class="btn btn-primary text-center w-full mb-3">
+            <button :disabled="loading" type="submit" class="btn btn-primary text-center rounded-md w-full mb-3">
               {{ loading ? "Signing in..." : "Sign in" }}
             </button>
           </div>
