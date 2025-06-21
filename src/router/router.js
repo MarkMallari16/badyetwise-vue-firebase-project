@@ -46,8 +46,9 @@ const routes = [
             showSidebar: true
         }
     },
+   
     {
-        path: '/categories',
+        path: '/categories/:tab',
         name: 'Categories',
         component: Categories,
         meta: {

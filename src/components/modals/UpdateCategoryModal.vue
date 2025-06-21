@@ -27,12 +27,9 @@ const form = ref({
     icon: "",
     color: "Select Color",
 });
-
-console.log("Category Data:", form.value);
-
 //setting up initial form values
 watch(() => props.categoryId, async (categoryId) => {
-    if (categoryId) return;
+    if (!categoryId) return;
 
     try {
         const docRef = doc(db, "users", userId, "categories", props.categoryId);

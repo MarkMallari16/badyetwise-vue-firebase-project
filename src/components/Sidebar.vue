@@ -21,7 +21,7 @@ const goToTransactionsLink = () => {
 
 };
 const goToCategoriesLink = () => {
-  goTo("/categories");
+  goTo("/categories/expense");
 
 };
 const goToBudgetLink = () => {

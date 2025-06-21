@@ -2,20 +2,36 @@
 import DashboardNav from "../components/DashboardNav.vue";
 import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue";
 import OpenAddModalButton from "@/components/OpenAddModalButton.vue";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import AddCategoryModal from "@/components/modals/AddCategoryModal.vue";
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import UpdateCategoryModal from "@/components/modals/UpdateCategoryModal.vue";
 import { currentUser } from "@/composables/useAuth";
-import { icons } from "@/utils/categoryIcons";
 import { getIconCategory } from "@/utils/getIconCategory";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const tab = ref("expense");
 const categories = ref([]);
 const transactions = ref([]);
 const budgets = ref([]);
 const userId = currentUser.value?.uid;
+
+const goToSpecificType = (tabName) => {
+  tab.value = tabName;
+  router.push(`/categories/${tab.value}`);
+}
+
+// Watch for route changes to update the tab state
+watch(() => route.params.tab, (newTab) => {
+  tab.value = newTab;
+}, {
+  immediate: true,
+});
+
 //selectedCategoryId is used to store the id of the category that is being updated
 const selectedCategoryId = ref(null);
 
@@ -37,6 +53,7 @@ const categoriesExpenses = computed(() => {
 const categoriesIncomes = computed(() => {
   return categories.value.filter(category => category.type === "income")
 })
+
 // Computed property to summarize expenses by category
 const categoryExpenseSummaries = computed(() => {
   return categoriesExpenses.value.map(category => {
@@ -59,7 +76,6 @@ const categoryExpenseSummaries = computed(() => {
   })
 })
 
-console.log("Category Expense Summaries:", categoryExpenseSummaries.value);
 const categoryIncomeSummaries = computed(() => {
   return categoriesIncomes.value.map(category => {
     const relatedTransactions = transactions.value.filter(transaction => transaction.categoryId === category.id);
@@ -73,7 +89,6 @@ const categoryIncomeSummaries = computed(() => {
       totalAmount: totalAmount,
       incomeStatus
     }
-
   })
 })
 
@@ -174,22 +189,28 @@ const showUpdateModal = (id) => {
       <h1 class="text-3xl font-bold">Manage Categories</h1>
 
       <div class="w-full mt-4 bg-gray-100 rounded-xl flex justify-center items-center gap-2 px-2 py-2">
-        <button class="btn w-1/2 rounded-lg" :class="[tab === 'expense' ? 'btn-primary' : 'btn-ghost']"
-          @click="tab = 'expense'">
+        <button class="btn w-1/2 rounded-lg" :class="[tab === 'expense' ? 'btn-primary duration-200' : 'btn-ghost ']"
+          @click="goToSpecificType('expense')">
           Expense
         </button>
-        <button class="btn w-1/2 rounded-lg" :class="[tab === 'income' ? 'btn-primary' : 'btn-ghost']"
-          @click="tab = 'income'">
+        <button class="btn w-1/2 rounded-lg" :class="[tab === 'income' ? 'btn-primary duration-200' : 'btn-ghost']"
+          @click="goToSpecificType('income')">
           Income
         </button>
       </div>
       <div class="w-full ">
         <div v-if="tab === 'expense'">
           <h2 class="text-2xl font-semibold mt-4">Expense Categories</h2>
-
+          <div v-if="categoriesExpenses.length == 0" class="mt-4">
+            <div class="ring-1 ring-inset ring-gray-300 rounded-md p-6 w-full">
+              <p class="text-gray-500  mb-2">No expense categories found. Add a new category to get started.</p>
+              <OpenAddModalButton @click="showModal">Add Category</OpenAddModalButton>
+            </div>
+          </div>
           <div class="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
             <!--Card Expense-->
-            <div v-for="category in categoryExpenseSummaries.filter(c => c.type == 'expense')" :key="category.id"
+
+            <div v-for="category in categoryExpenseSummaries" :key="category.id"
               class="relative p-8 ring-1 ring-inset ring-gray-300 rounded-lg shadow-sm">
               <div class="relative flex justify-between  items-center ">
                 <div class="flex items-center gap-3 ">
@@ -253,6 +274,12 @@ const showUpdateModal = (id) => {
         </div>
         <div v-else>
           <h2 class="text-2xl font-semibold mt-4">Income Categories</h2>
+          <div v-if="categoriesIncomes.length == 0" class="mt-4">
+            <div class="ring-1 ring-inset ring-gray-300 rounded-md p-6 w-full">
+              <p class="text-gray-500  mb-2">No expense categories found. Add a new category to get started.</p>
+              <OpenAddModalButton @click="showModal">Add Category</OpenAddModalButton>
+            </div>
+          </div>
           <div class="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
             <!--Income Card-->
             <div v-for="category in categoryIncomeSummaries" :key="category.id"
