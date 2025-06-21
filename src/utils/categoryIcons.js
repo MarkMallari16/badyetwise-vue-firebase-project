@@ -11,7 +11,6 @@ import IconOther from "@/components/icons/IconOther.vue";
 import IconShopping from "@/components/icons/IconShopping.vue";
 import IconTravel from "@/components/icons/IconTravel.vue";
 import { markRaw } from "vue";
-
 export const icons = [
     {
         id: "clothing",

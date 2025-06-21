@@ -69,8 +69,6 @@ const reportsSummary = computed(() => {
     const totalIncome = income.reduce((sum, transaction) => sum + transaction.amount, 0);
     const totalExpense = expense.reduce((sum, transaction) => sum + transaction.amount, 0);
 
-
-
     const savings = totalIncome - totalExpense;
     const percentageUsed = (totalExpense / totalIncome * 100).toFixed(2) || 0;
     const savingsPercentage = savings && totalIncome ? (savings / totalIncome * 100).toFixed(2) : 0;
@@ -171,9 +169,7 @@ const reportsSummary = computed(() => {
                         <progress class="progress w-full" :value="expenseItem.amount" :max="expenseItem.budget" />
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 </template>
