@@ -7,21 +7,24 @@ import { currentUser } from '@/composables/useAuth';
 
 const transactions = ref([]);
 const budgets = ref([]);
+const categories = ref([])
 
-let unsubscribeTransactions = null;
-let unsubscribeBudgets = null;
+
 
 const userId = currentUser.value?.uid;
 const transactionsQuery = query(
     collection(db, "users", userId, "transactions"),
     orderBy("createdAt", "desc")
 );
-const budgetsQuery = query(
-    collection(db, "users", userId, "budgets"),
-);
+const budgetsQuery = collection(db, "users", userId, "budgets");
+const categoriesQuery = collection(db, "users", userId, "categories");
 
+
+let unsubscribeTransactions = null;
+let unsubscribeBudgets = null;
+let unsubscribeCategories = null;
 onMounted(() => {
-    if (currentUser.value?.uid) {
+    if (userId) {
         unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
             transactions.value = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -35,15 +38,26 @@ onMounted(() => {
                 ...doc.data()
             }))
         })
+
+        unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
+            categories.value = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }))
+        })
     }
 })
 
 onUnmounted(() => {
+    // Clean up the listeners when the component is unmounted
     if (unsubscribeTransactions) {
         unsubscribeTransactions();
     }
     if (unsubscribeBudgets) {
         unsubscribeBudgets();
+    }
+    if (unsubscribeCategories) {
+        unsubscribeCategories();
     }
 })
 
@@ -54,14 +68,33 @@ const reportsSummary = computed(() => {
 
     const totalIncome = income.reduce((sum, transaction) => sum + transaction.amount, 0);
     const totalExpense = expense.reduce((sum, transaction) => sum + transaction.amount, 0);
+
+
+
     const savings = totalIncome - totalExpense;
     const percentageUsed = (totalExpense / totalIncome * 100).toFixed(2) || 0;
     const savingsPercentage = savings && totalIncome ? (savings / totalIncome * 100).toFixed(2) : 0;
 
+    const budgetAndExpense = budgets.value.map(budget => {
+        const budgetExpense = expense.filter(transaction => transaction.category === budget.category);
+        const categoryColor = categories.value.find(category => category.name === budget.category)?.color;
+        const totalBudgetExpense = budgetExpense.reduce((sum, transaction) => sum + transaction.amount, 0)
+
+        return {
+            ...budgetExpense,
+            category: budget.category,
+            color: categoryColor || 'bg-gray-200',
+            budget: budget.amount,
+            amount: totalBudgetExpense,
+            percentage: ((totalBudgetExpense / budget.amount) * 100).toFixed(2) || 0
+        }
+    })
+    console.log(budgetAndExpense)
     return {
         expense,
         totalIncome,
         totalExpense,
+        budgetAndExpense,
         savings,
         percentageUsed,
         savingsPercentage
@@ -126,18 +159,16 @@ const reportsSummary = computed(() => {
                 </h2>
             </div>
             <div class="mt-4">
-
-                <div v-if="reportsSummary.expense.length > 0" v-for="(expenseItem, index) in reportsSummary.expense"
-                    :key="index">
+                <div v-if="reportsSummary.budgetAndExpense.length > 0"
+                    v-for="(expenseItem, index) in reportsSummary.budgetAndExpense" :key="index">
                     <div class="flex justify-between items-center">
                         <p class="font-medium">{{ expenseItem.category }}</p>
-                        <p class="text-gray-600">{{ expenseItem.amount }} (43%)</p>
+                        <p class="text-gray-600">{{ expenseItem.budget }} {{ expenseItem.percentage }}%</p>
                     </div>
                     <div class="flex items-center  gap-2 pt-4">
-                        <span class="w-3 h-3 inline-block  bg-blue-500 rounded-full">
-
+                        <span class="w-3 h-3 inline-block rounded-full" :class="expenseItem.color">
                         </span>
-                        <progress class="progress w-full" :value="expenseItem.amount" />
+                        <progress class="progress w-full" :value="expenseItem.amount" :max="expenseItem.budget" />
                     </div>
                 </div>
 

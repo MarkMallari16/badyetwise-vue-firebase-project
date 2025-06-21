@@ -4,7 +4,7 @@ const socialProofs = [
     name: "Kulas",
     role: "Porman",
     testimonial:
-      "BudgetTracker completely changed how I manage my finances. The insights are incredible and have helped me save over $500 per month.",
+      "BadyetWise completely changed how I manage my finances. The insights are incredible and have helped me save over $500 per month.",
     image: "https://i.pinimg.com/474x/21/2a/cd/212acd3d51dc7661ed91c95e3b70d65c.jpg",
   },
   {
