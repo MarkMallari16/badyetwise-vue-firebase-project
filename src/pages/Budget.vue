@@ -26,7 +26,7 @@ onMounted(() => {
 
   const transactionsqQuery = collection(db, "users", userId, "transactions");
   const budgetsQuery = collection(db, "users", userId, "budgets");
-  
+
   unsubscribeTransactions = onSnapshot(transactionsqQuery, (snapshot) => {
     transactions.value = snapshot.docs.map((doc) => {
       return {
@@ -60,7 +60,6 @@ onUnmounted(() => {
     unsubscribeBudgets();
   }
 })
-
 
 const budgetSummaries = computed(() => {
   return budgets.value.map((budget) => {

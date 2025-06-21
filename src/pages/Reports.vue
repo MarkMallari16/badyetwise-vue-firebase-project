@@ -79,8 +79,8 @@ const reportsSummary = computed(() => {
     const totalExpense = expense.reduce((sum, transaction) => sum + transaction.amount, 0);
 
     const savings = totalIncome - totalExpense;
-    const percentageUsed = (totalExpense / totalIncome * 100).toFixed(2) || 0;
-    const savingsPercentage = savings && totalIncome ? (savings / totalIncome * 100).toFixed(2) : 0;
+    const percentageUsed = totalIncome ? (totalExpense / totalIncome * 100).toFixed(1) : 0;
+    const savingsPercentage = savings && totalIncome ? (savings / totalIncome * 100).toFixed(1) : 0;
 
     const budgetAndExpense = budgets.value.map(budget => {
         const budgetExpense = expense.filter(transaction => transaction.category === budget.category);

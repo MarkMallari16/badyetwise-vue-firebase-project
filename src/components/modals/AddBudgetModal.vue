@@ -2,16 +2,18 @@
 import { db } from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
 import IconGoal from "../icons/IconGoal.vue";
 
 const auth = getAuth();
 const userId = auth.currentUser?.uid;
 
 const categories = ref([]);
+const budgets = ref([]);
 const loading = ref(false);
 
 const categoriesQuery = collection(db, "users", userId, "categories");
+const budgetsQuery = collection(db, "users", userId, "budgets");
 
 const form = ref({
   amount: null,
@@ -19,7 +21,7 @@ const form = ref({
   timePeriod: "monthly",
 });
 
-const errorMessages = ref({
+const errors = ref({
   amount: null,
   category: null,
   timePeriod: null,
@@ -27,32 +29,32 @@ const errorMessages = ref({
 
 // Watch for changes in form inputs to reset error messages
 watch(() => [form.value.amount, form.value.category, form.value.timePeriod], ([amount, category, timePeriod]) => {
-  if (amount) errorMessages.value.amount = null;
-  if (category) errorMessages.value.category = null;
-  if (timePeriod) errorMessages.value.timePeriod = null;
+  if (amount) errors.value.amount = null;
+  if (category) errors.value.category = null;
+  if (timePeriod) errors.value.timePeriod = null;
 })
 
-let unsubscribeCategories = null;
 
 const validateForm = () => {
   let isValid = true;
 
   if (!form.value.amount || form.value.amount <= 0) {
-    errorMessages.value.amount = "Please enter a valid amount.";
+    errors.value.amount = "Please enter a valid amount.";
     isValid = false;
 
   }
 
   if (!form.value.category) {
-    errorMessages.value.category = "Please select a category.";
+    errors.value.category = "Please select a category.";
     isValid = false;
   }
 
   return isValid;
 }
+let unsubscribeCategories = null;
+let unsubscribeBudgets = null;
 
 onMounted(() => {
-  if (!userId) return;
 
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs.map((doc) => {
@@ -61,12 +63,39 @@ onMounted(() => {
         ...doc.data(),
       }
     })
+
+    console.log("Categories fetched:", categories.value);
+  }, (error) => {
+    console.error("Error fetching categories:", error);
+  });
+
+  unsubscribeBudgets = onSnapshot(budgetsQuery, (snapshot) => {
+    budgets.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }))
+    console.log("budgets fetched:", budgets.value);
   })
 })
+const categoryNotExistsInBudgets = computed(() => {
+  const categoryExpenses = categories.value
+    .filter(c => c.type === "expense")
+    .map(c => c.name);
+
+  const budgetCategories = budgets.value.map(b => b.category);
+
+  const notExistsCategories =  categoryExpenses.filter(category => !budgetCategories.includes(category));
+  return notExistsCategories;
+})
+
 
 onUnmounted(() => {
   if (unsubscribeCategories) {
     unsubscribeCategories();
+  }
+
+  if (unsubscribeBudgets) {
+    unsubscribeBudgets();
   }
 })
 
@@ -83,7 +112,7 @@ const submitForm = async () => {
 
     const formData = {
       ...form.value,
-      categoryId: categories.value.find((c) => c.name === form.value.category)?.id || null,
+      categoryId: categories.value.find(c => c.name === form.value.category)?.id || null,
       createdAt: new Date().toISOString(),
     };
 
@@ -98,7 +127,7 @@ const submitForm = async () => {
     resetForm();
     closeModal();
 
-    errorMessages.value = {
+    errors.value = {
       amount: null,
       category: null,
       timePeriod: null,
@@ -106,9 +135,13 @@ const submitForm = async () => {
   }
 };
 
+watchEffect(() => {
+  console.log("categoryNotExistsInBudgets:", categoryNotExistsInBudgets.value);
+});
 const resetForm = () => {
   form.value = {
-    totalAmount: null,
+    amount: null,
+    category: "",
     timePeriod: "monthly",
   };
 };
@@ -119,6 +152,7 @@ const closeModal = () => {
     modal.close();
   }
 };
+
 </script>
 <template>
   <dialog id="add_budget" class="modal">
@@ -143,21 +177,20 @@ const closeModal = () => {
           <div class="w-full">
             <label for="category" class="font-medium">Category</label>
             <select name="category" id="category" v-model="form.category" class="select select-bordered w-full mt-2"
-              :class="[errorMessages.category ? 'select-error' : '']">
+              :class="[errors.category ? 'select-error' : '']">
               <option value="">Select Category</option>
-              <option v-for="category in categories.filter((c) => c.type === 'expense')" :key="category.id"
-                :value="category.name">
-                {{ category.name }}
+              <option v-for="(category, index) in categoryNotExistsInBudgets" :key="index" :value="category">
+                {{ category }}
               </option>
             </select>
-            <p class="text-sm mt-1 text-red-600" v-if="errorMessages.category">{{ errorMessages.category }}</p>
+            <p class="text-sm mt-1 text-red-600" v-if="errors.category">{{ errors.category }}</p>
           </div>
         </div>
         <div class="flex items-center gap-3 w-full">
           <div class="w-full">
             <label for="amount" class="font-medium">Budget Limit</label>
             <input type="number" name="amount" v-model="form.amount" id="amount"
-              class="input input-bordered w-full mt-2" :class="[errorMessages.amount ? 'input-error' : '']"
+              class="input input-bordered w-full mt-2" :class="[errors.amount ? 'input-error' : '']"
               placeholder="0.00" />
           </div>
           <div class="w-full">
@@ -170,7 +203,7 @@ const closeModal = () => {
             </select>
           </div>
         </div>
-        <p class="text-sm mt-1 text-red-600" v-if="errorMessages.amount">{{ errorMessages.amount }}</p>
+        <p class="text-sm mt-1 text-red-600" v-if="errors.amount">{{ errors.amount }}</p>
 
         <div class="flex gap-2 modal-action">
           <button type="button" @click="closeModal" class="btn">Close</button>
