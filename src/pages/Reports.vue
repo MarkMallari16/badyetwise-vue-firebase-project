@@ -11,41 +11,49 @@ const categories = ref([])
 
 
 
-const userId = currentUser.value?.uid;
-const transactionsQuery = query(
-    collection(db, "users", userId, "transactions"),
-    orderBy("createdAt", "desc")
-);
-const budgetsQuery = collection(db, "users", userId, "budgets");
-const categoriesQuery = collection(db, "users", userId, "categories");
+const userId = computed(() => currentUser.value?.uid);
+
+
+
 
 //// Unsubscribe functions to clean up listeners
 let unsubscribeTransactions = null;
 let unsubscribeBudgets = null;
 let unsubscribeCategories = null;
 onMounted(() => {
-    if (userId) {
-        unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
-            transactions.value = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
-        })
+    //if user id empty
+    if (!userId.value) return;
+    //budget query
+    const budgetsQuery = collection(db, "users", userId, "budgets");
+    //transaction query
+    const categoriesQuery = collection(db, "users", userId, "categories");
 
-        unsubscribeBudgets = onSnapshot(budgetsQuery, (snapshot) => {
-            budgets.value = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
-        })
+    unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
+        transactions.value = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }))
+    }, (error) => {
+        console.log("transactions listener error.", error);
+    })
 
-        unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
-            categories.value = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
-        })
-    }
+    unsubscribeBudgets = onSnapshot(budgetsQuery, (snapshot) => {
+        budgets.value = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }))
+    }, (error) => {
+        console.log("budgets listener error.", error);
+    })
+
+    unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
+        categories.value = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }))
+    }, (error) => {
+        console.log("categories listener error.", error);
+    })
 })
 
 onUnmounted(() => {
@@ -79,7 +87,6 @@ const reportsSummary = computed(() => {
         const totalBudgetExpense = budgetExpense.reduce((sum, transaction) => sum + transaction.amount, 0)
 
         return {
-            ...budgetExpense,
             category: budget.category,
             color: categoryColor || 'bg-gray-200',
             budget: budget.amount,
