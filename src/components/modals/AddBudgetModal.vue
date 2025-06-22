@@ -1,6 +1,5 @@
 <script setup>
 import { db } from "@/firebase/firebase";
-import { getAuth } from "firebase/auth";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 import { computed, onMounted, onUnmounted, reactive, ref, watch, watchEffect } from "vue";
 import IconGoal from "../icons/IconGoal.vue";
@@ -57,6 +56,8 @@ const validateForm = () => {
   }
   return isValid;
 }
+
+
 let unsubscribeCategories = null;
 let unsubscribeBudgets = null;
 

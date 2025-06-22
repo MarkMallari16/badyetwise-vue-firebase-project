@@ -62,6 +62,11 @@ const validateForm = () => {
     isvalid = false;
   }
 
+  if (!form.name.trim().length || form.name.length < 3) {
+    errors.name = "Category name must be at least 3 characters long."
+    isvalid = false;
+  }
+
   if (form.color === "Select Color") {
     errors.color = "Please select a color."
     isvalid = false;
