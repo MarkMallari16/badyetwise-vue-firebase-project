@@ -237,7 +237,6 @@ const showUpdateModal = (id) => {
                     <p class="text-gray-600">{{ category.numberOfTransactions }} transactions</p>
                   </div>
                 </div>
-
                 <div class="dropdown dropdown-bottom">
                   <div tabindex="0" role="button" class="btn-ghost p-0 hover:bg-transparent">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -272,7 +271,6 @@ const showUpdateModal = (id) => {
                     </li>
                   </ul>
                 </div>
-
               </div>
               <div class="pt-2 flex justify-between">
                 <p>Spent: ₱{{ category.totalSpent }}</p>
@@ -288,9 +286,7 @@ const showUpdateModal = (id) => {
             </div>
           </div>
         </div>
-
         <div v-else>
-
           <h2 class="text-2xl font-semibold mt-4">Income Categories</h2>
           <!-- <div v-if="categoriesIncomes.length == 0" class="mt-4">
             <div class="ring-1 ring-inset ring-gray-300 rounded-md p-6 w-full">

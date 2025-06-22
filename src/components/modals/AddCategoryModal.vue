@@ -5,47 +5,50 @@ import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { icons } from "@/utils/categoryIcons";
 import { currentUser } from "@/composables/useAuth";
 import { categoryExists } from "@/helpers/errorsValidation";
-import { ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 
 //
 
 const loading = ref(false);
 const selectedIcon = ref({ name: "", icon: "" });
-console.log("Current User: ", currentUser.value.uid);
 //form data
-const form = ref({
+const form = reactive({
   type: "income",
   name: "",
   icon: selectedIcon.value.name || "Select Icon",
   color: "Select Color",
 });
 
-
-// Watch for changes in form inputs to reset error messages
-watch(() => [form.value.name, form.value.icon, form.value.color], ([name, icon, color]) => {
-  // Reset error messages when form inputs change
-  if (name) errors.value.name = "";
-  if (icon) errors.value.icon = "";
-  if (color !== "Select Color") errors.value.color = "";
-})
-
 //form error messages
-const errors = ref({
+const errors = reactive({
   name: "",
   icon: "",
   color: "",
 })
+
+// Watch for changes in form inputs to reset error messages
+watch(() => [form.name, form.icon, form.color], ([name, icon, color]) => {
+  // Reset error messages when form inputs change
+  if (name) errors.name = "";
+  if (icon) errors.icon = "";
+  if (color !== "Select Color") errors.color = "";
+})
+
+
 // CSS class for error messages
 const errorClass = "text-red-500";
 
 // Reset form to initial state
 const resetForm = () => {
-  form.value = {
-    type: "income",
-    name: "",
-    icon: "",
-    color: "Select Color",
-  };
+  form.type = "income";
+  form.name = "";
+  form.icon = "Select Icon";
+  form.color = "Select Color";
+
+  errors.name = "";
+  errors.icon = "";
+  errors.color = "";
+
   selectedIcon.value = { name: "", icon: "" };
 };
 
@@ -54,17 +57,22 @@ const resetForm = () => {
 const validateForm = () => {
   let isvalid = true;
 
-  if (!form.value.name) {
-    errors.value.name = "Category name is required."
+  if (!form.name) {
+    errors.name = "Category name is required."
     isvalid = false;
   }
 
-  if (form.value.color === "Select Color") {
-    errors.value.color = "Please select a color."
+  if (!form.name.trim().length || form.name.length < 3) {
+    errors.name = "Category name must be at least 3 characters long."
+    isvalid = false;
+  }
+
+  if (form.color === "Select Color") {
+    errors.color = "Please select a color."
     isvalid = false;
   }
   if (selectedIcon.value.name == "" || selectedIcon.value.icon == "Select Icon") {
-    errors.value.icon = "Please select an icon."
+    errors.icon = "Please select an icon."
     isvalid = false;
   }
 
@@ -86,17 +94,17 @@ const submitForm = async () => {
   try {
 
     loading.value = true;
-    const normalizedName = form.value.name.trim().toLowerCase();
-    const exists = await categoryExists(normalizedName, form.value.type);
+    const normalizedName = form.name.trim().toLowerCase();
+    const exists = await categoryExists(normalizedName, form.type);
 
     if (exists) {
-      errors.value.name = "Category already exists.";
+      errors.name = "Category already exists.";
       loading.value = false;
       return;
     }
 
     const formData = {
-      ...form.value,
+      ...form,
       icon: selectedIcon.value.name || "",
       createdAt: new Date().toISOString(),
     };
@@ -121,7 +129,7 @@ const selectIcon = (icon) => {
   selectedIcon.value.name = icon.name || "";
   selectedIcon.value.icon = icon.icon || "";
 
-  form.value.icon = icon.id || "";
+  form.icon = icon.id || "";
 };
 
 // Function to close the modal and reset the form

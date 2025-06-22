@@ -1,14 +1,15 @@
 <script setup>
 import { db } from "@/firebase/firebase";
 import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { currentUser } from "@/composables/useAuth";
 import { isBudgetAllocated } from "@/helpers/errorsValidation";
 
 const userId = currentUser.value?.uid;
 const loading = ref(false);
 const categories = ref([]);
-const form = ref({
+
+const form = reactive({
   type: "income",
   amount: null,
   date: "",
@@ -19,7 +20,7 @@ const form = ref({
   notes: "",
 });
 
-const errors = ref({
+const errors = reactive({
   amount: "",
   date: "",
   description: "",
@@ -32,28 +33,28 @@ const errorTextClass = "pt-1 text-red-500";
 const validateForm = () => {
   let isValid = true;
 
-  if (!form.value.amount) {
-    errors.value.amount = "Amount is .";
+  if (!form.amount) {
+    errors.amount = "Amount is .";
     isValid = false;
   }
 
-  if (!form.value.amount > 0) {
-    errors.value.amount = "Amount cannot be negative.";
+  if (!form.amount > 0) {
+    errors.amount = "Amount cannot be negative.";
     isValid = false;
   }
 
-  if (!form.value.date) {
-    errors.value.date = "Date is required.";
+  if (!form.date) {
+    errors.date = "Date is required.";
     isValid = false;
   }
 
-  if (!form.value.description) {
-    errors.value.description = "Description is required.";
+  if (!form.description) {
+    errors.description = "Description is required.";
     isValid = false;
   }
 
-  if (!form.value.category) {
-    errors.value.categoryIcon = "Category is required."
+  if (!form.category) {
+    errors.categoryIcon = "Category is required."
     isValid = false;
   }
 
@@ -61,25 +62,29 @@ const validateForm = () => {
   return isValid;
 }
 
-watch(() => [form.value.amount, form.value.date, form.value.description, form.value.category], ([amount, date, description, category]) => {
-  if (amount) errors.value.amount = "";
-  if (date) errors.value.date = "";
-  if (description) errors.value.description = "";
-  if (category) errors.value.categoryIcon = ""
+watch(() => [form.amount, form.date, form.description, form.category], ([amount, date, description, category]) => {
+  if (amount) errors.amount = "";
+  if (date) errors.date = "";
+  if (description) errors.description = "";
+  if (category) errors.categoryIcon = ""
 })
 
 // Reset form to initial state
 const resetForm = () => {
-  form.value = {
-    type: "income",
-    amount: null,
-    date: "",
-    description: "",
-    categoryIcon: "",
-    category: "",
-    paymentMethod: "Cash",
-    notes: "",
-  };
+  // Reset form fields
+  form.type = "income";
+  form.amount = null;
+  form.date = "";
+  form.description = "";
+  form.categoryIcon = "";
+  form.category = "";
+  form.paymentMethod = "Cash";
+  form.notes = "";
+  // Reset errors
+  errors.amount = "";
+  errors.date = "";
+  errors.description = "";
+  errors.categoryIcon = "";
 };
 
 
@@ -112,25 +117,24 @@ const submitForm = async () => {
     loading.value = true;
 
     const formData = {
-      ...form.value,
+      ...form,
       userId: currentUser.value?.uid,
-      categoryIcon: categories.value.find((c) => c.name === form.value.category)?.icon || null,
+      categoryIcon: categories.value.find((c) => c.name === form.category)?.icon || null,
       categoryId:
-        categories.value.find((c) => c.name === form.value.category)?.id || null,
+        categories.value.find((c) => c.name === form.category)?.id || null,
       createdAt: new Date().toISOString(),
     };
 
     const hasBudget = await isBudgetAllocated(formData.categoryId);
 
     if (!hasBudget && formData.type === "expense") {
-      errors.value.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
+      errors.categoryIcon = "Category does not have a budget allocated. Please allocate a budget first.";
       loading.value = false;
       return;
     }
 
     await addDoc(collection(db, "users", userId, "transactions"), formData);
 
-    loading.value = false;
     resetForm();
     closeModal();
   } catch (error) {

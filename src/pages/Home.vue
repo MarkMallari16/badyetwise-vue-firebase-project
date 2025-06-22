@@ -13,6 +13,7 @@ import { currentUser } from "@/composables/useAuth";
 import dayjs from "dayjs";
 import { useModal } from "@/composables/useModal";
 import { getIconCategory } from "@/utils/getIconCategory";
+import { useTheme } from "@/composables/useTheme";
 
 const userId = currentUser.value?.uid;
 const isFetching = ref(true);
@@ -237,7 +238,7 @@ watchEffect(() => {
     ],
   }
 })
-
+// Provide data and options for the charts
 provide("barChartData", barChartData);
 provide("barChartOptions", barChartOptions);
 provide("pieChartData", pieChartData);
@@ -265,7 +266,6 @@ provide("pieChartOptions", pieChartOptions);
       :percentage-savings-rate="overview.percentageSavingsRate" :is-loading="isLoading" />
 
     <!--Chart-->
-
     <DashboardCharts :is-loading="isLoading" />
     <div v-if="isLoading" class="mt-4 skeleton h-96 w-full"></div>
     <div v-else class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
