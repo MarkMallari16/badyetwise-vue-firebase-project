@@ -1,7 +1,7 @@
 <script setup>
 import { useNavigation } from "@/composables/useNavigation";
 import DashboardBarChart from "./DashboardBarChart.vue";
-import DashboardPieChart from "@/DashboardPieChart.vue";
+import DashboardPieChart from "@/components/DashboardPieChart.vue";
 
 const { goTo } = useNavigation();
 const props = defineProps({
@@ -10,6 +10,7 @@ const props = defineProps({
     default: true
   }
 })
+
 </script>
 
 <template>

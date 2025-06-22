@@ -3,7 +3,7 @@ import OpenAddModalButton from "@/components/OpenAddModalButton.vue";
 import DashboardNav from "@/components/DashboardNav.vue";
 import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue";
 import AddBudgetModal from "@/components/modals/AddBudgetModal.vue";
-import { collection, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { db } from "@/firebase/firebase";
 import { getStatusIcon, getStatusClass } from "@/helpers/statusHelper";

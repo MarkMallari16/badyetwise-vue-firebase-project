@@ -2,11 +2,11 @@
 import { db } from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
-import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref, watch, watchEffect } from "vue";
 import IconGoal from "../icons/IconGoal.vue";
+import { currentUser } from "@/composables/useAuth";
 
-const auth = getAuth();
-const userId = auth.currentUser?.uid;
+const userId = currentUser.value?.uid;
 
 const categories = ref([]);
 const budgets = ref([]);
@@ -15,37 +15,39 @@ const loading = ref(false);
 const categoriesQuery = collection(db, "users", userId, "categories");
 const budgetsQuery = collection(db, "users", userId, "budgets");
 
-const form = ref({
+// Reactive form data
+const form = reactive({
   amount: null,
   category: "",
   timePeriod: "monthly",
 });
 
-const errors = ref({
+// Form error messages
+const errors = reactive({
   amount: null,
   category: null,
   timePeriod: null,
 })
 
 // Watch for changes in form inputs to reset error messages
-watch(() => [form.value.amount, form.value.category, form.value.timePeriod], ([amount, category, timePeriod]) => {
-  if (amount) errors.value.amount = null;
-  if (category) errors.value.category = null;
-  if (timePeriod) errors.value.timePeriod = null;
+watch(() => [form.amount, form.category, form.timePeriod], ([amount, category, timePeriod]) => {
+  if (amount) errors.amount = null;
+  if (category) errors.category = null;
+  if (timePeriod) errors.timePeriod = null;
 })
 
 
 const validateForm = () => {
   let isValid = true;
 
-  if (!form.value.amount || form.value.amount <= 0) {
-    errors.value.amount = "Please enter a valid amount.";
+  if (!form.amount || form.amount <= 0) {
+    errors.amount = "Please enter a valid amount.";
     isValid = false;
 
   }
 
-  if (!form.value.category) {
-    errors.value.category = "Please select a category.";
+  if (!form.category) {
+    errors.category = "Please select a category.";
     isValid = false;
   }
 
@@ -60,6 +62,7 @@ let unsubscribeBudgets = null;
 
 onMounted(() => {
   if (!userId) return;
+
   // Fetch categories and budgets from Firestore
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs.map((doc) => {
@@ -118,8 +121,8 @@ const submitForm = async () => {
     const budgetRef = collection(db, "users", userId, "budgets")
 
     const formData = {
-      ...form.value,
-      categoryId: categories.value.find(c => c.name === form.value.category)?.id || null,
+      ...form,
+      categoryId: categories.value.find(c => c.name === form.category)?.id || null,
       createdAt: new Date().toISOString(),
     };
 
@@ -133,24 +136,19 @@ const submitForm = async () => {
     loading.value = false;
     resetForm();
     closeModal();
-
-    errors.value = {
-      amount: null,
-      category: null,
-      timePeriod: null,
-    };
   }
 };
 
-watchEffect(() => {
-  console.log("categoryNotExistsInBudgets:", categoryNotExistsInBudgets.value);
-});
 const resetForm = () => {
-  form.value = {
-    amount: null,
-    category: "",
-    timePeriod: "monthly",
-  };
+  // Reset form data
+  form.amount = null;
+  form.category = "";
+  form.timePeriod = "monthly";
+
+  // Reset error messages
+  errors.amount = null;
+  errors.category = null;;
+  errors.timePeriod = null;
 };
 
 const closeModal = () => {

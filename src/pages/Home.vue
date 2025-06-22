@@ -265,7 +265,6 @@ provide("pieChartOptions", pieChartOptions);
       :percentage-savings-rate="overview.percentageSavingsRate" :is-loading="isLoading" />
 
     <!--Chart-->
-
     <DashboardCharts :is-loading="isLoading" />
     <div v-if="isLoading" class="mt-4 skeleton h-96 w-full"></div>
     <div v-else class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
