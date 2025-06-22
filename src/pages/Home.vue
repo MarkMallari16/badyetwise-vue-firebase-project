@@ -264,7 +264,8 @@ provide("pieChartOptions", pieChartOptions);
       :percentage-savings-rate="overview.percentageSavingsRate" :is-loading="isLoading" />
 
     <!--Chart-->
-    <DashboardCharts />
+
+    <DashboardCharts :is-loading="isLoading" />
     <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
       <div class="flex justify-between items-center pb-6">
         <div>
@@ -289,9 +290,7 @@ provide("pieChartOptions", pieChartOptions);
           <tbody>
             <tr v-for="transaction in fiveRecentTransactions" v-if="transactions" :key="transaction.id">
               <td class="flex items-center gap-3">
-
                 <component :is="getIconCategory(transaction.categoryIcon)" class="size-10 rounded-full badge " />
-
                 <p>
                   {{ transaction.description }}
                 </p>
