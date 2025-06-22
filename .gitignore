@@ -29,10 +29,5 @@ coverage
 
 *.tsbuildinfo
 
-#firestore
-.firebaserc
-.firestore.rules
-.firestore.indexes.json
-
 #local env files
 .env
