@@ -23,3 +23,4 @@ export const isBudgetAllocated = async (categoryId) => {
 
     return !snapshot.empty;
 }
+

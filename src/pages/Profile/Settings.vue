@@ -1,5 +1,6 @@
 <script setup>
 import DashboardNav from "@/components/DashboardNav.vue";
+import IconPalette from "@/components/icons/IconPalette.vue";
 import { currentUser } from "@/composables/useAuth";
 import { auth, db } from "@/firebase/firebase";
 import { doc, updateDoc } from "firebase/firestore";
@@ -105,6 +106,23 @@ const updateProfile = async () => {
           <button type="submit" class="btn btn-primary mt-4 rounded-md">Update </button>
         </div>
       </form>
+    </div>
+    <div class="mt-4 px-10 pt-6 pb-20 ring-1 ring-inset ring-gray-300 rounded-md">
+      <div>
+        <div class="flex items-center gap-2">
+          <component :is="IconPalette" class="size-6 text-gray-500" />
+          <h1 class="text-xl font-medium">Preferences</h1>
+        </div>
+        <p class="text-gray-600">Customize your experience</p>
+      </div>
+      <div class="mt-6">
+        <p class="font-medium">Theme</p>
+        <select class="select select-bordered w-full max-w-md mt-2">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="system">System Default</option>
+        </select>
+      </div>
     </div>
 
   </div>
