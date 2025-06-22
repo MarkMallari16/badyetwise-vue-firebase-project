@@ -49,6 +49,10 @@ const validateForm = () => {
     isValid = false;
   }
 
+  if (categoryNotExistsInBudgets.value.length === 0) {
+    errors.value.category = "You must create a category before adding a budget."
+    isValid = false;
+  }
   return isValid;
 }
 let unsubscribeCategories = null;
@@ -209,8 +213,8 @@ const closeModal = () => {
         <p class="text-sm mt-1 text-red-600" v-if="errors.amount">{{ errors.amount }}</p>
 
         <div class="flex gap-2 modal-action">
-          <button type="button" @click="closeModal" class="btn">Close</button>
-          <button :disabled="loading" class="btn btn-primary" type="submit">
+          <button type="button" @click="closeModal" class="btn btn-ghost rounded-md">Close</button>
+          <button :disabled="loading" class="btn btn-primary rounded-md" type="submit">
             {{ loading ? "Creating..." : "Create Budget" }}
           </button>
         </div>

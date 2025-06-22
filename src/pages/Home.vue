@@ -37,6 +37,7 @@ onMounted(() => {
       ...doc.data()
     }))
   })
+  
   unsubscribeBudgets = onSnapshot(budgetQuery, (snapshot) => {
     budgets.value = snapshot.docs.map(doc => ({
       id: doc.id,

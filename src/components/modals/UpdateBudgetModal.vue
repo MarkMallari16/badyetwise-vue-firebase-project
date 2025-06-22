@@ -96,7 +96,7 @@ const updateBudget = async () => {
             <div>
                 <div class="flex items-center gap-1">
                     <component :is="IconGoal" class="size-8" />
-                    <h3 class="text-lg font-bold">Update {{form.category}} Budget</h3>
+                    <h3 class="text-lg font-bold">Update {{ form.category }} Budget</h3>
                 </div>
                 <p class="text-gray-500">
                     Update your budget to track your spending in a specific category.
@@ -129,8 +129,8 @@ const updateBudget = async () => {
                     </div>
                 </div>
                 <div class="flex gap-2 modal-action">
-                    <button type="button" @click="closeModal" class="btn">Close</button>
-                    <button :disabled="loading" class="btn btn-primary" type="submit">
+                    <button type="button" @click="closeModal" class="btn btn-ghost rounded-md">Close</button>
+                    <button :disabled="loading" class="btn btn-primary rounded-md" type="submit">
                         {{ loading ? "Updating..." : "Update Budget" }}
                     </button>
                 </div>

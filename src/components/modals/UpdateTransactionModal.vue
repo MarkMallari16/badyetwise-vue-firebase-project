@@ -174,8 +174,8 @@ const updateTransaction = async () => {
                         </div>
                     </div>
                     <div class="flex gap-2 modal-action">
-                        <button type="button" @click="closeModal" class="btn">Close</button>
-                        <button :disabled="loading" class="btn btn-primary" type="submit">
+                        <button type="button" @click="closeModal" class="btn btn-ghost rounded-md">Close</button>
+                        <button :disabled="loading" class="btn btn-primary rounded-md" type="submit">
                             {{ loading ? "Updating..." : "Update Transaction" }}
                         </button>
                     </div>
