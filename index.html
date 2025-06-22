@@ -8,6 +8,10 @@
   
   <title>BadyetWise</title>
 </head>
+<script>
+  const storedTheme = localStorage.getItem("theme") || "lofi";
+  document.documentElement.setAttribute("data-theme", storedTheme);
+</script>
 
 <body>
   <div id="app"></div>

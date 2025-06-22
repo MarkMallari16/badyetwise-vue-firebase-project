@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html.theme-changing *,
+html.theme-changing {
+    transition: none !important;
+}
+
+html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

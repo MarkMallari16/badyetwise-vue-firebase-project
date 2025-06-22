@@ -13,6 +13,7 @@ import { currentUser } from "@/composables/useAuth";
 import dayjs from "dayjs";
 import { useModal } from "@/composables/useModal";
 import { getIconCategory } from "@/utils/getIconCategory";
+import { useTheme } from "@/composables/useTheme";
 
 const userId = currentUser.value?.uid;
 const isFetching = ref(true);
@@ -237,7 +238,7 @@ watchEffect(() => {
     ],
   }
 })
-
+// Provide data and options for the charts
 provide("barChartData", barChartData);
 provide("barChartOptions", barChartOptions);
 provide("pieChartData", pieChartData);

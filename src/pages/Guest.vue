@@ -8,9 +8,12 @@ import Features from "@/components/Features.vue";
 import SocialProof from "@/components/SocialProof.vue";
 import { ref } from "vue";
 import { delay, motion, useScroll } from "motion-v";
+import { getAuth } from "firebase/auth";
+import { currentUser } from "@/composables/useAuth";
 
 const features = ref(null);
 const pricing = ref(null);
+
 
 const scrollToSection = (section) => {
   const sections = {

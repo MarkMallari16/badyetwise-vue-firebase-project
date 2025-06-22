@@ -2,6 +2,8 @@
 import { provide, ref } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 import { useRoute } from "vue-router";
+import { useTheme } from "./composables/useTheme";
+
 
 const isSidebarOpen = ref(true);
 // Function to toggle the sidebar state
@@ -13,6 +15,8 @@ provide("isSidebarOpen", isSidebarOpen);
 provide("handleToggleSidebar", handleToggleSidebar);
 
 const isSidebar = useRoute();
+
+useTheme();
 </script>
 
 <template>

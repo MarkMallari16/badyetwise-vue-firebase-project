@@ -2,11 +2,14 @@
 import DashboardNav from "@/components/DashboardNav.vue";
 import IconPalette from "@/components/icons/IconPalette.vue";
 import { currentUser } from "@/composables/useAuth";
-import { auth, db } from "@/firebase/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { useTheme } from "@/composables/useTheme";
+import { auth } from "@/firebase/firebase";
 import { computed, ref, watch } from "vue";
 
 const userId = computed(() => currentUser.value?.uid);
+
+const { theme } = useTheme();
+
 const profileFormData = {
   displayName: currentUser.value.displayName,
   email: currentUser.value.email,
@@ -28,6 +31,7 @@ const handleFileUpload = (event) => {
     reader.readAsDataURL(file);
   }
 }
+
 watch(() => currentUser.value, (user) => {
   if (user) {
     profileFormData.displayName = user.displayName || "";
@@ -56,6 +60,7 @@ const updateProfile = async () => {
     console.error("Error updating profile: ", error);
   }
 }
+
 </script>
 <template>
   <div
@@ -117,10 +122,10 @@ const updateProfile = async () => {
       </div>
       <div class="mt-6">
         <p class="font-medium">Theme</p>
-        <select class="select select-bordered w-full max-w-md mt-2">
-          <option value="light">Light</option>
+        <select v-model="theme" class="select select-bordered rounded-md w-full max-w-md mt-2">
+          <option value="lofi">Light</option>
           <option value="dark">Dark</option>
-          <option value="system">System Default</option>
+          <option value="lofi">System Default</option>
         </select>
       </div>
     </div>
