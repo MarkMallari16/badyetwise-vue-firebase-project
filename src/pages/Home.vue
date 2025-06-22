@@ -37,7 +37,7 @@ onMounted(() => {
       ...doc.data()
     }))
   })
-  
+
   unsubscribeBudgets = onSnapshot(budgetQuery, (snapshot) => {
     budgets.value = snapshot.docs.map(doc => ({
       id: doc.id,
@@ -267,7 +267,8 @@ provide("pieChartOptions", pieChartOptions);
     <!--Chart-->
 
     <DashboardCharts :is-loading="isLoading" />
-    <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
+    <div v-if="isLoading" class="mt-4 skeleton h-96 w-full"></div>
+    <div v-else class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-white rounded-md w-[26rem] lg:w-full">
       <div class="flex justify-between items-center pb-6">
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>
