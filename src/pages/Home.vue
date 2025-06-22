@@ -6,12 +6,12 @@ import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue"
 import AddTransactionModal from "@/components/modals/AddTransactionModal.vue";
 import AddButtonModal from "@/components/OpenAddModalButton.vue";
 import { useNavigation } from "@/composables/useNavigation";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { computed, onMounted, onUnmounted, provide, ref, watchEffect } from "vue";
 import { db } from "@/firebase/firebase";
 import { currentUser } from "@/composables/useAuth";
 import dayjs from "dayjs";
-import { icons } from "@/utils/categoryIcons";
+import { useModal } from "@/composables/useModal";
 import { getIconCategory } from "@/utils/getIconCategory";
 
 const userId = currentUser.value?.uid;
@@ -60,12 +60,8 @@ onUnmounted(() => {
   }
 })
 
-const showModal = () => {
-  const modal = document.getElementById("add_transaction");
-  if (modal) {
-    modal.showModal();
-  }
-};
+const { showModal: showAddTransactionModal } = useModal("add_transaction");
+
 
 // Computed property to get the five most recent transactions
 const fiveRecentTransactions = computed(() => {
@@ -183,7 +179,7 @@ const barChartOptions = ref({
     }
   }
 })
-
+//define pie chart data and options
 const pieChartData = ref({
   labels: [],
   datasets: []
@@ -255,7 +251,7 @@ provide("pieChartOptions", pieChartOptions);
       <!--Right-->
       <DashboardNavBarRightSlot>
         <!--Add Transaction Button-->
-        <AddButtonModal @click="showModal">Add Transaction</AddButtonModal>
+        <AddButtonModal @click="showAddTransactionModal">Add Transaction</AddButtonModal>
         <AddTransactionModal />
       </DashboardNavBarRightSlot>
     </DashboardNav>
@@ -294,7 +290,7 @@ provide("pieChartOptions", pieChartOptions);
             <tr v-for="transaction in fiveRecentTransactions" v-if="transactions" :key="transaction.id">
               <td class="flex items-center gap-3">
 
-                <component :is="getIconCategory(transaction.categoryIcon)" class="size-10 rounded-full badge "/>
+                <component :is="getIconCategory(transaction.categoryIcon)" class="size-10 rounded-full badge " />
 
                 <p>
                   {{ transaction.description }}

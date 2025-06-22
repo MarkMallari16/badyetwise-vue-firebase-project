@@ -9,6 +9,7 @@ import { db } from "@/firebase/firebase";
 import { getStatusIcon, getStatusClass } from "@/helpers/statusHelper";
 import UpdateBudgetModal from "@/components/modals/UpdateBudgetModal.vue";
 import { currentUser } from "@/composables/useAuth";
+import { useModal } from "@/composables/useModal";
 
 const isFetching = ref(true);
 const userId = currentUser.value?.uid;
@@ -120,12 +121,8 @@ const deleteBudget = async (budgetId) => {
     console.error("Error deleting budget:", error);
   }
 };
-const showModal = () => {
-  const modal = document.getElementById("add_budget");
-  if (modal) {
-    modal.showModal();
-  }
-};
+
+const { showModal: showAddBudgetModal } = useModal("add_budget");
 
 const showUpdateModal = (id) => {
   selectedBudgetId.value = id;
@@ -143,7 +140,7 @@ const showUpdateModal = (id) => {
     class="min-h-screen mx-4 my-2 px-4 lg:px-12 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-inner rounded-2xl">
     <DashboardNav>
       <DashboardNavBarRightSlot>
-        <OpenAddModalButton @click="showModal">Create Budget</OpenAddModalButton>
+        <OpenAddModalButton @click="showAddBudgetModal">Create Budget</OpenAddModalButton>
         <!-- Add Budget Modal -->
         <AddBudgetModal />
         <!-- Update Budget Modal -->

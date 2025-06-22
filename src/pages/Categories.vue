@@ -10,6 +10,7 @@ import UpdateCategoryModal from "@/components/modals/UpdateCategoryModal.vue";
 import { currentUser } from "@/composables/useAuth";
 import { getIconCategory } from "@/utils/getIconCategory";
 import { useRoute, useRouter } from "vue-router";
+import { useModal } from "@/composables/useModal";
 
 const route = useRoute();
 const router = useRouter();
@@ -172,14 +173,7 @@ const deleteCategory = async (categoryId) => {
   }
 };
 
-const showModal = () => {
-  const modal = document.getElementById("add_category");
-  if (modal) {
-    modal.showModal();
-  } else {
-    console.log("Modal not shown");
-  }
-};
+const { showModal: showAddCategoryModal } = useModal("add_category");
 
 const showUpdateModal = (id) => {
   const modal = document.getElementById("update_category");
@@ -201,7 +195,7 @@ const showUpdateModal = (id) => {
       <!--Top-->
       <DashboardNav>
         <DashboardNavBarRightSlot>
-          <OpenAddModalButton @click="showModal">Add Category</OpenAddModalButton>
+          <OpenAddModalButton @click="showAddCategoryModal">Add Category</OpenAddModalButton>
         </DashboardNavBarRightSlot>
       </DashboardNav>
 

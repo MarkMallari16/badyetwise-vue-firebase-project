@@ -10,6 +10,7 @@ import UpdateTransactionModal from "@/components/modals/UpdateTransactionModal.v
 import dayjs from "dayjs";
 import { currentUser } from "@/composables/useAuth";
 import { icons } from "@/utils/categoryIcons";
+import { useModal } from "@/composables/useModal";
 
 // Reactive references for categories and transactions
 const categories = ref([]);
@@ -119,13 +120,7 @@ const deleteTransaction = async (transactionId) => {
   }
 };
 
-const showAddModal = () => {
-  const modal = document.getElementById("add_transaction");
-
-  if (modal) {
-    modal.showModal();
-  }
-};
+const { showModal: showAddTransactionModal } = useModal("add_transaction");
 
 const showUpdateModal = (id) => {
   selectedTransactionId.value = id;
@@ -147,7 +142,7 @@ const getIconCategory = (categoryIcon) => {
     class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-lg rounded-2xl">
     <DashboardNav>
       <DashboardNavBarRightSlot>
-        <OpenAddModalButton @click="showAddModal">Add Transaction</OpenAddModalButton>
+        <OpenAddModalButton @click="showAddTransactionModal">Add Transaction</OpenAddModalButton>
         <!--Modal-->
         <AddTransactionModal />
         <!--Update Transaction Modal-->

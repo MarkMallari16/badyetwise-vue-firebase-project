@@ -158,7 +158,7 @@ const closeModal = () => {
 
 </script>
 <template>
-  <dialog id="add_budget" class="modal">
+  <dialog ref="add_budget" id="add_budget" class="modal">
     <div class="modal-box w-11/12 max-w-2xl">
       <div>
         <div class="flex items-center gap-1">
