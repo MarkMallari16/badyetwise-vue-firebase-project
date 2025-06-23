@@ -111,11 +111,11 @@ const reportsSummary = computed(() => {
 </script>
 <template>
     <div
-        class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-lg rounded-2xl">
+        class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-base-300 shadow-lg rounded-2xl">
         <DashboardNav>
         </DashboardNav>
         <h1 class="text-3xl font-bold">Monthly Summary</h1>
-        <div class="mt-6 p-6 ring-1 ring-inset ring-gray-300 rounded-md">
+        <div class="mt-6 p-6 ring-1 ring-inset ring-base-300 bg-base-300 rounded-md">
             <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-8">
@@ -152,7 +152,7 @@ const reportsSummary = computed(() => {
             </div>
         </div>
         <!--Expense Breakdown-->
-        <div class="mt-4 p-6 ring-1 ring-inset ring-gray-300 rounded-md">
+        <div class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-base-300 rounded-md">
             <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-8">

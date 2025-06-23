@@ -139,7 +139,7 @@ const getIconCategory = (categoryIcon) => {
 <template>
 
   <div
-    class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-base-300 bg-base-300 shadow-lg rounded-2xl">
+    class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-base-300  shadow-lg rounded-2xl">
     <DashboardNav>
       <DashboardNavBarRightSlot>
         <OpenAddModalButton @click="showAddTransactionModal">Add Transaction</OpenAddModalButton>
