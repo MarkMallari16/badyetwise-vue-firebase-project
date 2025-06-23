@@ -50,7 +50,7 @@ const overviews = computed(() => [
     iconColor: "text-green-600",
     status: `${props.currentBalance >= 0 ? "+ Positive" : "- Negative"} balance`,
     valueColor: "",
-    statusColor: `${props.currentBalance >= 0 ? "text-black" : "text-red-600"}`,
+    statusColor: `${props.currentBalance >= 0 ? "text-gray-400" : "text-red-600"}`,
   },
   {
     subtext: "Total Income",
@@ -100,7 +100,7 @@ const overviews = computed(() => [
       <div v-if="props.isLoading" v-for="item in 4" :key="item" class="skeleton w-full h-32">
       </div>
       <div v-else v-for="(overview, index) in overviews" :key="index"
-        class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
+        class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
         <div class="flex justify-between items-center">
           <h2 class="mt-2 text-md font-medium">{{ overview.subtext }}</h2>
           <h2 v-if="!overview.icon && !overview.icon.startsWith('M')" class="text-gray-600 text-2xl">

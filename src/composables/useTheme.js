@@ -4,12 +4,8 @@ import { db } from "@/firebase/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const theme = ref(localStorage.getItem("theme") || "lofi");
-let initialized = false;
-
 export function useTheme() {
-    if (initialized) return { theme };
-    initialized = true;
-
+    //apply the theme based on the user's preference or system setting
     const applyTheme = () => {
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         const selectedTheme =
@@ -20,6 +16,7 @@ export function useTheme() {
         document.documentElement.setAttribute("data-theme", selectedTheme);
     };
 
+    //firebase get  functions to load and save user theme
     const loadUserTheme = async (user) => {
         const userDocRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userDocRef);
@@ -28,44 +25,44 @@ export function useTheme() {
             const userTheme = userSnap.data().theme;
             theme.value = userTheme;
             localStorage.setItem("theme", userTheme);
-            applyTheme(); // Apply user's theme
+            applyTheme();
         } else {
-            applyTheme(); // fallback
+            applyTheme();
         }
     };
 
+    //firebase set function to save user theme
     const saveUserTheme = async (user) => {
         const userDocRef = doc(db, "users", user.uid);
         await setDoc(userDocRef, { theme: theme.value }, { merge: true });
     };
 
-    // 🚨 Do this early — NOT in onMounted
+    const getCurrentTheme = () => theme.value;
+
+
+    // Check localStorage for theme preference
     onAuthStateChanged(getAuth(), async (user) => {
         if (user) {
-            await loadUserTheme(user); // Load + apply user theme
-
-            // Sync changes to Firestore and localStorage
+            await loadUserTheme(user);
             watch(theme, async (newTheme, oldTheme) => {
+                applyTheme();
                 if (newTheme !== oldTheme) {
                     applyTheme();
+                    const user = getAuth().currentUser;
                     await saveUserTheme(user);
                     localStorage.setItem("theme", newTheme);
                 }
             });
         } else {
-            theme.value = "lofi";
-            localStorage.setItem("theme", "lofi");
-            applyTheme();
-        }
-    });
 
-    // 🌅 Apply theme from localStorage fast before app mounts
-    onMounted(() => {
-        applyTheme(); // use localStorage for quick visual match
+            theme.value = "lofi"
+            localStorage.setItem("theme", "lofi");
+        }
     });
 
     return {
         theme,
         applyTheme,
+        getCurrentTheme
     };
 }
