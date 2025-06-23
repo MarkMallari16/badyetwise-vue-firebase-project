@@ -48,14 +48,11 @@ const scrollIndicator = {
         <div>
           <Navbar @scrollTo="scrollToSection" />
         </div>
-        <motion.div :initial="{
-          x: -50,
-          opacity: 0,
-        }" :whileInView="{ x: 0, opacity: 1 }" :transition="{ delay: 0.1, ease: 'easeInOut' }">
+        <div >
           <Hero />
-        </motion.div>
+        </div>
         <motion.div ref="features" :initial="{ y: -50, opacity: 0 }" :whileInView="{ y: 0, opacity: 1 }"
-          :transition="{ delay: 0.3, ease: 'easeInOut' }" class="container mx-auto px-4">
+          :transition="{ delay: 0.4, ease: 'easeInOut' }" class="container mx-auto px-4">
           <Features />
         </motion.div>
         <div>
@@ -90,7 +87,8 @@ const scrollIndicator = {
       </svg>
     </motion.div>
     <motion.div :initial="{ y: -50, opacity: 0 }" :whileInView="{ y: 0, opacity: 1 }"
-      :transition="{ delay: 0.3, ease: 'easeInOut' }" class="absolute bottom-[20%] -right-44 -rotate-45 hidden lg:block">
+      :transition="{ delay: 0.3, ease: 'easeInOut' }"
+      class="absolute bottom-[20%] -right-44 -rotate-45 hidden lg:block">
       <svg class="size-96" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
         viewBox="0 0 24 24">
         <path fill-rule="evenodd" d="M7 6a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-2v-4a3 3 0 0 0-3-3H7V6Z"

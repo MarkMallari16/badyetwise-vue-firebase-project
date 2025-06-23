@@ -9,7 +9,7 @@
   <title>BadyetWise</title>
 </head>
 <script>
-  const storedTheme = localStorage.getItem("theme") ;
+  const storedTheme = localStorage.getItem("theme") || "lofi";
   document.documentElement.setAttribute("data-theme", storedTheme);
 </script>
 
