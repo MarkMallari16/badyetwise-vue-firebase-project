@@ -1,9 +1,23 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { animate } from "motion-v"
+import { motion, animate } from "motion-v"
 const activeUsersNumber = ref(0);
 const appRatingNumber = ref(0);
 const uptimeNumber = ref(0);
+
+// Initial state for the motion component
+const initial = {
+  opacity: 0
+}
+// This is used to animate the text when it comes into view
+const whileInView = {
+  opacity: 1,
+  transition: {
+    delay: 0.2,
+    duration: 0.3
+  }
+}
+// This is used to animate the numbers in the Bar component
 onMounted(() => {
   animate(0, 50000, {
     duration: 2,
@@ -32,15 +46,15 @@ onMounted(() => {
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-10 lg:gap-0">
       <div class="text-center">
         <h1 class="text-7xl lg:text-6xl font-bold">{{ activeUsersNumber }}K+</h1>
-        <p class="text-gray-300">Active Users</p>
+        <motion.p :initial="initial" :whileInView="whileInView" class="text-gray-300">Active Users</motion.p>
       </div>
       <div class="text-center">
         <h1 class="text-7xl lg:text-6xl font-bold">$2M+</h1>
-        <p class="text-gray-300">Money Tracked</p>
+        <motion.p :initial="initial" :whileInView="whileInView" class="text-gray-300">Money Tracked</motion.p>
       </div>
       <div class="text-center">
         <h1 class="text-7xl lg:text-6xl font-bold">{{ uptimeNumber }}%</h1>
-        <p class="text-gray-300">Uptime</p>
+        <motion.p :initial="initial" :whileInView="whileInView" class="text-gray-300">Uptime</motion.p>
       </div>
       <div class="text-center">
         <h1 class="text-7xl lg:text-6xl font-bold">{{ appRatingNumber }}</h1>
