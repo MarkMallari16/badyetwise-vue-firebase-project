@@ -30,7 +30,6 @@ const login = async (event) => {
         email: user.email,
         displayName: user.displayName,
         lastLogin: new Date(),
-        theme: useTheme().applyTheme()
       },
       { merge: true }
     );
