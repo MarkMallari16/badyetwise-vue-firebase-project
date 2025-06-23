@@ -155,7 +155,7 @@ const closeModal = () => {
       <h3 class="text-lg font-bold">Add New Category</h3>
       <p class="text-gray-500">Create a new category for your transactions.</p>
       <!---Preview-->
-      <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4"
+      <div class="flex justify-center items-center gap-3 mt-4 bg-base-300 ring-1 ring-base-300 rounded-lg p-4"
         v-if="form.name && form.color !== 'Select Color'">
         <div class="rounded-lg w-12 h-12 p-2" :class="form.color">
           <div v-if="selectedIcon.name && selectedIcon.icon" class="text-white">
