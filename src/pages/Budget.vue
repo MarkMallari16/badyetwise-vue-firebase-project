@@ -137,7 +137,7 @@ const showUpdateModal = (id) => {
 <template>
 
   <section
-    class="min-h-screen mx-4 my-2 px-4 lg:px-12 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-inner rounded-2xl">
+    class="min-h-screen mx-4 my-2 px-4 lg:px-12 transition-all duration-300 ease-in-out ring-1 ring-base-300 shadow-inner rounded-2xl">
     <DashboardNav>
       <DashboardNavBarRightSlot>
         <OpenAddModalButton @click="showAddBudgetModal">Create Budget</OpenAddModalButton>
@@ -157,17 +157,17 @@ const showUpdateModal = (id) => {
 
       </div>
       <div v-else class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
-        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
+        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
           <h2 class="mt-2 text-md font-medium">Total Budget</h2>
           <h1 class="mt-1 text-3xl font-bold">₱{{ totalOverviewBudget }}</h1>
           <p class="text-gray-500">This Month</p>
         </div>
-        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
+        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
           <h2 class="mt-2 text-md font-medium">Total Spent</h2>
           <h1 class="mt-1 text-3xl font-bold text-red-600">₱{{ totalOverviewSpent }}</h1>
           <p class="text-gray-500">{{ percentageOverviewUsed }}% of budget</p>
         </div>
-        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-white">
+        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
           <h2 class="mt-2 text-md font-medium">Remaining</h2>
           <h1 class="mt-1 text-3xl font-bold"
             :class="[remainingOverviewBudget < 0 ? 'text-red-600' : 'text-green-600']">
@@ -176,7 +176,7 @@ const showUpdateModal = (id) => {
         </div>
       </div>
       <!-- Budget Categories -->
-      <div class="mt-6 ring-1 ring-inset ring-base-300 bg-white pt-6 px-6 pb-10 rounded-lg">
+      <div class="mt-6 ring-1 ring-inset ring-base-300 bg-base-300 pt-6 px-6 pb-10 rounded-lg">
         <h1 class="text-2xl font-bold">Budget Categories</h1>
         <p class="text-gray-500">Track your spending by category</p>
         <!--Skeleton Loading-->

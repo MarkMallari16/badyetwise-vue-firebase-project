@@ -64,9 +64,9 @@ const updateProfile = async () => {
 </script>
 <template>
   <div
-    class="min-h-screen mx-4 my-2 px-6 lg:px-12 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-inner rounded-2xl">
+    class="min-h-screen mx-4 my-2 px-6 lg:px-12 transition-all duration-300 ease-in-out ring-1 ring-base-300  shadow-inner rounded-2xl">
     <DashboardNav />
-    <div class="px-10 pt-6 pb-20 ring-1 ring-inset ring-gray-300 rounded-md">
+    <div class="px-10 pt-6 pb-20 ring-1 ring-inset ring-base-300 rounded-md bg-base-300">
       <form @submit.prevent="updateProfile">
         <div>
           <div class="flex flex-wrap items-center gap-1 ">
@@ -112,10 +112,10 @@ const updateProfile = async () => {
         </div>
       </form>
     </div>
-    <div class="mt-4 px-10 pt-6 pb-20 ring-1 ring-inset ring-gray-300 rounded-md">
+    <div class="mt-4 px-10 pt-6 pb-20 ring-1 ring-inset ring-base-300 bg-base-300 rounded-md">
       <div>
         <div class="flex items-center gap-2">
-          <component :is="IconPalette" class="size-6 text-gray-500" />
+          <component :is="IconPalette" class="size-6" />
           <h1 class="text-xl font-medium">Preferences</h1>
         </div>
         <p class="text-gray-600">Customize your experience</p>

@@ -139,7 +139,7 @@ const getIconCategory = (categoryIcon) => {
 <template>
 
   <div
-    class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-gray-200 shadow-lg rounded-2xl">
+    class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-base-300  shadow-lg rounded-2xl">
     <DashboardNav>
       <DashboardNavBarRightSlot>
         <OpenAddModalButton @click="showAddTransactionModal">Add Transaction</OpenAddModalButton>
@@ -151,7 +151,7 @@ const getIconCategory = (categoryIcon) => {
       </DashboardNavBarRightSlot>
     </DashboardNav>
     <h1 class="text-3xl font-bold">All Transactions</h1>
-    <div class="w-full mt-6 bg-white rounded-lg ring-1 ring-inset ring-base-300 p-5">
+    <div class="w-full mt-6 bg-base-300 rounded-lg ring-1 ring-inset ring-base-300 p-5">
       <h2 class="text-xl font-medium">Filters</h2>
       <p class="text-gray-500">Search and filter your transactions</p>
 
@@ -192,7 +192,7 @@ const getIconCategory = (categoryIcon) => {
 
     <!--Transaction History-->
     <div
-      class="w-[27rem] sm:w-[41rem] md:w-full lg:w-full mt-3 rounded-lg bg-white ring-1 ring-inset ring-base-300 p-5 ">
+      class="w-[27rem] sm:w-[41rem] md:w-full lg:w-full mt-3 rounded-lg bg-base-300 ring-1 ring-inset ring-base-300 p-5 ">
       <div class="mb-4">
         <h2 class="text-xl font-medium ">Transaction History</h2>
         <p class="text-gray-500">Complete list of your financial transactions</p>

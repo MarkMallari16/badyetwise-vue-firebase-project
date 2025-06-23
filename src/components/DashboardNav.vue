@@ -15,7 +15,7 @@ const toggleSidebar = inject("handleToggleSidebar");
       <!--Sidebar-->
       <SidebarCloseButton @click="toggleSidebar" />
       <div class="text-gray-500 divider divider-vertical hidden lg:inline-flex">|</div>
-      <h1 class="font-medium text-2xl text-gray-700">{{ route.meta.title }}</h1>
+      <h1 class="font-medium text-2xl ">{{ route.meta.title }}</h1>
     </div>
     <!--Right Side-->
     <slot></slot>

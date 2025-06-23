@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { db } from "../../firebase/firebase";
 import GoogleButton from "@/components/GoogleButton.vue";
 import { doc, setDoc } from "firebase/firestore";
+import { useTheme } from "@/composables/useTheme";
 
 const router = useRouter();
 const email = ref("");
@@ -23,27 +24,24 @@ const login = async (event) => {
 
     const userRef = doc(db, "users", user.uid);
 
-    console.log("User logged in:", user);
-
     await setDoc(
       userRef,
       {
         email: user.email,
         displayName: user.displayName,
         lastLogin: new Date(),
+        theme: useTheme().applyTheme()
       },
       { merge: true }
     );
 
     loading.value = false;
 
-    console.log(auth.currentUser);
-
     router.push("/home");
 
   } catch (error) {
     loading.value = false;
-    console.log(error.message);
+
     switch (error.code) {
       case "auth/invalid-email":
         errorMessage.value = "Invalid Email.";
@@ -60,6 +58,7 @@ const login = async (event) => {
     }
   }
 };
+
 </script>
 <template>
   <div>
