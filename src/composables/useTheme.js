@@ -4,6 +4,7 @@ import { db } from "@/firebase/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const theme = ref(localStorage.getItem("theme") || "lofi");
+
 export function useTheme() {
     //apply the theme based on the user's preference or system setting
     const applyTheme = () => {
@@ -56,7 +57,7 @@ export function useTheme() {
         } else {
 
             theme.value = "lofi"
-            localStorage.setItem("theme", "lofi");
+            localStorage.removeItem("theme");
         }
     });
 
