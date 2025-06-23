@@ -234,6 +234,8 @@ watchEffect(() => {
         data: [...categoryExpenses],
         backgroundColor: ['oklch(76.5% 0.177 163.223)', 'oklch(70.7% 0.165 254.624)', 'oklch(67.3% 0.182 276.935)', 'oklch(71.2% 0.194 13.428)', 'oklch(74% 0.238 322.16)'],
         hoverOffset: 10,
+        borderRadius: 10,
+        borderWidth: 0,
       },
     ],
   }

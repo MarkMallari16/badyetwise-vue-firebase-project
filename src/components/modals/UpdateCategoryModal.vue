@@ -102,7 +102,7 @@ const closeModal = () => {
             <h3 class="text-lg font-bold">Update Category</h3>
             <p class="text-gray-500">Update category for your transactions.</p>
             <!---Preview-->
-            <div class="flex justify-center items-center gap-3 mt-4 bg-gray-100 ring-1 ring-gray-300 rounded-lg p-4">
+            <div class="flex justify-center items-center gap-3 mt-4 bg-base-300 ring-1 ring-base-300 rounded-lg p-4">
                 <div class="rounded-lg w-12 h-12 p-2" :class="form.color">
                     <div v-if="selectedIcon.name && selectedIcon.icon" class="text-white">
                         <component :is="getIconCategory(selectedIcon.name)" class="size-8" />

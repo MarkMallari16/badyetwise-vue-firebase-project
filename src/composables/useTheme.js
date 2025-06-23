@@ -1,4 +1,4 @@
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
