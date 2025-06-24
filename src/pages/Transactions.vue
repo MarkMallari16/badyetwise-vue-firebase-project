@@ -20,10 +20,14 @@ const categories = ref([]);
 
 const transactions = ref([]);
 //pagination refs
+// This will hold the current page number, page size, and pagination cursors
 const currentPage = ref(1);
+// This will hold the number of items per page
 const pageSize = ref(10);
+// This will hold the last and first visible documents for pagination
 const lastVisible = ref(null);
 const firstVisible = ref(null);
+// This will hold the stack of pages for pagination
 const pageStack = [];
 
 
@@ -54,6 +58,7 @@ const loadTransactions = async (direction = 'next') => {
   let q;
   const transactionsRef = collection(db, "users", userId, "transactions");
 
+  //for next
   if (direction == 'next' && lastVisible.value) {
     q = query(
       transactionsRef,
@@ -62,6 +67,7 @@ const loadTransactions = async (direction = 'next') => {
       limit(pageSize.value)
     )
     currentPage.value++;
+    //back in previous page
   } else if (direction === 'prev' && pageStack.length > 1) {
     currentPage.value--;
 
@@ -75,6 +81,7 @@ const loadTransactions = async (direction = 'next') => {
       limit(pageSize.value)
     );
   } else {
+    // Reset to the first page
     q = query(transactionsRef,
       orderBy('date', 'desc'),
       limit(pageSize.value)
@@ -83,9 +90,9 @@ const loadTransactions = async (direction = 'next') => {
     currentPage.value = 1;
     pageStack.length = 0;
   }
-
+  // Fetch the transactions
   const snapshot = await getDocs(q);
-
+  // Map the documents to an array of transaction objects
   transactions.value = snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -99,8 +106,8 @@ const loadTransactions = async (direction = 'next') => {
       pageStack.push(snapshot.docs[0]);
     }
   }
-  console.log(pageStack)
 }
+
 onMounted(() => {
   // //Fetch transactions from the "transactions" collection
   // unsubscribeTransactions = onSnapshot(transactionQuery, (snapshot) => {
