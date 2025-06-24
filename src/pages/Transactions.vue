@@ -217,7 +217,7 @@ const getIconCategory = (categoryIcon) => {
               v-if="transactions" class="hover:bg-gray-100 transition-colors duration-200">
               <td class="flex justify-start items-center gap-3 p-5">
                 <component :is="getIconCategory(transaction.categoryIcon)"
-                  class="size-[44px] lg:size-10 rounded-full badge rind-1 bg-gray-100" />
+                  class="size-[44px] lg:size-10 rounded-full badge rind-1" />
                 <span class="text-sm">{{ transaction.description }}</span>
               </td>
 
