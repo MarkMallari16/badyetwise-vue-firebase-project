@@ -352,7 +352,7 @@ const showUpdateModal = (id) => {
                     {{ category.incomeStatus }}{{ category.totalAmount }}</p>
                 </div>
                 <div class="pt-2">
-                  <p class="badge rounded-full bg-gray-100 font-medium">This month</p>
+                  <p class="badge rounded-full bg-base-300 font-medium">This month</p>
                 </div>
               </div>
 

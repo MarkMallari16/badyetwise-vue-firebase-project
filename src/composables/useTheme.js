@@ -8,20 +8,19 @@ const theme = ref(localStorage.getItem("theme") || "lofi");
 export function useTheme() {
     //apply the theme based on the user's preference or system setting
     const applyTheme = () => {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const selectedTheme =
-            theme.value === "system"
-                ? prefersDark ? "dark" : "lofi"
-                : theme.value;
+        const prefersDark = !window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-        document.documentElement.setAttribute("data-theme", selectedTheme);
+        if (theme.value === "system") {
+            theme.value = prefersDark ? "dark" : "lofi";
+        }
+
+        document.documentElement.setAttribute("data-theme", theme.value);
     };
 
     //firebase get  functions to load and save user theme
     const loadUserTheme = async (user) => {
         const userDocRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userDocRef);
-
         if (userSnap.exists() && userSnap.data().theme) {
             const userTheme = userSnap.data().theme;
             theme.value = userTheme;
@@ -46,7 +45,6 @@ export function useTheme() {
         if (user) {
             await loadUserTheme(user);
             watch(theme, async (newTheme, oldTheme) => {
-                applyTheme();
                 if (newTheme !== oldTheme) {
                     applyTheme();
                     const user = getAuth().currentUser;
@@ -55,8 +53,7 @@ export function useTheme() {
                 }
             });
         } else {
-
-            theme.value = "lofi"
+            theme.value = "system"
             localStorage.removeItem("theme");
         }
     });

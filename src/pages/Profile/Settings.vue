@@ -125,7 +125,7 @@ const updateProfile = async () => {
         <select v-model="theme" class="select select-bordered rounded-md w-full max-w-md mt-2">
           <option value="lofi">Light</option>
           <option value="dark">Dark</option>
-          <option value="lofi">System Default</option>
+          <option value="system">System Default</option>
         </select>
       </div>
     </div>
