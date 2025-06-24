@@ -41,7 +41,7 @@ const scrollIndicator = {
 </script>
 <template>
   <section class="relative overflow-hidden">
-    <motion.div class="origin-left bg-primary fixed top-0 right-0 left-0 h-3" id="scrollIndicator"
+    <motion.div class="origin-left bg-primary fixed top-0 right-0 left-0 h-3  z-50" id="scrollIndicator"
       :style="scrollIndicator" />
     <div>
       <div>
