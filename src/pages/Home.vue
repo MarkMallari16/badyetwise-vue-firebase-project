@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { useModal } from "@/composables/useModal";
 import { getIconCategory } from "@/utils/getIconCategory";
 import { useTheme } from "@/composables/useTheme";
-
+import { listenToNotifications, requestNotificationPermission } from "@/composables/useNotification";
 const userId = currentUser.value?.uid;
 const isFetching = ref(true);
 const transactions = ref([]);
@@ -48,7 +48,10 @@ onMounted(() => {
     console.log("Budgets:", budgets.value);
   })
 })
-
+requestNotificationPermission();
+listenToNotifications((payload) => {
+  console.log("Custom callback notification: ", payload);
+})
 const isLoading = computed(() => {
   return isFetching.value;
 })
