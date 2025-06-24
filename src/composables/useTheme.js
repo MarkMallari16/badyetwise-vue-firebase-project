@@ -21,6 +21,7 @@ export function useTheme() {
     const loadUserTheme = async (user) => {
         const userDocRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userDocRef);
+
         if (userSnap.exists() && userSnap.data().theme) {
             const userTheme = userSnap.data().theme;
             theme.value = userTheme;
@@ -54,7 +55,7 @@ export function useTheme() {
             });
         } else {
             theme.value = "lofi"
-            localStorage.removeItem("theme");
+            localStorage.setItem("theme", "lofi");
         }
     });
 

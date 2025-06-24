@@ -23,11 +23,7 @@ const goToTransactionsLink = () => {
 
 };
 const goToCategoriesLink = () => {
-  if (route.path === "/categories/expense") {
-    goTo("/categories/income");
-  } else {
-    goTo("/categories/expense")
-  }
+  goTo("/categories/expense")
 };
 const goToBudgetLink = () => {
   goTo("/budget");
