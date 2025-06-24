@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import DashboardNav from "@/components/DashboardNav.vue";
-import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, startAfter, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import DashboardNavBarRightSlot from "@/components/DashboardNavBarRightSlot.vue";
 import AddTransactionModal from "@/components/modals/AddTransactionModal.vue";
@@ -12,9 +12,20 @@ import { currentUser } from "@/composables/useAuth";
 import { icons } from "@/utils/categoryIcons";
 import { useModal } from "@/composables/useModal";
 
+
+const userId = currentUser.value?.uid;
+
 // Reactive references for categories and transactions
 const categories = ref([]);
+
 const transactions = ref([]);
+//pagination refs
+const currentPage = ref(1);
+const pageSize = ref(10);
+const lastVisible = ref(null);
+const firstVisible = ref(null);
+const pageStack = [];
+
 
 //selectedTransaction
 const selectedTransactionId = ref(null);
@@ -27,32 +38,80 @@ const transactionFilterings = ref({
 });
 
 //Fetch transactions from the "transactions" collection
-const transactionQuery = query(
-  collection(db, "users", currentUser.value?.uid, "transactions"),
-  where("userId", "==", currentUser.value?.uid),
-  orderBy("createdAt", "desc")
-);
+// const transactionQuery = query(
+//   collection(db, "users", currentUser.value?.uid, "transactions"),
+//   where("userId", "==", currentUser.value?.uid),
+//   orderBy("createdAt", "desc")
+// );
 
 // Fetch transactions from the "categories" collection
-const categoriesQuery = query(
-  collection(db, "users", currentUser.value?.uid, "categories"),
-  where("userId", "==", currentUser.value?.uid)
-);
+const categoriesQuery = collection(db, "users", userId, "categories");
 
-let unsubscribeTransactions = null;
+// let unsubscribeTransactions = null;
 let unsubscribeCategories = null;
+//pagination
+const loadTransactions = async (direction = 'next') => {
+  let q;
+  const transactionsRef = collection(db, "users", userId, "transactions");
 
+  if (direction == 'next' && lastVisible.value) {
+    q = query(
+      transactionsRef,
+      orderBy('date', 'desc'),
+      startAfter(lastVisible.value),
+      limit(pageSize.value)
+    )
+    currentPage.value++;
+  } else if (direction === 'prev' && pageStack.length > 1) {
+    currentPage.value--;
+
+    if (pageStack.length > 1) pageStack.pop();
+    const prevCursor = pageStack[pageStack.length - 1];
+
+    q = query(
+      transactionsRef,
+      orderBy('date', 'desc'),
+      startAfter(prevCursor),
+      limit(pageSize.value)
+    );
+  } else {
+    q = query(transactionsRef,
+      orderBy('date', 'desc'),
+      limit(pageSize.value)
+    )
+
+    currentPage.value = 1;
+    pageStack.length = 0;
+  }
+
+  const snapshot = await getDocs(q);
+
+  transactions.value = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }))
+
+  if (snapshot.docs.length > 0) {
+    firstVisible.value = snapshot.docs[0];
+    lastVisible.value = snapshot.docs[snapshot.docs.length - 1]
+
+    if (direction !== 'prev') {
+      pageStack.push(snapshot.docs[0]);
+    }
+  }
+  console.log(pageStack)
+}
 onMounted(() => {
-  //Fetch transactions from the "transactions" collection
-  unsubscribeTransactions = onSnapshot(transactionQuery, (snapshot) => {
-    transactions.value = snapshot.docs.map((doc) => {
-      return {
-        id: doc.id,
-        ...doc.data(),
-      };
-    });
-  });
-
+  // //Fetch transactions from the "transactions" collection
+  // unsubscribeTransactions = onSnapshot(transactionQuery, (snapshot) => {
+  //   transactions.value = snapshot.docs.map((doc) => {
+  //     return {
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     };
+  //   });
+  // });
+  loadTransactions()
   //Fetch categories from the "categories" collection
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs.map((doc) => {
@@ -66,9 +125,9 @@ onMounted(() => {
 
 // Clean up the listeners when the component is unmounted
 onUnmounted(() => {
-  if (unsubscribeTransactions) {
-    unsubscribeTransactions();
-  }
+  // if (unsubscribeTransactions) {
+  //   unsubscribeTransactions();
+  // }
   if (unsubscribeCategories) {
     unsubscribeCategories();
   }
@@ -191,8 +250,7 @@ const getIconCategory = (categoryIcon) => {
     </div>
 
     <!--Transaction History-->
-    <div
-      class="w-[27rem] sm:w-[41rem] md:w-full lg:w-full mt-3 rounded-lg  ring-1 ring-inset ring-base-300 p-5 ">
+    <div class="w-[27rem] sm:w-[41rem] md:w-full lg:w-full mt-3 rounded-lg  ring-1 ring-inset ring-base-300 p-5 ">
       <div class="mb-4">
         <h2 class="text-xl font-medium ">Transaction History</h2>
         <p class="text-gray-500">Complete list of your financial transactions</p>
@@ -285,22 +343,23 @@ const getIconCategory = (categoryIcon) => {
       <div
         class="mt-4 flex flex-col lg:flex-row items-center lg:items-center  flex-wrap lg:justify-between gap-5 lg:gap-0">
         <div class="flex items-center gap-2 flex-wrap">
-          <p class="text-gray-500">Showing 1 to 10 of</p>
-          <select name="transactionSelection" id="transactionSelection" class="select select-bordered w-20">
+          <p class="text-gray-500">Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ (currentPage - 1) * pageSize +
+            transactions.length }} of </p>
+          <select name="transactionSelection" id="transactionSelection" class="select select-bordered w-20"
+            v-model="pageSize" @change="loadTransactions">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <p class="text-gray-500 h-5">20 transactions</p>
+          <p class="text-gray-500 h-5">transactions (Page {{ currentPage }})</p>
         </div>
 
         <div class="join gap-2">
-          <button class="join-item btn">Previous</button>
-          <button class="join-item btn">1</button>
-          <button class="join-item btn">2</button>
-          <button class="join-item btn">3</button>
-          <button class="join-item btn">Next</button>
+          <button @click="loadTransactions('prev')" class="join-item btn" :disabled="currentPage == 1">Previous</button>
+          <button class="join-item btn btn-disabled">{{ currentPage }}</button>
+          <button @click="loadTransactions('next')" class="join-item btn"
+            :disabled="transactions.length < pageSize">Next</button>
         </div>
       </div>
     </div>
