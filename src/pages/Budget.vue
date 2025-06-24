@@ -157,26 +157,25 @@ const showUpdateModal = (id) => {
 
       </div>
       <div v-else class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
-        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
+        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 ">
           <h2 class="mt-2 text-md font-medium">Total Budget</h2>
           <h1 class="mt-1 text-3xl font-bold">₱{{ totalOverviewBudget }}</h1>
           <p class="text-gray-500">This Month</p>
         </div>
-        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
+        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 ">
           <h2 class="mt-2 text-md font-medium">Total Spent</h2>
-          <h1 class="mt-1 text-3xl font-bold text-red-600">₱{{ totalOverviewSpent }}</h1>
+          <h1 class="mt-1 text-3xl font-bold text-error">₱{{ totalOverviewSpent }}</h1>
           <p class="text-gray-500">{{ percentageOverviewUsed }}% of budget</p>
         </div>
-        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
+        <div class="rounded-md p-6 ring-1 ring-inset ring-base-300 ">
           <h2 class="mt-2 text-md font-medium">Remaining</h2>
-          <h1 class="mt-1 text-3xl font-bold"
-            :class="[remainingOverviewBudget < 0 ? 'text-red-600' : 'text-green-600']">
+          <h1 class="mt-1 text-3xl font-bold" :class="[remainingOverviewBudget < 0 ? 'text-error' : 'text-success']">
             ₱{{ remainingOverviewBudget }}</h1>
           <p class="text-gray-500">Available to spend</p>
         </div>
       </div>
       <!-- Budget Categories -->
-      <div class="mt-6 ring-1 ring-inset ring-base-300 bg-base-300 pt-6 px-6 pb-10 rounded-lg">
+      <div class="mt-6 ring-1 ring-inset ring-base-300  pt-6 px-6 pb-10 rounded-lg">
         <h1 class="text-2xl font-bold">Budget Categories</h1>
         <p class="text-gray-500">Track your spending by category</p>
         <!--Skeleton Loading-->

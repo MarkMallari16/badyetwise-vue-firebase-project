@@ -271,7 +271,7 @@ provide("pieChartOptions", pieChartOptions);
     <!--Chart-->
     <DashboardCharts :is-loading="isLoading" />
     <div v-if="isLoading" class="mt-4 skeleton h-96 w-full"></div>
-    <div v-else class="mt-4 p-6 ring-1 ring-inset ring-base-300 bg-base-300 rounded-md w-[26rem] lg:w-full">
+    <div v-else class="mt-4 p-6 ring-1 ring-inset ring-base-300  rounded-md w-[26rem] lg:w-full">
       <div class="flex justify-between items-center pb-6">
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>

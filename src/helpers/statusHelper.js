@@ -5,13 +5,13 @@ import IconOverBudget from "@/components/icons/IconOverBudget.vue";
 export function getStatusClass(status) {
     switch (status) {
         case "Over Budget":
-            return "bg-red-100 text-red-600";
+            return "bg-error/20 text-error";
         case "At Limit":
-            return "bg-yellow-100 text-yellow-600";
+            return "bg-warning/20 text-warning";
         case "On Track":
-            return "bg-green-100 text-green-600";
+            return "bg-sucess/20 text-success";
         default:
-            return "bg-gray-100 text-gray-600";
+            return "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-200";
     }
 }
 
