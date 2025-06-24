@@ -56,9 +56,9 @@ const overviews = computed(() => [
     subtext: "Total Income",
     value: props.totalIncomes.toLocaleString(),
     icon: IconUp,
-    iconColor: "text-green-600",
+    iconColor: "text-success",
     status: "Total earned this month",
-    valueColor: "text-green-600",
+    valueColor: "text-success",
     statusColor: "text-gray-400",
   },
 
@@ -66,9 +66,9 @@ const overviews = computed(() => [
     subtext: "Total Expenses",
     value: props.totalExpenses.toLocaleString(),
     icon: IconDown,
-    iconColor: "text-red-600",
+    iconColor: "text-errror",
     status: "Total spent this month",
-    valueColor: "text-red-600",
+    valueColor: "text-error",
     statusColor: "text-gray-400",
   },
   {
@@ -76,7 +76,7 @@ const overviews = computed(() => [
     value: (props.savingsRate).toLocaleString() + "%",
     icon: IconSavings,
     iconColor: "",
-    valueColor: "text-blue-600",
+    valueColor: "text-info",
     status: (props.percentageSavingsRate).toLocaleString() + "% of your income",
     statusColor: "text-gray-400",
   },
@@ -100,7 +100,7 @@ const overviews = computed(() => [
       <div v-if="props.isLoading" v-for="item in 4" :key="item" class="skeleton w-full h-32">
       </div>
       <div v-else v-for="(overview, index) in overviews" :key="index"
-        class="rounded-md p-6 ring-1 ring-inset ring-base-300 bg-base-300">
+        class="rounded-md p-6 ring-1 ring-inset ring-base-300">
         <div class="flex justify-between items-center">
           <h2 class="mt-2 text-md font-medium">{{ overview.subtext }}</h2>
           <h2 v-if="!overview.icon && !overview.icon.startsWith('M')" class="text-gray-600 text-2xl">

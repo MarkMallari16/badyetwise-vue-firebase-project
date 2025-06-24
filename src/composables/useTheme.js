@@ -8,7 +8,7 @@ const theme = ref(localStorage.getItem("theme") || "lofi");
 export function useTheme() {
     //apply the theme based on the user's preference or system setting
     const applyTheme = () => {
-        const prefersDark = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
         if (theme.value === "system") {
             theme.value = prefersDark ? "dark" : "lofi";

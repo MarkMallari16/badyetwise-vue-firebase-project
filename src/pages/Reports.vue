@@ -111,7 +111,7 @@ const reportsSummary = computed(() => {
 </script>
 <template>
     <div
-        class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-base-300 shadow-lg rounded-2xl">
+        class="min-h-screen mx-4 my-2 px-4 lg:px-12 pb-10 transition-all duration-300 ease-in-out ring-1 ring-base-300 bg-base-100 shadow-lg rounded-2xl">
         <DashboardNav>
         </DashboardNav>
         <h1 class="text-3xl font-bold">Monthly Summary</h1>
@@ -129,15 +129,15 @@ const reportsSummary = computed(() => {
             <div class="pt-10 pb-8 flex justify-between items-center">
                 <div>
                     <p class="font-medium">Income</p>
-                    <h2 class="text-3xl text-green-600 font-bold">{{ reportsSummary.totalIncome }}</h2>
+                    <h2 class="text-3xl text-success font-bold">{{ reportsSummary.totalIncome }}</h2>
                 </div>
                 <div>
                     <p class="font-medium">Expense</p>
-                    <h2 class="text-3xl text-red-600 font-bold">{{ reportsSummary.totalExpense }}</h2>
+                    <h2 class="text-3xl text-error font-bold">{{ reportsSummary.totalExpense }}</h2>
                 </div>
                 <div>
                     <p class="font-medium">Savings</p>
-                    <h2 class="text-3xl text-blue-600 font-bold">{{ reportsSummary.savings }}</h2>
+                    <h2 class="text-3xl text-info font-bold">{{ reportsSummary.savings }}</h2>
                 </div>
             </div>
 

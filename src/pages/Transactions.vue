@@ -151,7 +151,7 @@ const getIconCategory = (categoryIcon) => {
       </DashboardNavBarRightSlot>
     </DashboardNav>
     <h1 class="text-3xl font-bold">All Transactions</h1>
-    <div class="w-full mt-6 bg-base-300 rounded-lg ring-1 ring-inset ring-base-300 p-5">
+    <div class="w-full mt-6  rounded-lg ring-1 ring-inset ring-base-300 p-5">
       <h2 class="text-xl font-medium">Filters</h2>
       <p class="text-gray-500">Search and filter your transactions</p>
 
@@ -192,12 +192,12 @@ const getIconCategory = (categoryIcon) => {
 
     <!--Transaction History-->
     <div
-      class="w-[27rem] sm:w-[41rem] md:w-full lg:w-full mt-3 rounded-lg bg-base-300 ring-1 ring-inset ring-base-300 p-5 ">
+      class="w-[27rem] sm:w-[41rem] md:w-full lg:w-full mt-3 rounded-lg  ring-1 ring-inset ring-base-300 p-5 ">
       <div class="mb-4">
         <h2 class="text-xl font-medium ">Transaction History</h2>
         <p class="text-gray-500">Complete list of your financial transactions</p>
       </div>
-      <div class="rounded-box bg-base-300 overflow-auto">
+      <div class="rounded-box  overflow-auto">
         <table class="table w-full ">
           <!-- head -->
           <thead>
