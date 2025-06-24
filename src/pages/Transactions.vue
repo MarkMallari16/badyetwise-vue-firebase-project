@@ -30,7 +30,6 @@ const firstVisible = ref(null);
 // This will hold the stack of pages for pagination
 const pageStack = [];
 
-
 //selectedTransaction
 const selectedTransactionId = ref(null);
 
@@ -60,20 +59,24 @@ const loadTransactions = async (direction = 'next') => {
 
   //for next
   if (direction == 'next' && lastVisible.value) {
+    // Create a query starting after the last visible document
     q = query(
       transactionsRef,
       orderBy('date', 'desc'),
       startAfter(lastVisible.value),
       limit(pageSize.value)
     )
+    // Increment the current page number
     currentPage.value++;
     //back in previous page
   } else if (direction === 'prev' && pageStack.length > 1) {
+    // Pop the last cursor from the stack
     currentPage.value--;
-
+    // If there are more than one cursor in the stack, pop the last one
     if (pageStack.length > 1) pageStack.pop();
     const prevCursor = pageStack[pageStack.length - 1];
 
+    // Create a query starting after the previous cursor
     q = query(
       transactionsRef,
       orderBy('date', 'desc'),
@@ -86,7 +89,6 @@ const loadTransactions = async (direction = 'next') => {
       orderBy('date', 'desc'),
       limit(pageSize.value)
     )
-
     currentPage.value = 1;
     pageStack.length = 0;
   }

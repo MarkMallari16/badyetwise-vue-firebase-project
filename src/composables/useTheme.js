@@ -13,7 +13,6 @@ export function useTheme() {
         if (theme.value === "system") {
             theme.value = prefersDark ? "dark" : "lofi";
         }
-
         document.documentElement.setAttribute("data-theme", theme.value);
     };
 
@@ -39,7 +38,6 @@ export function useTheme() {
     };
 
     const getCurrentTheme = () => theme.value;
-
 
     // Check localStorage for theme preference
     onAuthStateChanged(getAuth(), async (user) => {

@@ -146,7 +146,7 @@ const settingsSupportLinks = [
 <template>
   <div class="overflow-hidden text-nowrap">
     <div
-      class="rounded-r-3xl lg:rounded-2xl transition-all duration-500 delay-0    ease-in-out z-40 ring-1 ring-gray-300  lg:ring-0"
+      class="rounded-r-3xl lg:rounded-2xl transition-all duration-500 delay-0    ease-in-out z-40 ring-1 ring-base-300 bg-base-100  lg:ring-0"
       :class="[isSidebarOpen ? 'lg:w-[20rem] fixed w-64' : 'w-0 opacity-0']">
       <div class="flex flex-col justify-between ps-4 pe-4 lg:pe-0 py-8 min-h-screen">
         <div>
