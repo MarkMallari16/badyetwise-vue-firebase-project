@@ -215,7 +215,7 @@ const showUpdateModal = (id) => {
       <div class="w-full ">
         <div v-if="tab === 'expense'">
           <h2 class="text-2xl font-semibold mt-4">Expense Categories</h2>
-          <!-- <div v-if="categoriesExpenses.length == 0" class="mt-4">
+          <!-- <div v-if="!categoriesExpenses" class="mt-4">
             <div class="ring-1 ring-inset ring-gray-300 rounded-md p-6 w-full">
               <p class="text-gray-500  mb-2">No expense categories found. Add a new category to get started.</p>
               <OpenAddModalButton @click="showModal">Add Category</OpenAddModalButton>
@@ -227,7 +227,7 @@ const showUpdateModal = (id) => {
             </div>
             <!--Card Expense-->
             <div v-else v-for="category in categoryExpenseSummaries" :key="category.id"
-              class="relative p-8 ring-1 ring-inset ring-gray-300 rounded-lg shadow-sm">
+              class="relative p-8 ring-1 ring-inset ring-base-300 rounded-lg shadow-sm">
               <div class="relative flex justify-between  items-center ">
                 <div class="flex items-center gap-3 ">
                   <component :is="getIconCategory(category.icon)" class="size-11 p-2 text-white rounded-lg"
@@ -300,11 +300,11 @@ const showUpdateModal = (id) => {
             </div>
             <!--Income Card-->
             <div v-else v-for="category in categoryIncomeSummaries" :key="category.id"
-              class="relative p-8 ring-1 ring-inset ring-gray-300 rounded-lg shadow-sm">
+              class="relative p-8 ring-1 ring-inset ring-base-300 rounded-lg shadow-sm">
               <div>
                 <div class="flex justify-between items-center">
                   <div class="flex items-center gap-3">
-                    <component :is="getIconCategory(category.icon)" class="size-11 p-2 text-white rounded-lg"
+                    <component :is="getIconCategory(category.icon)" class="size-11 p-2  rounded-lg"
                       :class="category.color" />
                     <div>
                       <h3 class="font-medium text-lg">{{ category.name }}</h3>

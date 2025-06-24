@@ -197,7 +197,7 @@ const getIconCategory = (categoryIcon) => {
         <h2 class="text-xl font-medium ">Transaction History</h2>
         <p class="text-gray-500">Complete list of your financial transactions</p>
       </div>
-      <div class="rounded-box bg-base-100 overflow-auto">
+      <div class="rounded-box bg-base-300 overflow-auto">
         <table class="table w-full ">
           <!-- head -->
           <thead>

@@ -15,7 +15,7 @@ const whileInView = {
   transition: {
     delay: 0.2,
     duration: 0.3
-  }
+  },
 }
 // This is used to animate the numbers in the Bar component
 onMounted(() => {
