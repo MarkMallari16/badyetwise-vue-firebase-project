@@ -9,7 +9,7 @@ export function getStatusClass(status) {
         case "At Limit":
             return "bg-warning/20 text-warning";
         case "On Track":
-            return "bg-sucess/20 text-success";
+            return "bg-success/20 text-success";
         default:
             return "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-200";
     }

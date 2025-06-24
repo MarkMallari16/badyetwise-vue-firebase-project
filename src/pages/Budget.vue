@@ -70,7 +70,7 @@ const budgetSummaries = computed(() => {
     const totalSpent = relatedTransactions.reduce((sum, t) => sum + t.amount, 0);
     const percentageUsed = ((totalSpent / budget.amount) * 100).toFixed(2);
     const amountLeft = budget.amount - totalSpent;
-    const progressStatusClass = totalSpent > budget.amount ? 'text-red-600' : '';
+    const progressStatusClass = totalSpent > budget.amount ? 'text-error' : '';
 
     let statusMessasge = "No budget set";
 
