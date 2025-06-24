@@ -53,7 +53,7 @@ export function useTheme() {
                 }
             });
         } else {
-            theme.value = "system"
+            theme.value = "lofi"
             localStorage.removeItem("theme");
         }
     });
