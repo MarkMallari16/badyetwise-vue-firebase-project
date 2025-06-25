@@ -8,7 +8,7 @@ import DashboardNav from "@/components/DashboardNav.vue";
     <div class="flex justify-center items-center text-center ring-1 ring-inset ring-base-300 px-6 py-16 rounded-lg">
       <div>
         <div class="flex flex-col justify-center items-center">
-        <p class="badge badge-warning bg-warning ">Coming soon</p>
+          <p class="badge badge-warning bg-warning ">Coming soon</p>
 
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-20 text-primary">
