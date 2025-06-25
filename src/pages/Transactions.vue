@@ -134,12 +134,14 @@ onMounted(() => {
 
 // Clean up the listeners when the component is unmounted
 onUnmounted(() => {
-  // if (unsubscribeTransactions) {
-  //   unsubscribeTransactions();
-  // }
+  if (unsubscribeTransactions) {
+    unsubscribeTransactions();
+  }
   if (unsubscribeCategories) {
     unsubscribeCategories();
   }
+
+
 });
 
 // This computed property filters transactions based on the search input
@@ -215,7 +217,6 @@ const getIconCategory = (categoryIcon) => {
         <AddTransactionModal />
         <!--Update Transaction Modal-->
         <UpdateTransactionModal :transactionId="selectedTransactionId" />
-
       </DashboardNavBarRightSlot>
     </DashboardNav>
     <h1 class="text-3xl font-bold">All Transactions</h1>

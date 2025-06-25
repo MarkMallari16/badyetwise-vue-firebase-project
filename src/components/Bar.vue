@@ -20,7 +20,7 @@ const whileInView = {
 // This is used to animate the numbers in the Bar component
 onMounted(() => {
   animate(0, 50000, {
-    duration: 5,
+    duration: 3,
     onUpdate: (value) => {
       activeUsersNumber.value = Math.round(value);
     }
@@ -34,7 +34,7 @@ onMounted(() => {
   })
 
   animate(0, 4.9, {
-    duration: 4,
+    duration: 2.5,
     onUpdate: (value) => {
       appRatingNumber.value = value.toFixed(1)
     }

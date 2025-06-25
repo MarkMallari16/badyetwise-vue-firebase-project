@@ -106,7 +106,6 @@ const updateProfile = async () => {
           <input type="email" id="email" class="block input input-bordered w-full max-w-md mt-1"
             v-model="formUpdate.email" placeholder="Email" disabled>
         </div>
-
         <div>
           <button type="submit" class="btn btn-primary mt-4 rounded-md">Update </button>
         </div>
@@ -129,6 +128,5 @@ const updateProfile = async () => {
         </select>
       </div>
     </div>
-
   </div>
 </template>
