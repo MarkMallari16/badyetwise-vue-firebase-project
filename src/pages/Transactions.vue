@@ -23,7 +23,7 @@ const transactions = ref([]);
 // This will hold the current page number, page size, and pagination cursors
 const currentPage = ref(1);
 // This will hold the number of items per page
-const pageSize = ref(10);
+const pageSize = ref(5);
 // This will hold the last and first visible documents for pagination
 const lastVisible = ref(null);
 const firstVisible = ref(null);
@@ -51,10 +51,18 @@ const transactionFilterings = ref({
 const categoriesQuery = collection(db, "users", userId, "categories");
 
 // let unsubscribeTransactions = null;
+let unsubscribeTransactions = null;
 let unsubscribeCategories = null;
 //pagination
 const loadTransactions = async (direction = 'next') => {
+  //query
   let q;
+
+  //when component unmount
+  if (unsubscribeTransactions) {
+    unsubscribeTransactions
+  }
+  //transactions reference
   const transactionsRef = collection(db, "users", userId, "transactions");
 
   //for next
@@ -66,7 +74,7 @@ const loadTransactions = async (direction = 'next') => {
       startAfter(lastVisible.value),
       limit(pageSize.value)
     )
-    // Increment the current page number
+
     currentPage.value++;
     //back in previous page
   } else if (direction === 'prev' && pageStack.length > 1) {
@@ -75,7 +83,6 @@ const loadTransactions = async (direction = 'next') => {
     // If there are more than one cursor in the stack, pop the last one
     if (pageStack.length > 1) pageStack.pop();
     const prevCursor = pageStack[pageStack.length - 1];
-
     // Create a query starting after the previous cursor
     q = query(
       transactionsRef,
@@ -92,34 +99,27 @@ const loadTransactions = async (direction = 'next') => {
     currentPage.value = 1;
     pageStack.length = 0;
   }
-  // Fetch the transactions
-  const snapshot = await getDocs(q);
-  // Map the documents to an array of transaction objects
-  transactions.value = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }))
 
-  if (snapshot.docs.length > 0) {
-    firstVisible.value = snapshot.docs[0];
-    lastVisible.value = snapshot.docs[snapshot.docs.length - 1]
+  unsubscribeTransactions = onSnapshot(q, (snapshot) => {
+    transactions.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }))
 
-    if (direction !== 'prev') {
-      pageStack.push(snapshot.docs[0]);
+    // Update the first and last visible documents
+    if (snapshot.docs.length > 0) {
+      firstVisible.value = snapshot.docs[0];
+      lastVisible.value = snapshot.docs[snapshot.docs.length - 1]
+      if (direction !== 'prev') {
+        pageStack.push(snapshot.docs[0]);
+      }
     }
-  }
+  })
+
+
 }
 
 onMounted(() => {
-  // //Fetch transactions from the "transactions" collection
-  // unsubscribeTransactions = onSnapshot(transactionQuery, (snapshot) => {
-  //   transactions.value = snapshot.docs.map((doc) => {
-  //     return {
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     };
-  //   });
-  // });
   loadTransactions()
   //Fetch categories from the "categories" collection
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
@@ -356,6 +356,7 @@ const getIconCategory = (categoryIcon) => {
             transactions.length }} of </p>
           <select name="transactionSelection" id="transactionSelection" class="select select-bordered w-20"
             v-model="pageSize" @change="loadTransactions">
+            <option value="5">5</option>
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
@@ -366,7 +367,7 @@ const getIconCategory = (categoryIcon) => {
 
         <div class="join gap-2">
           <button @click="loadTransactions('prev')" class="join-item btn" :disabled="currentPage == 1">Previous</button>
-          <button class="join-item btn btn-disabled">{{ currentPage }}</button>
+          <button class="join-item btn btn-disabled btn-ghost">{{ currentPage }}</button>
           <button @click="loadTransactions('next')" class="join-item btn"
             :disabled="transactions.length < pageSize">Next</button>
         </div>
