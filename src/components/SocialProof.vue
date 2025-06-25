@@ -11,7 +11,7 @@ const socialProofs = [
     name: "Gina Col",
     role: "Software Gingineer",
     testimonial:
-      "I love how easy it is to track my expenses. The app is intuitive and has made budgeting a breeze.",
+      "I love how easy it is to track my expenses. The website is intuitive and has made budgeting a breeze.",
     image: "https://i.pinimg.com/736x/4d/13/13/4d13135ef1d77ed91ce80334ceab6ef5.jpg",
   },
   {
