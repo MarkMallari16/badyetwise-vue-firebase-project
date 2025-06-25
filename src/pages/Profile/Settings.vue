@@ -115,7 +115,7 @@ const updateProfile = async () => {
     <div class="mt-4 px-10 pt-6 pb-20 ring-1 ring-inset ring-base-300  rounded-md">
       <div>
         <div class="flex items-center gap-2">
-          <component :is="IconPalette" class="size-6" />
+          <component :is="IconPalette" class="size-6 text-black" />
           <h1 class="text-xl font-medium">Preferences</h1>
         </div>
         <p class="text-gray-600">Customize your experience</p>

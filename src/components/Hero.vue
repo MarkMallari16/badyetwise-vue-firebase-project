@@ -9,14 +9,16 @@ import { motion } from "motion-v";
       <div class="text-center">
         <div class="flex justify-center mt-4 mb-2  ">
           <motion.div class="rounded-full badge-ghost py-1 px-4 ring-1 ring-inset ring-gray-200"
-            :initial="{ opacity: 0 }" :whileInView="{ opacity: 1 }" :transition="{ delay: 0.6, ease: 'easeInOut' }">
+            :initial="{ opacity: 0 }" :whileInView="{ opacity: 1 }" :viewport="{ once: true }"
+            :transition="{ delay: 0.6, ease: 'easeInOut' }">
             <p class="text-sm font-medium"> 🚀 New: Advanced Budget Analytics</p>
           </motion.div>
         </div>
         <motion.div :initial="{
           y: -50,
           opacity: 0,
-        }" :whileInView="{ y: 0, opacity: 1 }" :transition="{ delay: 0.1, ease: 'easeInOut' }">
+        }" :whileInView="{ y: 0, opacity: 1 }" :viewport="{ once: true }"
+          :transition="{ delay: 0.1, ease: 'easeInOut' }">
           <h1 class="text-6xl lg:text-9xl break-words font-black">
             Track Your Budget Effortlessly!
           </h1>
