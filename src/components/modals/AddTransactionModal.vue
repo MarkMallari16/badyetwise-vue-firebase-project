@@ -29,12 +29,11 @@ const errors = reactive({
 
 const errorTextClass = "pt-1 text-red-500";
 
-
 const validateForm = () => {
   let isValid = true;
 
   if (!form.amount) {
-    errors.amount = "Amount is .";
+    errors.amount = "Amount is required.";
     isValid = false;
   }
 

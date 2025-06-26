@@ -29,9 +29,9 @@ watch(() => props.budgetId, async (budgetId) => {
 
     try {
         //create reference to the budget document
-        const docRef = doc(db, "users", userId, "budgets", props.budgetId);
+        const budgetRef = doc(db, "users", userId, "budgets", props.budgetId);
         //fetch the document data
-        const docSnap = await getDoc(docRef);
+        const docSnap = await getDoc(budgetRef);
 
         if (docSnap.exists()) {
             form.value = {

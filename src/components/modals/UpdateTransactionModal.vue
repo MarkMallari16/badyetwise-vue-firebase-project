@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { db } from "@/firebase/firebase";
 import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { currentUser } from '@/composables/useAuth';
@@ -10,6 +10,7 @@ const props = defineProps({
         required: true
     }
 })
+
 const userId = currentUser.value?.uid;
 const categories = ref([]);
 
@@ -18,7 +19,6 @@ let loading = ref(false);
 let unsubscribeCategories = null;
 
 const categoriesQuery = collection(db, "users", userId, "categories");
-
 
 onMounted(() => {
     unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
