@@ -110,7 +110,7 @@ const overview = computed(() => {
     }
   })
 
-  //slice the groupedPerMonth to get only the last 5 months
+  //slice the groupedPerMonth to get only the recent months
   const expenseTransactions = transactions.value.filter(t => t.type === "expense").slice(0, 5);
   // Group expenses by category
   const groupedPerCategory = {};

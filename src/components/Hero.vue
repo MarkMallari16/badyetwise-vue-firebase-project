@@ -1,5 +1,5 @@
 <script setup>
-import HeroImage from "../assets/hero-image-2.png";
+import HeroImage from "../assets/hero-image-3.png";
 import { motion } from "motion-v";
 
 </script>
