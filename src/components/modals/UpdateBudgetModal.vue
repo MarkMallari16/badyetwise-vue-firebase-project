@@ -2,7 +2,7 @@
 import { currentUser } from '@/composables/useAuth';
 import { db } from '@/firebase/firebase';
 import { collection, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import IconGoal from '../icons/IconGoal.vue';
 
 const userId = currentUser.value?.uid;
@@ -18,12 +18,27 @@ const props = defineProps({
 
 const form = ref({
     amount: null,
-    category: null,
     timePeriod: 'monthly',
 });
+const errors = ref({
+    amount: null,
+    timePeriod: null
+})
 
-let unsubscribeCategories = null;
+const validateForm = () => {
+    let isValid = true;
 
+    if (!form.value.amount || form.value.amount <= 0) {
+        errors.value.amount = "Please enter valid amount.";
+        isValid = false;
+    }
+
+    if (!form.value.timePeriod) {
+        errors.timePeriod = "Please select a time period."
+    }
+
+    return isValid;
+}
 watch(() => props.budgetId, async (budgetId) => {
     if (!budgetId) return;
 
@@ -42,6 +57,12 @@ watch(() => props.budgetId, async (budgetId) => {
         console.error("Error fetching budget data: ", error);
     }
 })
+watch(() => form.value.amount, (newValue) => {
+    if (newValue) {
+        errors.value.amount = null;
+    }
+})
+let unsubscribeCategories = null;
 onMounted(() => {
     if (!userId) return;
 
@@ -70,6 +91,10 @@ const closeModal = () => {
     }
 }
 const updateBudget = async () => {
+    if (!validateForm()) {
+        return;
+    }
+
     try {
         loading.value = true;
 
@@ -111,11 +136,12 @@ const updateBudget = async () => {
                     </button>
                 </div>
                 <div class="flex items-center gap-3 w-full">
-
                     <div class="w-full">
                         <label for="amount" class="font-medium">Amount</label>
                         <input type="number" name="amount" v-model="form.amount" id="amount"
-                            class="input input-bordered w-full mt-2" placeholder="0.00" required min="0" />
+                            class="input input-bordered w-full mt-2" :class="[errors.amount ? 'input-error' : '']"
+                            placeholder="0.00" />
+
                     </div>
                     <div class="w-full">
                         <label for="period" class="font-medium">Time Period</label>
@@ -127,7 +153,10 @@ const updateBudget = async () => {
                             <option value="yearly">Yearly</option>
                         </select>
                     </div>
+
                 </div>
+                <p class="text-sm mt-1 text-red-600" v-if="errors.amount">{{ errors.amount }}</p>
+
                 <div class="flex gap-2 modal-action">
                     <button type="button" @click="closeModal" class="btn btn-ghost rounded-md">Close</button>
                     <button :disabled="loading" class="btn btn-primary rounded-md" type="submit">

@@ -96,13 +96,14 @@ const overview = computed(() => {
   // Group transactions by month
   transactions.value.forEach(transaction => {
     const month = dayjs(transaction.date).format("MMMM");
+
     if (!groupedPerMonth[month]) {
       groupedPerMonth[month] = {
         income: 0,
         expense: 0
       }
     }
-
+    // Add the transaction amount to the corresponding month
     if (transaction.type === "income") {
       groupedPerMonth[month].income += transaction.amount || 0;
     } else if (transaction.type === "expense") {
@@ -276,7 +277,7 @@ provide("pieChartOptions", pieChartOptions);
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>
           <div v-if="transactionLength > 0" class="text-gray-500">
-            <p >Your latest {{ transactionLength }} recent
+            <p>Your latest {{ transactionLength }} recent
               transactions
             </p>
           </div>
