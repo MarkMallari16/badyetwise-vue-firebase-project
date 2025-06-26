@@ -245,6 +245,7 @@ provide("barChartData", barChartData);
 provide("barChartOptions", barChartOptions);
 provide("pieChartData", pieChartData);
 provide("pieChartOptions", pieChartOptions);
+
 </script>
 
 <template>
@@ -274,7 +275,14 @@ provide("pieChartOptions", pieChartOptions);
       <div class="flex justify-between items-center pb-6">
         <div>
           <h1 class="text-2xl font-bold">Recent Transactions</h1>
-          <p class="text-gray-500">Your latest {{ transactionLength }} recent transactions</p>
+          <div v-if="transactionLength > 0" class="text-gray-500">
+            <p >Your latest {{ transactionLength }} recent
+              transactions
+            </p>
+          </div>
+          <div v-else class="text-gray-500">
+            <p>You haven no transactions</p>
+          </div>
         </div>
         <div>
           <button class="btn rounded-xl" @click="goTo('/transactions')">View All</button>
@@ -292,7 +300,8 @@ provide("pieChartOptions", pieChartOptions);
             </tr>
           </thead>
           <tbody>
-            <tr v-for="transaction in fiveRecentTransactions" v-if="transactions" :key="transaction.id">
+            <tr v-for="transaction in fiveRecentTransactions" v-if="transactions" :key="transaction.id"
+              class="hover:bg-base-300 transition-colors duration-200">
               <td class="flex items-center gap-3">
                 <component :is="getIconCategory(transaction.categoryIcon)" class="size-10 rounded-full badge " />
                 <p>
