@@ -39,7 +39,6 @@ onUnmounted(() => {
 
 watch(() => props.transactionId, async (transactionsId) => {
     if (!transactionsId) return;
-
     try {
         const docRef = doc(db, "users", userId, "transactions", transactionsId);
         const docSnap = await getDoc(docRef);
@@ -65,6 +64,51 @@ const form = ref({
     notes: "",
 });
 
+const errors = ref({
+    amount: "",
+    date: "",
+    description: "",
+    category: "",
+})
+
+watch(() => [form.value.amount, form.value.date, form.value.description, form.value.category], ([amount, date, description, category]) => {
+    console.log(form.value.amount)
+    if (amount) errors.value.amount = "";
+    if (date) errors.value.date = "";
+    if (description) errors.value.description = "";
+    if (category) errors.value.category = ""
+})
+
+const errorTextClass = "pt-1 text-red-500";
+
+const validateForm = () => {
+    let isValid = true;
+
+    if (form.value.amount === null || form.value.amount.toString().trim() === "") {
+        errors.value.amount = "Amount is required!";
+        isValid = false;
+    } else if (Number(form.value.amount) < 1) {
+        errors.value.amount = "Amount cannot be negative"
+        isValid = false;
+    }
+    if (!form.value.date) {
+        errors.value.date = "Date is required!";
+        isValid = false;
+    }
+
+    if (!form.value.description) {
+        errors.value.description = "Description is required!";
+        isValid = false;
+    }
+
+    if (!form.value.category) {
+        errors.value.category = "Category is required!";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
 const closeModal = () => {
     const modal = document.getElementById("update_transaction");
     if (modal) {
@@ -73,7 +117,10 @@ const closeModal = () => {
 }
 
 const updateTransaction = async () => {
-
+    if (!validateForm()) {
+        console.log("error")
+        return;
+    }
     try {
         loading.value = true;
 
@@ -94,6 +141,7 @@ const updateTransaction = async () => {
         closeModal();
     }
 }
+
 </script>
 <template>
     <dialog id="update_transaction" class="modal">
@@ -120,23 +168,27 @@ const updateTransaction = async () => {
                                 <label for="expense" class="font-sans  cursor-pointer">Expense</label>
                             </div>
                         </div>
-                        <div class="flex items-center gap-5 mt-4 w-full">
+                        <div class="mt-4 flex gap-4">
                             <div class="w-full">
                                 <label for="amount" class="font-medium mt-2">Amount</label>
                                 <input id="amount" type="number" name="amount" placeholder="Enter Amount"
-                                    v-model="form.amount" required class="mt-2 input input-bordered w-full" min="0" />
+                                    v-model="form.amount" class="mt-2 input  w-full"
+                                    :class="[errors.amount ? 'input-error' : 'input-bordered']" />
+                                <p v-if="errors.amount" :class="errorTextClass">{{ errors.amount }}</p>
                             </div>
-
                             <div class="w-full">
                                 <label for="date" class="font-medium">Date</label>
-                                <input type="date" name="date" v-model="form.date" required
-                                    class="mt-2 input input-bordered w-full" />
+                                <input type="date" name="date" v-model="form.date" class="mt-2 input  w-full"
+                                    :class="[errors.date ? 'input-error' : 'input-bordered']" />
+                                <p v-if="errors.date" :class="errorTextClass">{{ errors.date }}</p>
                             </div>
                         </div>
                         <div class="mt-4">
                             <label for="description" class="font-medium">Description</label>
                             <input type="text" name="description" v-model="form.description"
-                                placeholder="Enter Description" required class="input mt-2 input-bordered w-full" />
+                                placeholder="Enter Description" class="input mt-2  w-full"
+                                :class="[errors.description ? 'input-error' : 'input-bordered']" />
+                            <p v-if="errors.description" :class="errorTextClass">{{ errors.description }}</p>
                         </div>
                         <div class="mt-4">
                             <div class="w-full flex items-center gap-5">
@@ -151,6 +203,8 @@ const updateTransaction = async () => {
                                         </option>
                                     </select>
                                 </div>
+                                <p v-if="errors.category" :class="errorTextClass">{{ errors.category }}</p>
+
                                 <div class="w-full">
                                     <p class="font-medium mb-2">Payment Method</p>
                                     <select class="select select-bordered w-full" name="payment_method"

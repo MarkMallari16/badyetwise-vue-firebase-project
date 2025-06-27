@@ -42,8 +42,6 @@ const validateForm = () => {
     isValid = false;
   }
 
-  console.log(form.amount)
-
   if (!form.date) {
     errors.date = "Date is required.";
     isValid = false;

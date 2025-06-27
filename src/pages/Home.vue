@@ -79,6 +79,7 @@ const overview = computed(() => {
   const totalIncomes = transactions.value
     .filter(transaction => transaction.type === "income")
     .reduce((sum, transaction) => sum + transaction.amount || 0, 0)
+
   const totalExpenses = transactions.value
     .filter(transaction => transaction.type === "expense")
     .reduce((sum, transaction) => sum + transaction.amount || 0, 0)
@@ -94,7 +95,7 @@ const overview = computed(() => {
   const groupedPerMonth = {};
 
   // Group transactions by month
-  transactions.value.forEach(transaction => {
+  transactions.value.map(transaction => {
     const month = dayjs(transaction.date).format("MMMM");
 
     if (!groupedPerMonth[month]) {
