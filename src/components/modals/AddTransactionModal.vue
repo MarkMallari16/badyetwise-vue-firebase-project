@@ -32,15 +32,17 @@ const errorTextClass = "pt-1 text-red-500";
 const validateForm = () => {
   let isValid = true;
 
-  if (!form.amount) {
+  if (form.amount === null) {
     errors.amount = "Amount is required.";
     isValid = false;
   }
 
-  if (!form.amount > 0) {
+  if (form.amount < 0 && form.amount !== null) {
     errors.amount = "Amount cannot be negative.";
     isValid = false;
   }
+
+  console.log(form.amount)
 
   if (!form.date) {
     errors.date = "Date is required.";
@@ -79,6 +81,8 @@ const resetForm = () => {
   form.category = "";
   form.paymentMethod = "Cash";
   form.notes = "";
+
+
   // Reset errors
   errors.amount = "";
   errors.date = "";
@@ -174,20 +178,22 @@ const closeModal = () => {
                 <label for="expense" class="font-sans cursor-pointer">Expense</label>
               </div>
             </div>
-            <div class="flex items-center gap-5 mt-4 w-full">
-              <div class="w-full">
-                <label for="amount" class="font-medium mt-2">Amount</label>
-                <input id="amount" type="number" name="amount" placeholder="Enter Amount" v-model="form.amount"
-                  class="mt-2 input  w-full" min="0" :class="[errors.amount ? 'input-error' : 'input-bordered']" />
-                <p v-if="errors.amount" :class="errorTextClass">{{ errors.amount }}</p>
+           <div class="mt-4 flex gap-4">
+                <div class="w-full">
+                  <label for="amount" class="font-medium mt-2">Amount</label>
+                  <input id="amount" type="number" name="amount" placeholder="Enter Amount" v-model="form.amount"
+                    class="mt-2 input  w-full" :class="[errors.amount ? 'input-error' : 'input-bordered']" />
+                  <p v-if="errors.amount" :class="errorTextClass">{{ errors.amount }}</p>
+                </div>
+                <div class="w-full">
+                  <label for="date" class="font-medium">Date</label>
+                  <input type="date" name="date" v-model="form.date" class="mt-2 input  w-full"
+                    :class="[errors.date ? 'input-error' : 'input-bordered']" />
+                  <p v-if="errors.date" :class="errorTextClass">{{ errors.date }}</p>
+                </div>
               </div>
+            <div class="flex justify-between text-start">
 
-              <div class="w-full">
-                <label for="date" class="font-medium">Date</label>
-                <input type="date" name="date" v-model="form.date" class="mt-2 input  w-full"
-                  :class="[errors.date ? 'input-error' : 'input-bordered']" />
-                <p v-if="errors.date" :class="errorTextClass">{{ errors.date }}</p>
-              </div>
             </div>
             <div class="mt-4">
               <label for="description" class="font-medium">Description</label>
