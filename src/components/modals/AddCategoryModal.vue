@@ -7,10 +7,9 @@ import { currentUser } from "@/composables/useAuth";
 import { categoryExists } from "@/helpers/errorsValidation";
 import { reactive, ref, watch } from "vue";
 
-//
-
 const loading = ref(false);
 const selectedIcon = ref({ name: "", icon: "" });
+
 //form data
 const form = reactive({
   type: "income",

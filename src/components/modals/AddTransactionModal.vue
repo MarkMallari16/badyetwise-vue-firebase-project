@@ -178,20 +178,20 @@ const closeModal = () => {
                 <label for="expense" class="font-sans cursor-pointer">Expense</label>
               </div>
             </div>
-           <div class="mt-4 flex gap-4">
-                <div class="w-full">
-                  <label for="amount" class="font-medium mt-2">Amount</label>
-                  <input id="amount" type="number" name="amount" placeholder="Enter Amount" v-model="form.amount"
-                    class="mt-2 input  w-full" :class="[errors.amount ? 'input-error' : 'input-bordered']" />
-                  <p v-if="errors.amount" :class="errorTextClass">{{ errors.amount }}</p>
-                </div>
-                <div class="w-full">
-                  <label for="date" class="font-medium">Date</label>
-                  <input type="date" name="date" v-model="form.date" class="mt-2 input  w-full"
-                    :class="[errors.date ? 'input-error' : 'input-bordered']" />
-                  <p v-if="errors.date" :class="errorTextClass">{{ errors.date }}</p>
-                </div>
+            <div class="mt-4 flex gap-4">
+              <div class="w-full">
+                <label for="amount" class="font-medium mt-2">Amount</label>
+                <input id="amount" type="number" name="amount" placeholder="Enter Amount" v-model="form.amount"
+                  class="mt-2 input  w-full" :class="[errors.amount ? 'input-error' : 'input-bordered']" />
+                <p v-if="errors.amount" :class="errorTextClass">{{ errors.amount }}</p>
               </div>
+              <div class="w-full">
+                <label for="date" class="font-medium">Date</label>
+                <input type="date" name="date" v-model="form.date" class="mt-2 input  w-full"
+                  :class="[errors.date ? 'input-error' : 'input-bordered']" />
+                <p v-if="errors.date" :class="errorTextClass">{{ errors.date }}</p>
+              </div>
+            </div>
             <div class="flex justify-between text-start">
 
             </div>

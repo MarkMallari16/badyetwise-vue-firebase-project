@@ -63,7 +63,6 @@ let unsubscribeBudgets = null;
 
 onMounted(() => {
   if (!userId) return;
-
   // Fetch categories and budgets from Firestore
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs.map((doc) => {
@@ -72,7 +71,6 @@ onMounted(() => {
         ...doc.data(),
       }
     })
-
     console.log("Categories fetched:", categories.value);
   }, (error) => {
     console.error("Error fetching categories:", error);
