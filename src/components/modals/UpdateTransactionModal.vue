@@ -37,23 +37,6 @@ onUnmounted(() => {
     }
 })
 
-watch(() => props.transactionId, async (transactionsId) => {
-    if (!transactionsId) return;
-    try {
-        const docRef = doc(db, "users", userId, "transactions", transactionsId);
-        const docSnap = await getDoc(docRef);
-        // Check if the document exists
-        if (docSnap.exists) {
-            form.value = {
-                ...docSnap.data()
-            }
-
-        }
-    } catch (error) {
-        console.error("Error fetching transaction data: ", error);
-    }
-}, { immediate: true })
-
 const form = ref({
     type: "income",
     amount: null,
@@ -78,6 +61,23 @@ watch(() => [form.value.amount, form.value.date, form.value.description, form.va
     if (description) errors.value.description = "";
     if (category) errors.value.category = ""
 })
+
+watch(() => props.transactionId, async (transactionsId) => {
+    if (!transactionsId) return;
+    try {
+        const docRef = doc(db, "users", userId, "transactions", transactionsId);
+        const docSnap = await getDoc(docRef);
+        // Check if the document exists
+        if (docSnap.exists) {
+            form.value = {
+                ...docSnap.data()
+            }
+
+        }
+    } catch (error) {
+        console.error("Error fetching transaction data: ", error);
+    }
+}, { immediate: true })
 
 const errorTextClass = "pt-1 text-red-500";
 
