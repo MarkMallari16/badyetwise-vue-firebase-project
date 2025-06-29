@@ -21,12 +21,14 @@ const isLoading = ref(false);
 
 const selectedIcon = ref({ name: "", icon: "" })
 
+//form for update
 const form = ref({
     type: "income",
     name: "",
     icon: "",
     color: "Select Color",
 });
+
 //setting up initial form values
 watch(() => props.categoryId, async (categoryId) => {
     if (!categoryId) return;

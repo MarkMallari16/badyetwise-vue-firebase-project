@@ -31,12 +31,14 @@ onMounted(() => {
     })
 })
 
+//remove category data if when unregistered
 onUnmounted(() => {
     if (unsubscribeCategories) {
         unsubscribeCategories();
     }
 })
 
+//form for category
 const form = ref({
     type: "income",
     amount: null,
