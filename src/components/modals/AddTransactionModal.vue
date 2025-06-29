@@ -80,7 +80,6 @@ const resetForm = () => {
   form.paymentMethod = "Cash";
   form.notes = "";
 
-
   // Reset errors
   errors.amount = "";
   errors.date = "";
@@ -93,7 +92,7 @@ const categoriesQuery = collection(db, "users", userId, "categories");
 
 let unsubscribeCategories = null;
 
-// Fetch categories from the "categories" collection
+// Fetch categories from the categories collection
 onMounted(() => {
   unsubscribeCategories = onSnapshot(categoriesQuery, (snapshot) => {
     categories.value = snapshot.docs.map((doc) => ({

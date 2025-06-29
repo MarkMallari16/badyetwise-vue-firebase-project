@@ -99,7 +99,7 @@ const updateProfile = async () => {
         <div class="mt-6">
           <label for="name" class="font-medium">Name</label>
           <input type="text" id="name" v-model="formUpdate.displayName"
-            class="block input input-bordered w-full max-w-md mt-1" placeholder="Display Name">
+            class="block input input-bordered w-full max-w-md mt-1 rounded-lg" placeholder="Display Name">
         </div>
         <div class="mt-2">
           <label for="email" class="font-medium">Email</label>
