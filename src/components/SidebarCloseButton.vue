@@ -2,6 +2,7 @@
 import { inject } from "vue";
 
 const isSidebarOpen = inject("isSidebarOpen");
+
 </script>
 <template>
   <button class="rounded-lg transition-all duration-300 ease-in-out ">

@@ -30,7 +30,7 @@ import { motion } from "motion-v";
             <router-link to="/login" class="font-medium btn btn-ghost">Learn More</router-link>
           </div>
 
-          <div class="mt-8 w-full hidden lg:flex justify-center">
+          <div class="mt-4 w-full hidden lg:flex justify-center">
             <img :src="HeroImage" alt="Budget Tracker Image" class="object-cover rounded-md shadow-black" />
           </div>
         </motion.div>

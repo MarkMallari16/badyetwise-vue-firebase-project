@@ -68,7 +68,7 @@ const scrollIndicator = {
       <Footer />
     </div>
     <!-- Decorative SVG -->
-    <motion.div :initial="{ y: -50, opacity: 0 }" :whileInView="{ y: 0, opacity: 1 }" :viewport="{ once: true }"
+    <motion.div :initial="{ x: -50, opacity: 0 }" :whileInView="{ x: 0, opacity: 1 }"
       :transition="{ delay: 0.3, ease: 'easeInOut' }" class="absolute top-[12%] -left-32 hidden lg:block">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-96 rotate-12">
         <path d="M12 7.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" />
@@ -79,7 +79,7 @@ const scrollIndicator = {
           d="M2.25 18a.75.75 0 0 0 0 1.5c5.4 0 10.63.722 15.6 2.075 1.19.324 2.4-.558 2.4-1.82V18.75a.75.75 0 0 0-.75-.75H2.25Z" />
       </svg>
     </motion.div>
-    <motion.div :initial="{ x: 50, opacity: 0 }" :whileInView="{ x: 0, opacity: 1 }" :viewport="{ once: true }"
+    <motion.div :initial="{ x: 50, opacity: 0 }" :whileInView="{ x: 0, opacity: 1 }"
       :transition="{ delay: 0.5, ease: 'easeInOut' }" class="absolute top-48 -right-52 hidden lg:block">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-96 -rotate-45">
         <path
